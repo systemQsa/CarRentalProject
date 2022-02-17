@@ -1,17 +1,17 @@
 package com.myproject.dao.connection;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 public class ConnectionPool {
-    private final Logger log = Logger.getLogger(ConnectionPool.class.getName());
+    private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
+
     private static volatile ConnectionPool instance;
 
     private ConnectionPool() {}
@@ -26,6 +26,7 @@ public class ConnectionPool {
                 }
             }
         }
+        logger.info("CONNECTION INSTANCE GET SUCCESS");
         return localInstance;
     }
 
@@ -41,7 +42,7 @@ public class ConnectionPool {
             dataSource = (DataSource) lookUp.lookup("jdbc/Data");
             connection = dataSource.getConnection();
         } catch (NamingException | SQLException e) {
-            log.warning("some problem with connection to DB");
+            logger.fatal("SOME PROBLEM OCCUR CANT CONNECT TO DB");
         }
         System.out.println("RETURN CONNECTION" + connection);
         return connection;
@@ -52,7 +53,7 @@ public class ConnectionPool {
             try {
                 connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+               logger.fatal("CANT CLOSE CONNECTION!");
             }
         }
     }

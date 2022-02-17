@@ -1,5 +1,8 @@
 package com.myproject.command.util;
 
+import com.myproject.command.userCommand.TopUpBalanceCommand;
+import org.apache.log4j.LogManager;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -9,7 +12,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public class CommandUtil {
-    private static final Logger logger = Logger.getLogger(CommandUtil.class.getName());
+    private static final org.apache.log4j.Logger logger = LogManager.getLogger(TopUpBalanceCommand.class);
     private static final HashMap<String, String> loggedUsers = new HashMap<>();
 
     public static void setRoleForUser(HttpServletRequest req, String role, String login) {
@@ -18,8 +21,7 @@ public class CommandUtil {
         context.setAttribute(GeneralConstant.USER_NAME, login);
         session.setAttribute(GeneralConstant.ROLE, role);
         req.setAttribute(GeneralConstant.LOGIN,login);
-        //loggedUsers.put(login,role);
-        logger.info("setRoleForUser() method");
+        logger.info("setRoleForUser() method wordks");
     }
 
     public static boolean userIsLogged(HttpServletRequest request) {

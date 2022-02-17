@@ -11,14 +11,15 @@ import com.myproject.exception.ValidationException;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
 import com.myproject.validation.ValidateInput;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.logging.Logger;
 
 public class RegisterCommand implements Command {
-    private static final Logger logger = Logger.getLogger(RegisterCommand.class.getName());
-    private final ValidateInput validateInput = new ValidateInput();
+    private static final Logger logger = LogManager.getLogger(RegisterCommand.class);
+    final ValidateInput validateInput = new ValidateInput();
     private final UserService userService = new UserServiceImpl();
 
     @Override
@@ -38,7 +39,7 @@ public class RegisterCommand implements Command {
             userService.registerNewUser(name, surname, login, password, phoneNumber);
 
         } catch (ServiceException | ValidationException e) {
-            logger.warning("CANT REGISTER USER");
+            logger.error("CANT REGISTER USER");
             throw new CommandException("COMMAND EXCEPTION CAN`T REGISTER USER!", e);
         }
 

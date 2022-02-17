@@ -1,17 +1,18 @@
 package com.myproject.controller.filter;
 
-import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.GeneralConstant;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.logging.Logger;
 
 public class RedirectFilter implements Filter {
-    private static final Logger logger = Logger.getLogger(RedirectFilter.class.getName());
+    private static final Logger logger = LogManager.getLogger(RedirectFilter.class);
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

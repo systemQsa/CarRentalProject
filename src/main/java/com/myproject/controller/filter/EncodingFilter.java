@@ -1,15 +1,17 @@
 package com.myproject.controller.filter;
 
 import com.myproject.command.util.GeneralConstant;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class EncodingFilter implements Filter {
-    private static final Logger logger = Logger.getLogger(EncodingFilter.class.getName());
+    private static final Logger logger = LogManager.getLogger(EncodingFilter.class);
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         //Filter.super.init(filterConfig);

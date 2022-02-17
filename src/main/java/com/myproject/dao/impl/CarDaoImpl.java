@@ -5,6 +5,8 @@ import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.Car;
 import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import java.util.List;
 
 public class CarDaoImpl implements CarDao {
     private  Connection connection = null;
+    private static final Logger logger = LogManager.getLogger(CarDaoImpl.class);
+
     @Override
     public List<Car> findAll() throws DaoException {
         List<Car> carList = new ArrayList<>();
@@ -31,10 +35,12 @@ public class CarDaoImpl implements CarDao {
             }
 
         }catch (SQLException e){
+            logger.error("CANT GET ALL CARS FROM DB");
            throw new DaoException("CANT GET ALL CARS",e);
         }finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("ALL CARS WAS FOUND IN DB SUCCESSFULLY");
         return carList;
     }
 
@@ -56,10 +62,12 @@ public class CarDaoImpl implements CarDao {
                         .setPhoto(resultSet.getString("photo"));
             }
         }catch (SQLException e){
+            logger.error("CANT FIND CAR BY GIVEN ID " + carId);
             throw new DaoException("CANT FIND CAR BY GIVEN ID",e);
         }finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("CAR WAS FOUND IN DB BY GIVEN ID "+ carId + " SUCCESSFULLY");
         return carBuilder.build();
     }
 
@@ -73,10 +81,12 @@ public class CarDaoImpl implements CarDao {
                 success = true;
             }
         }catch (SQLException e){
+            logger.error("CANT DELETE CAR BY GIVEN ID " + carId);
             throw new DaoException("CANT DELETE CAR",e);
         }finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("THE CAR DELETED SUCCESSFULLY");
         return success;
     }
 
@@ -95,10 +105,12 @@ public class CarDaoImpl implements CarDao {
                   response = true;
               }
          }catch (SQLException e){
+             logger.error("CANT UPDATE CAR SOME PROBLEM OCCUR");
              throw new DaoException("CANT UPDATE CAR ",e);
          }finally {
              ConnectionPool.closeConnection(connection);
          }
+        logger.info("THE CAR UPDATED SUCCESSFULLY");
         return response;
     }
 
@@ -126,10 +138,12 @@ public class CarDaoImpl implements CarDao {
                 }
             }
          }catch (SQLException e){
+             logger.error("CANT ADD A NEW CAR TO DB");
             throw new DaoException("CANT ADD A NEW CAR TO DATA",e);
          }finally {
              ConnectionPool.closeConnection(connection);
          }
+         logger.info("A NEW CAR ADDED TO DB SUCCESS");
         return carBuilder.build();
     }
 
@@ -151,14 +165,16 @@ public class CarDaoImpl implements CarDao {
            }
 
         }catch (SQLException e){
-            throw new DaoException("CANT GET ALL SORTED CARS BY NAME",e);
+            logger.error("CANT SORT CARS BY GIVEN QUERY OR SOME OTHER PROBLEM HAPPENED");
+            throw new DaoException("CANT  SORTED CARS BY GIVEN QUERY",e);
         }finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("CARS WERE SORTED SUCCESSFULLY");
         return carList;
     }
 
-    @Override
+    @Override   //todo check if this method needed
     public List<Car> getSortedCarsByCarClass() throws DaoException{
         connection = ConnectionPool.getInstance().getConnection();
         ResultSet resultSet;

@@ -40,12 +40,12 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             }
 
         } catch (SQLException e) {
-            logger.warn("THERE IS NO USERS IN DATABASE");
+            logger.error("THERE IS NO USERS IN DATABASE");
             throw new DaoException("CANT FIND ALL USERS", e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
-
+        logger.info("USERS IN DB WERE FOUND SUCCESSFULLY");
         return listUsers;
     }
 
@@ -85,6 +85,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         } finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("USER WAS SUCCESSFULLY FOUND IN DB");
         return user.build();
     }
 
@@ -113,6 +114,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         } finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("NEW USER WERE REGISTERED SUCCESSFULLY");
         return userBuilder.build();
     }
 
@@ -153,6 +155,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         } finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("USER TOP UP BALANCE SUCCESSFULLY");
         return response;
     }
 
@@ -174,12 +177,14 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
+                logger.error("USER CANT GET BALANCE SOME PROBLEM OCCUR");
                 throw new DaoException("CANT SEE USER BALANCE PROPERLY", e);
             }
             throw new DaoException("SOMETHING WENT WRONG CANT FIND USER BALANCE", e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("USER GOT ITS BALANCE SUCCESSFULLY");
         return resultBalance;
     }
 
@@ -194,10 +199,12 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
                 resultIsSuccessful = true;
             }
         }catch (SQLException e){
+            logger.error("SOME PROBLEM SET ROLE FOR USER FAILED");
             throw new DaoException("CANT SET ROLE FROM USER",e);
         }finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("ROLE FOR USER " + login + " WERE CHANGED SUCCESSFULLY");
         return resultIsSuccessful;
     }
 
@@ -213,10 +220,12 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             }
 
         } catch (SQLException e) {
+            logger.error("CANT BLOCK OR UNBLOCK USER");
             throw new DaoException("SOME PROBLEMS OCCUR DUE TO BLOCKING USER", e);
         } finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("USER WERE BLOCKED/UNBLOCKED SUCCESSFULLY");
         return response;
     }
 
@@ -232,11 +241,13 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
                 statusCheck = resultSet.getString("banned");
             }
         } catch (SQLException e) {
+            logger.error("SOME PROBLEM CANT GET USER STATUS");
             throw new DaoException("CANT GET USER STATUS", e);
 
         } finally {
             ConnectionPool.closeConnection(connection);
         }
+        logger.info("USER GOT ITS STATUS SUCCESSFULLY");
         return statusCheck;
     }
 
@@ -268,7 +279,6 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         } finally {
             ConnectionPool.closeConnection(connection);
         }
-
         return id;
     }
 }

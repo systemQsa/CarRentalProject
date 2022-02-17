@@ -4,10 +4,10 @@ import com.myproject.command.Command;
 import com.myproject.command.PageAction;
 import com.myproject.command.util.GeneralConstant;
 import com.myproject.command.util.Route;
-import com.myproject.dao.connection.ConnectionPool;
+import com.myproject.controller.filter.UserFilter;
 import com.myproject.exception.*;
-import com.myproject.service.UserService;
-import com.myproject.service.impl.UserServiceImpl;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.logging.Logger;
 
 @WebServlet("/helloServlet")
 public class HelloServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(HelloServlet.class.getName());
+    private static final Logger logger = LogManager.getLogger(HelloServlet.class);
+
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
@@ -33,7 +33,7 @@ public class HelloServlet extends HttpServlet {
         try {
             processTheRequest(request, response);
         } catch (ServletException | IOException | ControllerException e) {
-            e.printStackTrace();
+           logger.fatal("GET METHOD FAILED IN SERVLET");
         }
         logger.info("GET METHOD WORK");
     }
@@ -43,7 +43,7 @@ public class HelloServlet extends HttpServlet {
         try {
             processTheRequest(req, resp);
         } catch (ServletException | IOException | ControllerException e) {
-            logger.warning("POST METHOD FAILED");
+            logger.fatal("POST METHOD FAILED IN SERVLET");
             e.printStackTrace();
         }
         logger.info("POST METHOD WORK");
@@ -67,7 +67,7 @@ public class HelloServlet extends HttpServlet {
         try {
             route = command.execute(request, response);
         } catch (CommandException | ValidationException e) {
-            logger.warning("CONTROLLER EXCEPTION");
+            logger.warn("CONTROLLER EXCEPTION");
             throw new ControllerException("CONTROLLER FAILED", e);
         }
         logger.info("route " + route.getPathOfThePage());

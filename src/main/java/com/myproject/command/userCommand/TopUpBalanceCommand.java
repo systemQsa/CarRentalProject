@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TopUpBalanceCommand implements Command {
-    private UserService userService = new UserServiceImpl();
+    private final UserService userService = new UserServiceImpl();
     private static final Logger logger = LogManager.getLogger(TopUpBalanceCommand.class);
 
     @Override

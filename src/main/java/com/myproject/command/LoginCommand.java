@@ -5,13 +5,15 @@ import com.myproject.exception.*;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
 import com.myproject.validation.ValidateInput;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
-import java.util.logging.Logger;
 
 public class LoginCommand implements Command {
-    private static final Logger logger = Logger.getLogger(LoginCommand.class.getName());
+    private static final Logger logger = LogManager.getLogger(LoginCommand.class);
     private UserService userService;
     private final ValidateInput validateInput = new ValidateInput();
 
@@ -60,6 +62,7 @@ public class LoginCommand implements Command {
             try {
                 request.getSession().setAttribute("userBalance",userService.getBalance(login));
             } catch (ServiceException e) {
+                logger.error("USER CANT LOGIN SOMETHING WENT WRONG");
                 throw new CommandException("CANT GET USER BALANCE",e);
             }
             logger.info("user NOT logged!");

@@ -7,6 +7,8 @@ import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,7 @@ import java.util.Optional;
 
 public class FindAllUsersCommand implements Command {
     private final UserService userService = new UserServiceImpl();
+    private static final Logger logger = LogManager.getLogger(FindAllUsersCommand.class);
 
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
@@ -32,6 +35,7 @@ public class FindAllUsersCommand implements Command {
             route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
             route.setRoute(Route.RouteType.FORWARD);
         } catch (ServiceException e) {
+            logger.warn("PROBLEM IN FindAllUsersCommand class");
             throw new CommandException("CANT FIND ALL USERS", e);
         }
         return route;

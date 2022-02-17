@@ -1,19 +1,22 @@
 package com.myproject.controller.filter;
 
+import com.myproject.command.RegisterCommand;
 import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.GeneralConstant;
 import com.myproject.exception.ServiceException;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class CatchPageFilter implements Filter {
-    private static final Logger logger = Logger.getLogger(CatchPageFilter.class.getName());
+    private static final Logger logger = LogManager.getLogger(CatchPageFilter.class);
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
        // Filter.super.init(filterConfig);
@@ -42,12 +45,12 @@ public class CatchPageFilter implements Filter {
                     userService.getBalance((String) httpRequest.getSession().getServletContext().
                             getAttribute(GeneralConstant.USER_NAME)));
         } catch (ServiceException e) {
-            e.printStackTrace();
+            logger.warn("SOME PROBLEM IN CatchPageFilter filter");
         }
            // httpRequest.getRequestDispatcher("redirect:/WEB-INF/view/user/user.jsp").forward(httpRequest,httpResponse);
         }
 
-        logger.info("CatchPageFilter WORKING");
+        logger.info("CatchPageFilter WORKING GOOD");
         filterChain.doFilter(httpRequest,httpResponse);
 
     }

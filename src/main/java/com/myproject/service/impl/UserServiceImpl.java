@@ -8,14 +8,15 @@ import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
 import com.myproject.service.UserService;
 import com.myproject.util.EncryptUtil;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 public class UserServiceImpl implements UserService {
-    private static final Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
     private UserDao userDao = new UserDao();
 
     @Override
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
             }
 
         } catch (DaoException e) {
-            logger.warning("NO SUCH USER IN DATABASE");
+            logger.warn("NO SUCH USER IN DATABASE");
             throw new ServiceException("USER LOGIN CHECK FAILED", e);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
         try {
             return Optional.of(userDao.findAll());
         } catch (DaoException e) {
+            logger.warn("CANT FIND ALL USERS IN UserServiceImpl class");
             throw new ServiceException("CANT FIND ALL USERS", e);
         }
     }
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
         try {
             userBalance = userDao.getBalance(login);
         } catch (DaoException e) {
+            logger.warn("SOME PROBLEM CANT GET USER BALANCE IN UserServiceImpl class");
             throw new ServiceException("SOME PROBLEM CANT GET USER BALANCE IN SERVICE", e);
         }
         return userBalance;
@@ -81,7 +84,7 @@ public class UserServiceImpl implements UserService {
                     .setPhone(phoneNumber);
             return userDao.addRecordToTable(user.build());
         } catch (Exception e) {
-            logger.warning("Cant ADD A NEW USER");
+            logger.warn("CANT REGISTER A NEW USER IN UserServiceImpl class");
             throw new ServiceException("SERVICE EXCEPTION", e);
         }
     }
@@ -97,6 +100,7 @@ public class UserServiceImpl implements UserService {
         try {
             response = userDao.topUpBalance(balance, login);
         } catch (DaoException e) {
+            logger.warn("CANT TOP UP USER BALANCE SOMETHING WENT WRONG IN UserServiceImpl class");
             throw new ServiceException("CANT TOP UP USER BALANCE", e);
         }
         return response;
@@ -108,6 +112,7 @@ public class UserServiceImpl implements UserService {
         try {
             status = userDao.getUserStatus(login);
         } catch (DaoException e) {
+            logger.warn("CANT GET USER STATUS IN UserServiceImpl class");
             throw new ServiceException("CANT GET USER STATUS", e);
         }
         return status;
@@ -119,6 +124,7 @@ public class UserServiceImpl implements UserService {
         try {
             response = userDao.blockUnblockUser(login, "N");
         } catch (DaoException e) {
+            logger.warn("CANT UNBLOCK GIVEN USER " + login + " IN UserServiceImpl class");
             throw new ServiceException("CANT UNBLOCK USER IN SERVICE", e);
         }
         return response;
@@ -130,6 +136,7 @@ public class UserServiceImpl implements UserService {
         try {
             isSuccess = userDao.blockUnblockUser(login, "Y");
         } catch (DaoException e) {
+            logger.warn("CANT BLOCK GIVEN USER " + login + " IN UserServiceImpl class");
             throw new ServiceException("CANT BLOCK USER", e);
         }
         return isSuccess;
@@ -148,6 +155,7 @@ public class UserServiceImpl implements UserService {
                 statusChanged = userDao.setUserRole(login,UserRole.USER);
             }
         } catch (DaoException e) {
+            logger.warn("CANT SET NEW ROLE FOR USER IN UserServiceImpl class");
             throw new ServiceException("CANT SET NEW ROLE FOR GIVEN USER",e);
         }
         return statusChanged;

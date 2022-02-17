@@ -4,15 +4,17 @@ import com.myproject.command.util.CommandUtil;
 import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.GeneralConstant;
 import com.myproject.command.util.Route;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class LogOutCommand implements Command {
+    private static final Logger logger = LogManager.getLogger(LogOutCommand.class);
 
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) {
@@ -36,7 +38,7 @@ public class LogOutCommand implements Command {
             loggedUsers.remove((String) userName);
             request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
             System.out.println(request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-            //session.invalidate();
+            logger.info("USER LOGGED OUT");
             route.setPathOfThePage(ConstantPage.HOME_PAGE);
             route.setRoute(Route.RouteType.REDIRECT);
             return route;
@@ -44,6 +46,7 @@ public class LogOutCommand implements Command {
         System.out.println("LOGGED USERS LOG OUT!");
         //System.out.println(request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
        // loggedUsers.remove((String) userName);
+        logger.info("USER LOGGED OUT");
         request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
         route.setPathOfThePage(ConstantPage.HOME_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);

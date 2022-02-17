@@ -8,6 +8,8 @@ import com.myproject.dao.entity.Car;
 import com.myproject.exception.ServiceException;
 import com.myproject.service.CarService;
 import com.myproject.service.impl.CarServiceImpl;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 public class UserFilter implements Filter {
-    private static final Logger logger = Logger.getLogger(UserFilter.class.getName());
+    private static final Logger logger = LogManager.getLogger(UserFilter.class);
+
     private CarService<Car> carService = new CarServiceImpl();
 
     @Override
