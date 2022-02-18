@@ -27,7 +27,9 @@ public class FindAllCarsCommand implements Command{
             Optional<List<Car>> allCars = carService.getAllCars();
             if (allCars.isPresent()){
                 request.getSession().setAttribute("allUsers",null);
-                request.setAttribute("allCars",allCars.get());
+                List<Car> carList = allCars.get();
+                request.setAttribute("allCars",carList);
+                request.getSession().getServletContext().setAttribute("allCars",allCars.get());
                 route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
                 route.setRoute(Route.RouteType.FORWARD);
             }

@@ -2,11 +2,12 @@ package com.myproject.dao.entity;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 public class Order {
-    private long orderId;
-    private User user;
-    private Car car;
+    private int orderId;
+    private int userId;
+    private int carId;
     private String passport;
     private char withDriver;
     private Timestamp fromDate;
@@ -20,18 +21,18 @@ public class Order {
             order = new Order();
         }
 
-        public OrderBuilder setOrderId(long orderId) {
+        public OrderBuilder setOrderId(int orderId) {
             order.orderId = orderId;
             return this;
         }
 
-        public OrderBuilder setUser(User user) {
-            order.user = user;
+        public OrderBuilder setUserId(int userId) {
+            order.userId = userId;
             return this;
         }
 
-        public OrderBuilder setCar(Car car) {
-            order.car = car;
+        public OrderBuilder setCar(int car) {
+            order.carId = car;
             return this;
         }
 
@@ -63,5 +64,68 @@ public class Order {
         public Order build() {
             return order;
         }
+    }
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getCarId() {
+        return carId;
+    }
+
+    public String getPassport() {
+        return passport;
+    }
+
+    public char getWithDriver() {
+        return withDriver;
+    }
+
+    public Timestamp getFromDate() {
+        return fromDate;
+    }
+
+    public Timestamp getToDate() {
+        return toDate;
+    }
+
+    public BigDecimal getReceipt() {
+        return receipt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return getOrderId() == order.getOrderId() && getWithDriver() == order.getWithDriver()
+                && Objects.equals(getUserId(), order.getUserId()) && Objects.equals(getCarId(), order.getCarId())
+                && Objects.equals(getPassport(), order.getPassport()) && Objects.equals(getFromDate(), order.getFromDate())
+                && Objects.equals(getToDate(), order.getToDate()) && Objects.equals(getReceipt(), order.getReceipt());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOrderId(), getUserId(), getCarId(), getPassport(),
+                getWithDriver(), getFromDate(), getToDate(), getReceipt());
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", user=" + userId +
+                ", car=" + carId +
+                ", passport='" + passport + '\'' +
+                ", withDriver=" + withDriver +
+                ", fromDate=" + fromDate +
+                ", toDate=" + toDate +
+                ", receipt=" + receipt +
+                '}';
     }
 }

@@ -30,7 +30,7 @@
     <input type="text"  name="carClass" value="${sessionScope.carClass}">
 
     <label>Car brand  ${sessionScope.brand}</label>
-    <input type="text" capture="brand" value="${sessionScope.brand}">
+    <input type="text" name="brand" value="${sessionScope.brand}">
 
     <label>Car Rental price  ${sessionScope.rentalPrice}</label>
     <input type="text"  name="rentalPrice" value="${sessionScope.rentalPrice}">

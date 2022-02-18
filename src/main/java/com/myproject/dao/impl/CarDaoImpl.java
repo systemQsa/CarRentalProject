@@ -23,13 +23,13 @@ public class CarDaoImpl implements CarDao {
             connection = ConnectionPool.getInstance().getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(QuerySQL.GET_ALL_CARS);
-
+            //todo refactor duplicates
             while (resultSet.next()){
                 Car.CarBuilder carBuilder = new Car.CarBuilder();
                 carBuilder.setCarId(resultSet.getInt("id_car"))
                         .setName(resultSet.getString("name"))
-                        .setBrand(resultSet.getString("carClass"))
-                        .setCarClass(resultSet.getString("brand"))
+                        .setCarClass(resultSet.getString("carClass"))
+                        .setBrand(resultSet.getString("brand"))
                         .setRentalPrice(resultSet.getDouble("rent_price"));
                       carList.add(carBuilder.build());
             }
@@ -49,12 +49,11 @@ public class CarDaoImpl implements CarDao {
         connection = ConnectionPool.getInstance().getConnection();
         Car.CarBuilder carBuilder = new Car.CarBuilder();
         ResultSet resultSet;
-        System.out.println("car id " + carId);
-        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ONE_CAR_BY_ID)){
+         try(PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ONE_CAR_BY_ID)){
             statement.setInt(1,carId);
             resultSet = statement.executeQuery();
             if (resultSet.next()){
-                carBuilder.setCarId(carId)
+                carBuilder.setCarId(resultSet.getInt("id_car"))
                         .setName(resultSet.getString("name"))
                         .setCarClass(resultSet.getString("carClass"))
                         .setBrand(resultSet.getString("brand"))

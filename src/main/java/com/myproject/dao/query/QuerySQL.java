@@ -20,5 +20,6 @@ public final class QuerySQL {
     public static final String BAN_AND_UNBAN_USER = "UPDATE users SET banned=? WHERE login=?";
     public static final String CHECK_USER_STATUS = "SELECT banned FROM users WHERE login=?";
     public static final String SET_USER_ROLE = "UPDATE users SET role_id=? WHERE login=?";
+    public static final String GET_DRIVER_RENT_PRICE = "SELECT price FROM driver_price WHERE id=?";
 }
 

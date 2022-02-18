@@ -24,12 +24,11 @@ public class UpdateCarCommand implements Command {
         Car.CarBuilder updatedCar = new Car.CarBuilder();
         Route route = new Route();
 
-        System.out.println("COMMAND "+ request.getParameter("carName"));
-        try {
+         try {
             carService.updateCar(
                     updatedCar.setCarId(Integer.parseInt(request.getParameter("carId")))
                             .setName(request.getParameter("carName"))
-                            .setBrand(request.getParameter("carClass"))
+                            .setCarClass(request.getParameter("carClass"))
                             .setBrand(request.getParameter("brand"))
                             .setRentalPrice(Double.parseDouble(request.getParameter("rentalPrice")))
                             .setPhoto(request.getParameter("carPhoto")).build()

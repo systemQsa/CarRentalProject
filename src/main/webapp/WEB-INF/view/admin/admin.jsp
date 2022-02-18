@@ -136,7 +136,7 @@
         <tr><td>${car.carId}</td></tr>
         <tr><td>${car.name}</td></tr>
         <tr><td>${car.carClass}</td></tr>
-        <tr><td>${car.brand}</td>></tr>
+        <tr><td>${car.brand}</td></tr>
         <tr><td>${car.rentalPrice}</td></tr>
         <form method="post" action="${pageContext.request.contextPath}/helloServlet">
             <input type="hidden" name="carId" value="${car.carId}">

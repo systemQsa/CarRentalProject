@@ -1,8 +1,7 @@
 package com.myproject.command;
 
 import com.myproject.command.adminCommad.*;
-import com.myproject.command.userCommand.SortCarsByWantedOrderCommand;
-import com.myproject.command.userCommand.TopUpBalanceCommand;
+import com.myproject.command.userCommand.*;
 
 public enum PageAction {
     LOG_IN("login",new LoginCommand()),
@@ -19,7 +18,11 @@ public enum PageAction {
     BLOCK_USER("block",new BlockUserCommand()),
     UNBLOCK_USER("unblock",new UnblockUserCommand()),
     SET_ROLE_MANAGER("setManager",new SetRoleForUserCommand()),
-    UNSET_MANAGER_ROLE("unsetManager",new SetRoleForUserCommand());
+    UNSET_MANAGER_ROLE("unsetManager",new SetRoleForUserCommand()),
+    BOOK_CAR_REQ("bookCarReq",new BookCarReqCommand()),
+    CONFIRM_BOOKING("confirmBooking",new ConfirmBookingCommand()),
+    COUNT_RECEIPT("countReceipt",new CountTotalReceiptCommand());
+
 
     private final String action;
     private final Command command;

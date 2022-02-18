@@ -63,6 +63,7 @@ public class CarServiceImpl implements CarService<Car> {
     @Override
     public boolean updateCar(Car car) throws ServiceException{
         boolean isUpdated;
+
         try {
           isUpdated = carDAO.update(car);
         } catch (DaoException e) {

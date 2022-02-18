@@ -39,10 +39,10 @@
                 <p class="form-text text-end"> ${language['label.Enter']}${language['label.email']}</p>
             </div>
             <div class="mb-4 form-check w-100">
-                <label class="form-check-label">
-                    <input type="checkbox" class="form-check-input"> ${language['label.remember_me']}
-                </label>
-                <a href="#" class="float-end">${language['label.reset_password']}</a>
+<%--                <label class="form-check-label">--%>
+<%--                    <input type="checkbox" class="form-check-input"> ${language['label.remember_me']}--%>
+<%--                </label>--%>
+                <a href="#" class="float-end">FORGOT PASSWORD</a>
             </div>
             <button type="submit" class="btn btn-primary w-100 my-3 shadow" >${language['label.Login']}</button>
             <p class="text-center m-0">Not yet account,<a href="${pageContext.request.contextPath}/register.jsp">${language['label.register']}</a></p>

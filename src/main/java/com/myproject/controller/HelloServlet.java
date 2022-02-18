@@ -16,7 +16,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 @WebServlet("/helloServlet")
 public class HelloServlet extends HttpServlet {
@@ -57,9 +63,9 @@ public class HelloServlet extends HttpServlet {
         String action = request.getParameter(GeneralConstant.ACTION);
         logger.info("Action " + action + "  " + request.getParameter("action"));
         logger.info("Role " + request.getSession().getAttribute("login"));
-       // System.out.println(request.getParameter("login") + " " + request.getParameter("password"));
-        System.out.println("setRole  " + request.getParameter("setRole"));
-        String str = request.getContextPath();
+
+
+          String str = request.getContextPath();
         Command command = PageAction.getCommand(action);
 
         assert command != null;

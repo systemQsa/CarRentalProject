@@ -7,9 +7,6 @@
 <body>
 
 <h1>
-    <%
-        System.out.println(ConnectionPool.getInstance().getConnection());
-    %>
 </h1>
 
 </body>

@@ -11,16 +11,12 @@
 </head>
 <body>
 <h1>WELCOME USER</h1>
-<
 <form method="get" action="${pageContext.request.contextPath}/helloServlet">
     <input type="hidden" name="action" value="logout">
     <button type="submit"> ${language['label.Logout']}</button>
 </form>
 <h4>TOP UP BALANCE</h4>
-
-<p>3</p>
 <p>${pageContext.session.servletContext.getAttribute("userName")}</p>
-<%--<p>${applicationScope.get("userName")}</p>--%>
 <p>User Balance</p>
 <h4>${sessionScope.userBalance}</h4>
 <form method="post" action="${pageContext.request.contentType}/car/helloServlet">
@@ -71,6 +67,16 @@
             <td>${car.carClass}</td>
             <td>${car.brand}</td>
             <td>${car.rentalPrice}</td>
+            <td>
+            <form method="post" action="${pageContext.request.contentType}/car/helloServlet">
+                <input type="hidden" name="action" value="bookCarReq">
+                <input type="hidden" name="carId" value="${car.carId}">
+                <input type="hidden" name="carName" value="${car.name}">
+                <input type="hidden" name="carClass" value="${car.carClass}">
+                <input type="hidden" name="carBrand" value="${car.brand}">
+                <input type="hidden" name="rentPrice" value="${car.rentalPrice}">
+                <button type="submit" class="btn btn-warning btn-sm">Book Car</button>
+            </form></td>
         </tr>
     </c:forEach>
     </tbody>

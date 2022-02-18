@@ -19,7 +19,7 @@ public class CatchPageFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-       // Filter.super.init(filterConfig);
+        // Filter.super.init(filterConfig);
     }
 
     @Override
@@ -33,30 +33,35 @@ public class CatchPageFilter implements Filter {
 //        System.out.println("USER ROLE "+ userRole);
 //        System.out.println("REQUEST URL "+  httpRequest.getRequestURI());
 
-        if (httpRequest.getRequestURI().contains("/addNewCar.jsp")){
-            httpRequest.getRequestDispatcher(ConstantPage.ADD_CAR_PAGE).forward(httpRequest,httpResponse);
+        if (httpRequest.getRequestURI().contains("/addNewCar.jsp")) {
+            httpRequest.getRequestDispatcher(ConstantPage.ADD_CAR_PAGE).forward(httpRequest, httpResponse);
         }
-        if (httpRequest.getRequestURI().contains("/updateCar.jsp")){
-            httpRequest.getRequestDispatcher(ConstantPage.UPDATE_CAR_PAGE).forward(httpRequest,httpResponse);
+        if (httpRequest.getRequestURI().contains("/updateCar.jsp")) {
+            httpRequest.getRequestDispatcher(ConstantPage.UPDATE_CAR_PAGE).forward(httpRequest, httpResponse);
         }
-        if (httpRequest.getRequestURI().contains("/user.jsp")){  try {
-            UserService userService = new UserServiceImpl();
-            httpRequest.getSession().setAttribute("userBalance",
-                    userService.getBalance((String) httpRequest.getSession().getServletContext().
-                            getAttribute(GeneralConstant.USER_NAME)));
-        } catch (ServiceException e) {
-            logger.warn("SOME PROBLEM IN CatchPageFilter filter");
+
+        if (httpRequest.getRequestURI().contains("/bookCar.jsp")) {
+            httpRequest.getRequestDispatcher(ConstantPage.FULL_PATH_USER_CREATE_BOOKING).forward(httpRequest, httpResponse);
         }
-           // httpRequest.getRequestDispatcher("redirect:/WEB-INF/view/user/user.jsp").forward(httpRequest,httpResponse);
+        if (httpRequest.getRequestURI().contains("/user.jsp")) {
+            try {
+                UserService userService = new UserServiceImpl();
+                httpRequest.getSession().setAttribute("userBalance",
+                        userService.getBalance((String) httpRequest.getSession().getServletContext().
+                                getAttribute(GeneralConstant.USER_NAME)));
+            } catch (ServiceException e) {
+                logger.warn("SOME PROBLEM IN CatchPageFilter filter");
+            }
+            // httpRequest.getRequestDispatcher("redirect:/WEB-INF/view/user/user.jsp").forward(httpRequest,httpResponse);
         }
 
         logger.info("CatchPageFilter WORKING GOOD");
-        filterChain.doFilter(httpRequest,httpResponse);
+        filterChain.doFilter(httpRequest, httpResponse);
 
     }
 
     @Override
     public void destroy() {
-       // Filter.super.destroy();
+        // Filter.super.destroy();
     }
 }
