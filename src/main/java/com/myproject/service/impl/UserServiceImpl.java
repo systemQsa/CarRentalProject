@@ -17,31 +17,46 @@ import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
-    private UserDao userDao = new UserDao();
+    private final UserDao userDao = new UserDao();
+
+    @Override
+    public User getUserByLoginAndPass(String login,char[]password) throws ServiceException{
+        User user;
+        try {
+            user = userDao.getUserByLogin(login);
+        } catch (DaoException e) {
+            logger.error("SOME PROBLEM CANT GET USER FROM DB");
+           throw new ServiceException("CANT GET INFO ABOUT USER",e);
+        }
+        return user;
+    }
 
     @Override
     public String logInValidation(String login, char[] password) throws ServiceException {
         //todo validate date on front
         int userId = 0;
+        User user;
         try {
-            User user = userDao.getUserByLogin(login);
+             user = getUserByLoginAndPass(login,password);
             System.out.println("PASSWORD DECRYPT");
             boolean decrypt = EncryptUtil.decryptPass(user.getPassword(), "123", password);
             if (decrypt) {
                 userId = user.getRole();
                 System.out.println("PASSWORD MATCHES!!");
             } else {
-                System.out.println("PASSWORD NOT MATCH");
+                throw new ServiceException("FORGOT PASSWORD ?");
             }
 
         } catch (DaoException e) {
-            logger.warn("NO SUCH USER IN DATABASE");
+            logger.warn("CANT FIND SUCH USER IN DATABASE CREDENTIALS ARE NOT MATCH");
             throw new ServiceException("USER LOGIN CHECK FAILED", e);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ServiceException("Incorrect login or password! Please try again...",e);
         }
+
         return UserRole.getRoleId(userId);
     }
+
 
     @Override
     public Optional<List<User>> getAllUsers() throws ServiceException {

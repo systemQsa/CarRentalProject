@@ -21,7 +21,8 @@ public enum PageAction {
     UNSET_MANAGER_ROLE("unsetManager",new SetRoleForUserCommand()),
     BOOK_CAR_REQ("bookCarReq",new BookCarReqCommand()),
     CONFIRM_BOOKING("confirmBooking",new ConfirmBookingCommand()),
-    COUNT_RECEIPT("countReceipt",new CountTotalReceiptCommand());
+    COUNT_RECEIPT("countReceipt",new CountTotalReceiptCommand()),
+    CANCEL_CAR_BOOKING("cancelBooking",new CancelCarBookingCommand());
 
 
     private final String action;

@@ -34,8 +34,7 @@ public class BookCarReqCommand implements Command {
                  session.setAttribute("carIdReq",request.getParameter("carId"));
                 session.setAttribute("carNameReq",request.getParameter("carName"));
                 session.setAttribute("carClassReq",request.getParameter("carClass"));
-                 //System.out.println(request.getParameter("carClass") + " " + request.getParameter("carBrand"));
-                session.setAttribute("carBrandReq",request.getParameter("carBrand"));
+                 session.setAttribute("carBrandReq",request.getParameter("carBrand"));
                 session.setAttribute("rentPriceReq",request.getParameter("rentPrice"));
                 session.setAttribute("userLoginReq",request.getSession().getServletContext().getAttribute("userName"));
                 route.setPathOfThePage(ConstantPage.USER_CREATE_BOOKING_PAGE);

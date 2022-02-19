@@ -21,4 +21,5 @@ public interface UserService {
     boolean blockUser(String login) throws ServiceException;
     boolean unblockUser(String login) throws ServiceException;
     String checkUserStatus(String  login) throws ServiceException;
+      User getUserByLoginAndPass(String login,char[]password) throws ServiceException;
 }

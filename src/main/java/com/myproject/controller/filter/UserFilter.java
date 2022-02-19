@@ -108,13 +108,16 @@ public class UserFilter implements Filter {
 //        }
 
         if (request.getRequestURI().contains(GeneralConstant.ADMIN)
-                && (request.getSession().getAttribute(GeneralConstant.ROLE) != null)
-                && request.getSession().getAttribute(GeneralConstant.ROLE).equals("admin")) {
+                && request.getSession().getAttribute(GeneralConstant.ROLE).equals("admin")
+                && (request.getSession().getAttribute(GeneralConstant.ROLE) != null)) {
            // System.out.println("LOGGED USERS  FILTER 3" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
            // System.out.println("userName Context 3 "+ request.getSession().getServletContext().getAttribute("userName"));
            // System.out.println("userName ADMIN "+request.getSession().getAttribute("userName"));
             request.getRequestDispatcher(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN).forward(request, response);
-        }else if(request.getServletPath().contains("admin") && request.getSession().getAttribute("userName") == null){
+            filterChain.doFilter(request, response);
+            return;
+        }
+        else if(request.getServletPath().contains("admin") && request.getSession().getAttribute("userName") == null){
            response.sendRedirect("/car/login.jsp");
         }
 

@@ -21,5 +21,8 @@ public final class QuerySQL {
     public static final String CHECK_USER_STATUS = "SELECT banned FROM users WHERE login=?";
     public static final String SET_USER_ROLE = "UPDATE users SET role_id=? WHERE login=?";
     public static final String GET_DRIVER_RENT_PRICE = "SELECT price FROM driver_price WHERE id=?";
+    public static final String INSERT_NEW_ORDER = "INSERT INTO orders (passport,from_date,to_date,with_driver,receipt,user_id) VALUES (?,?,?,?,?,?)";
+    public static final String SET_ORDERS_FOR_USER = "INSERT INTO orders_cars (order_id,car_id) VALUES (?,?)";
+    public static final String GET_USER_BALANCE = "SELECT balance FROM users WHERE id_user=?";
 }
 

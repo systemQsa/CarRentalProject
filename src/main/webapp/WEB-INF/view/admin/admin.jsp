@@ -94,6 +94,7 @@
             <td>${user.userRole}</td>
             <td>
             <form method="post" action="${pageContext.request.contentType}/car/helloServlet">
+                <input type="hidden" name="userId" value="${user.userId}">
                 <input type="hidden" name="userLogin" value="${user.login}">
                 <button type="submit" name="action" value="block" class="btn btn-danger btn-sm" >Block</button>
                 <button type="submit" name="action" value="unblock" class="btn btn-success btn-sm">Unblock</button>

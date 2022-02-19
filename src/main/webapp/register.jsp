@@ -1,5 +1,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="lang" value="${not empty param.lang ? param.lang : not empty lang ? lang : pageContext.request.locale}"
        scope="session"/>
 <html>
@@ -63,6 +64,9 @@
                                                                        aria-hidden="true"></i></span>
                                     <input type="text" class="form-control" name="login" id="username"
                                            placeholder="${language['label.username']}"/>
+<%--                                    <c:if test="${not empty pageContext.errorData.statusCode != 0}">--%>
+<%--                                        <p>${requestScope.errorLogin}</p>--%>
+<%--                                    </c:if>--%>
                                 </div>
                             </div>
                         </div>

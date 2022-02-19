@@ -11,6 +11,7 @@ import com.myproject.service.impl.CarOrderServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,7 +23,7 @@ public class CountTotalReceiptCommand implements Command {
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
-        String carId = request.getParameter("carId");
+        //String carId = request.getParameter("carId");
         String rentPrice = request.getParameter("rentPrice");
         Object userLogin = request.getSession().getServletContext().getAttribute("userName");
         String carName = request.getParameter("carName");
@@ -33,11 +34,15 @@ public class CountTotalReceiptCommand implements Command {
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
         String withDriver = request.getParameter("flexRadioDefault");
+        String userId = request.getParameter("userIdByLogin");
+        String userBalance = request.getParameter("userBalance");
+
 
         System.out.println("carRentPrice " + carRentPrice + " userLogin " + userLogin +  " " +
-                carName + " carClass " + carClass + " carBrand " + carBrand + " userPass " + userPassport);
+                carName + " carClass " + carClass + " carBrand " + carBrand + " userPass " + userPassport+ " "+
+                  userId + " " + userBalance);
 
-        double totalPrice = 0;
+        BigDecimal totalPrice = null;
         if (request.getParameter("fromDate") != null && request.getParameter("toDate") != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date firstDate;
@@ -46,22 +51,27 @@ public class CountTotalReceiptCommand implements Command {
                 Date secondDate = sdf.parse(request.getParameter("toDate"));
                 long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
                 long diffDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-
+                System.out.println("diffDays " + diffDays);
                 //TODO check why internal.math.FloatingDecimal.readJavaFormatString(FloatingDecimal.java:1838)
-                if (diffDays > 0 && Double.parseDouble(rentPrice) > 0) {
+                if (diffDays > 0 && Double.parseDouble(carRentPrice) > 0) {
                    totalPrice = carOrderService.countReceipt(diffDays,
                          Double.parseDouble(carRentPrice), Boolean.parseBoolean(withDriver));
-                }
+                 }
                 if (Boolean.parseBoolean(withDriver)) {
-                    request.getSession().setAttribute("withDriver", "YES");
+                    request.getSession().setAttribute("withDriver", "Y");
                 } else {
-                    request.getSession().setAttribute("withDriver", "NO");
+                    request.getSession().setAttribute("withDriver", "N");
                 }
 
                 request.getSession().setAttribute("passport", userPassport);
                 request.getSession().setAttribute("fromDate", fromDate);
                 request.getSession().setAttribute("toDate", toDate);
                 request.getSession().setAttribute("totalPrice", totalPrice);
+                if (BigDecimal.valueOf(Double.parseDouble(userBalance)).compareTo(totalPrice) > 0){
+                    request.getSession().setAttribute("resultIfBalanceOk","You have enough balance for booking!");
+                }else{
+                    request.getSession().setAttribute("resultIfBalanceOk",null);
+                }
             } catch (ParseException | ServiceException e) {
                 throw new CommandException("SOME PROBLEM CANT COUNT TOTAL ORDER PRICE", e);
             }

@@ -1,18 +1,19 @@
 package com.myproject.dao.entity;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.Objects;
+ import java.sql.Timestamp;
+ import java.util.Objects;
 
 public class Order {
     private int orderId;
     private int userId;
     private int carId;
     private String passport;
-    private char withDriver;
-    private Timestamp fromDate;
-    private Timestamp toDate;
-    private BigDecimal receipt;
+    private String withDriver;
+    private String fromDate;
+    private String toDate;
+    private double receipt;
+    private Timestamp dateFrom;
+    private Timestamp dateTo;
 
     public static class OrderBuilder {
         private final Order order;
@@ -35,28 +36,36 @@ public class Order {
             order.carId = car;
             return this;
         }
+        public OrderBuilder setDateFrom(Timestamp dateFrom){
+            order.dateFrom = dateFrom;
+            return this;
+        }
+        public OrderBuilder setDateTo(Timestamp dateTo){
+            order.dateTo = dateTo;
+            return this;
+        }
 
         public OrderBuilder setPassport(String passport) {
             order.passport = passport;
             return this;
         }
 
-        public OrderBuilder setWithDriver(char withDriver) {
+        public OrderBuilder setWithDriver(String withDriver) {
             order.withDriver = withDriver;
             return this;
         }
 
-        public OrderBuilder setFromDate(Timestamp fromDate) {
+        public OrderBuilder setFromDate(String fromDate) {
             order.fromDate = fromDate;
             return this;
         }
 
-        public OrderBuilder setToDate(Timestamp toDate) {
+        public OrderBuilder setToDate(String toDate) {
             order.toDate = toDate;
             return this;
         }
 
-        public OrderBuilder setReceipt(BigDecimal receipt) {
+        public OrderBuilder setReceipt(double receipt) {
             order.receipt = receipt;
             return this;
         }
@@ -64,6 +73,15 @@ public class Order {
         public Order build() {
             return order;
         }
+    }
+
+
+    public Timestamp getDateFrom() {
+        return dateFrom;
+    }
+
+    public Timestamp getDateTo() {
+        return dateTo;
     }
 
     public long getOrderId() {
@@ -82,19 +100,19 @@ public class Order {
         return passport;
     }
 
-    public char getWithDriver() {
+    public  String getWithDriver() {
         return withDriver;
     }
 
-    public Timestamp getFromDate() {
+    public String getFromDate() {
         return fromDate;
     }
 
-    public Timestamp getToDate() {
+    public String getToDate() {
         return toDate;
     }
 
-    public BigDecimal getReceipt() {
+    public double getReceipt() {
         return receipt;
     }
 

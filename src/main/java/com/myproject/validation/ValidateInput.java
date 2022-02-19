@@ -9,6 +9,8 @@ import com.myproject.service.impl.UserServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class ValidateInput {
     public static final String INPUT_REGEX_UKR = "^[А-ЯІЇЄ][а-яіїє']{1,20}$";
     public static final String INPUT_REGEX_LAT  = "^[A-Z][a-z]{1,20}$";
@@ -21,37 +23,35 @@ public class ValidateInput {
     private final UserService userService = new UserServiceImpl();
     private static final Logger logger = LogManager.getLogger(ValidateInput.class);
 
-    public void validateLogin(String login) throws ValidationException{
+    public void validateLogin(String login, HttpServletRequest request) throws ValidationException{
         if (login == null || login.equals(GeneralConstant.EMPTY_STRING) || (!login.matches(EMAIL_REGEX))){
+            request.setAttribute("errorLogin","incorrect login");
             logger.error("VALIDATION LOGIN WAS FAILED");
-            throw new ValidationException("Invalid Login");
+            throw new ValidationException("Invalid Login please try again");
         }
         System.out.println("validation login work");
     }
-    public void validatePassword(char[] password)throws ValidationException{
+    public void validatePassword(char[] password,HttpServletRequest request)throws ValidationException{
         if(password == null || password.length == 0 || !String.valueOf(password).matches(PASSWORD_REGEX)){
             logger.error("VALIDATION PASSWORD WAS FAILED");
           throw new ValidationException("Invalid password!");
       }
-        System.out.println("validation password work");
-    }
-    public void validateInputNameSurname(String name,String surname) throws ValidationException{
+     }
+    public void validateInputNameSurname(String name,String surname,HttpServletRequest request) throws ValidationException{
         if(!name.matches(REGEX_ONLY_WORDS) && surname.matches(REGEX_ONLY_WORDS)){
             logger.error("VALIDATION NAME OR SURNAME WERE FAILED");
             throw new ValidationException("Please check your name or surname the input data were entered incorrect!");
         }
-        System.out.println("validation name surname work");
+        System.out.println("validation name surname work please try again");
     }
-    public void validatePhoneNumber(String phoneNumber) throws ValidationException{
-        System.out.println("phone " + phoneNumber);
-       if(!phoneNumber.matches(REGEX_PHONE)){
+    public void validatePhoneNumber(String phoneNumber,HttpServletRequest request) throws ValidationException{
+        if(!phoneNumber.matches(REGEX_PHONE)){
            logger.warn("VALIDATION PHONE WAS FAILED");
            throw new ValidationException("The phone number were entered incorrect!");
        }
-        System.out.println("validation PHONE work");
-    }
+     }
 
-    public boolean validateUserIsBlocked(String login) throws ValidationException{
+    public boolean validateUserIsBlocked(String login,HttpServletRequest request) throws ValidationException{
         boolean isBlocked = false;
         String response;
         try {
@@ -61,7 +61,7 @@ public class ValidateInput {
            }
         } catch (ServiceException e) {
             logger.error("BLOCKED USER " + login + " TRIED TO ENTER INTO THE SYSTEM");
-            throw new ValidationException("USER IS BLOCKED!",e);
+            throw new ValidationException("BY SOME REASON YOU WERE BLOCKED. PLEASE CONTACT OUR MANAGER!",e);
         }
         return isBlocked;
     }

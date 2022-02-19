@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -22,9 +22,7 @@
 </head>
 <body>
 <h1>LOGIN</h1>
-<c:out value="${pageContext.request.requestURL}"/>
-
-<div class="col-md-6 col-lg-4 offset-lg-4 offset-md-3 mt-5">
+ <div class="col-md-6 col-lg-4 offset-lg-4 offset-md-3 mt-5">
     <div class="bg-light p-5 border shadow">
         <!-- Login Form -->
         <form method="post" action="helloServlet" name="login">

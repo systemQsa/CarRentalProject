@@ -32,15 +32,37 @@ public class RegisterCommand implements Command {
         char[] password = request.getParameter("password").toCharArray();
         System.out.println("CREDENTIALS  " + login + " " + phoneNumber);
         try {
-            validateInput.validateInputNameSurname(name, surname);
-            validateInput.validateLogin(login);
-            validateInput.validatePassword(password);
-            validateInput.validatePhoneNumber(phoneNumber);
-            userService.registerNewUser(name, surname, login, password, phoneNumber);
+            validateInput.validateInputNameSurname(name, surname,request);
+        } catch (ValidationException e) {
+            setInformMessageIfErrorOccur(e.getMessage(),request);
+            throw new CommandException(e.getMessage());
+        }
 
-        } catch (ServiceException | ValidationException e) {
+        try {
+            validateInput.validateLogin(login,request);
+        } catch (ValidationException e) {
+            setInformMessageIfErrorOccur(e.getMessage(),request);
+            throw new CommandException(e.getMessage());
+        }
+        try {
+            validateInput.validatePassword(password,request);
+        } catch (ValidationException e) {
+            setInformMessageIfErrorOccur(e.getMessage(),request);
+            throw new CommandException(e.getMessage());
+        }
+        try {
+            validateInput.validatePhoneNumber(phoneNumber,request);
+        } catch (ValidationException e) {
+            setInformMessageIfErrorOccur(e.getMessage(),request);
+            throw new CommandException(e.getMessage());
+        }
+
+        try {
+            userService.registerNewUser(name, surname, login, password, phoneNumber);
+        } catch (ServiceException e) {
             logger.error("CANT REGISTER USER");
-            throw new CommandException("COMMAND EXCEPTION CAN`T REGISTER USER!", e);
+            setInformMessageIfErrorOccur(e.getMessage(),request);
+            throw new CommandException(e.getMessage());
         }
 
         CommandUtil.setRoleForUser(request, GeneralConstant.USER, request.getParameter(GeneralConstant.LOGIN));

@@ -11,4 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface Command {
     Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException,ValidationException;
+    default void setInformMessageIfErrorOccur(String message,HttpServletRequest request){
+        request.getSession().setAttribute("errorMSG",message);
+    }
 }

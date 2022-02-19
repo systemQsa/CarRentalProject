@@ -22,12 +22,15 @@
 
 
 <h5>${pageContext.request.locale}</h5>
+<h2> CAR ID ${sessionScope.carIdReq}</h2>
 
 <h1>BOOK CAR</h1>
 <p>${pageContext.session.servletContext.getAttribute("userName")}</p>
 <form method="post" action="${pageContext.request.contextPath}/helloServlet">
     <input type="hidden" name="action" value="countReceipt">
-    <input type="hidden" name="carId" value="${sessionScope.carId}">
+    <input type="hidden" name="carId" value="${sessionScope.carIdReq}">
+    <input type="hidden" name="userIdByLogin" value="${sessionScope.userIdByLogin}">
+    <input type="hidden" name="userBalance" value="${sessionScope.userBalance}">
     <label>Name</label>
     <input type="hidden" name="carName" value="${sessionScope.carNameReq}">
     <p>${sessionScope.carNameReq}</p>

@@ -34,8 +34,7 @@ public class CommandUtil {
                 && (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.ADMIN)
                 || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.USER))) {
             System.out.println("loggedUsers 1 " + loggedUsers + " userName " + userName + " Login" + request.getAttribute("login"));
-            //System.out.println("LOGGED USERS  COMMAND_UTIL" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-            logger.info("userIsLogged() method");
+             logger.info("userIsLogged() method");
             return true;
         }
         loggedUsers.add(request.getParameter(GeneralConstant.LOGIN));

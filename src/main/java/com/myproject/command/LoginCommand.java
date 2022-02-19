@@ -1,6 +1,7 @@
 package com.myproject.command;
 
 import com.myproject.command.util.*;
+import com.myproject.dao.entity.User;
 import com.myproject.exception.*;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
@@ -16,26 +17,22 @@ public class LoginCommand implements Command {
     private static final Logger logger = LogManager.getLogger(LoginCommand.class);
     private UserService userService;
     private final ValidateInput validateInput = new ValidateInput();
-
+    private User user;
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
-        //todo validate fields
+        //todo print error messages on jsp
         Route route = new Route();
         String login = request.getParameter(GeneralConstant.LOGIN);
         char[]password = request.getParameter("password").toCharArray();
-        if (validateInput.validateUserIsBlocked(login)){
-            route.setPathOfThePage("/error.jsp");
-            route.setRoute(Route.RouteType.REDIRECT);
-            return route;
+
+        if (validateInput.validateUserIsBlocked(login,request)){
+            throw new ValidationException("BY SOME REASON YOU WERE BLOCKED. PLEASE CONTACT OUR MANAGER!");
         }
 
-        System.out.println(request.getParameter(GeneralConstant.PASSWORD));
         logger.info("USER LOGIN  == " + login);
          //todo inform the cause on WEBpage if login or password incorrect
-//        if (login == null || login.equals(GeneralConstant.EMPTY_STRING)) {
-//            route.setPathOfThePage(ConstantPage.HOME_PAGE);
-//        }
+
         if (CommandUtil.userIsLogged(request)) {
             String userRole = CommandUtil.getUserRoleFromPage(request);
             route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(userRole));
@@ -43,32 +40,35 @@ public class LoginCommand implements Command {
         }else{
             userService = new UserServiceImpl();
             //todo redirect to error page if user is blocked
-            validateInput.validateLogin(login);
-            validateInput.validatePassword(password);
+            validateInput.validateLogin(login,request);
+            validateInput.validatePassword(password,request);
+
             System.out.println(userService.getClass().getName());
             String role;
             try {
+
                 role = userService.logInValidation(login,password);
+                if (role != null){
+                    user = userService.getUserByLoginAndPass(login,password);
+                }
             } catch (ServiceException e) {
-               throw new CommandException("INCORRECT LOGIN INPUT",e);
+               throw new CommandException(e.getMessage());
             }
 
-          //  System.out.println("ROLE  " + role);
-         //   System.out.println("all is good found user n DB");
-            //String role = Users.getRole(login);
+
             CommandUtil.setRoleForUser(request,role,login);
             route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(role));
             request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
             try {
                 request.getSession().setAttribute("userBalance",userService.getBalance(login));
+                request.getSession().setAttribute("userIdByLogin",user.getUserId());
             } catch (ServiceException e) {
                 logger.error("USER CANT LOGIN SOMETHING WENT WRONG");
-                throw new CommandException("CANT GET USER BALANCE",e);
+                throw new CommandException(e.getMessage());
             }
             logger.info("user NOT logged!");
 
         }
-        //todo: check login and role with DB
 
         route.setRoute(Route.RouteType.REDIRECT);
         //request.getSession().getServletContext().setAttribute("loggedUsers", login);
