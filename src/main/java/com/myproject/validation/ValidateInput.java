@@ -10,59 +10,81 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ValidateInput {
     public static final String INPUT_REGEX_UKR = "^[А-ЯІЇЄ][а-яіїє']{1,20}$";
-    public static final String INPUT_REGEX_LAT  = "^[A-Z][a-z]{1,20}$";
+    public static final String INPUT_REGEX_LAT = "^[A-Z][a-z]{1,20}$";
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String LOGIN_REGEX = "^[\\w+]{8,30}$";
     public static final String PASSWORD_REGEX = "^[\\w+]{3,20}$";
     public static final String EMAIL_REGEX = "^(([\\w-]+)@([\\w]+)\\.([\\p{Lower}]{2,8}))$";
-    public static final String REGEX_ONLY_WORDS ="^(\\p{L}+)$";
+    public static final String REGEX_ONLY_WORDS = "^(\\p{L}+)$";
     public static final String REGEX_PHONE = "^[+]?[\\d]{7,16}$";
-    public static final String REGEX_PASSPORT ="^([A-Z]{2}[0-9]{2,8})$";
+    public static final String REGEX_PASSPORT = "^([A-Z]{2}[0-9]{2,8})$";
     private final UserService userService = new UserServiceImpl();
     private static final Logger logger = LogManager.getLogger(ValidateInput.class);
 
-    public void validateLogin(String login, HttpServletRequest request) throws ValidationException{
-        if (login == null || login.equals(GeneralConstant.EMPTY_STRING) || (!login.matches(EMAIL_REGEX))){
-            request.setAttribute("errorLogin","incorrect login");
+
+
+    public void validateLogin(String login, HttpServletRequest request) throws ValidationException {
+        if (login == null || login.equals(GeneralConstant.EMPTY_STRING) || (!login.matches(EMAIL_REGEX))) {
+            request.setAttribute("errorLogin", "incorrect login");
             logger.error("VALIDATION LOGIN WAS FAILED");
             throw new ValidationException("Invalid Login please try again");
         }
         System.out.println("validation login work");
     }
-    public void validatePassword(char[] password,HttpServletRequest request)throws ValidationException{
-        if(password == null || password.length == 0 || !String.valueOf(password).matches(PASSWORD_REGEX)){
+
+
+    public void validatePassword(char[] password, HttpServletRequest request) throws ValidationException {
+        if (password == null || password.length == 0 || !String.valueOf(password).matches(PASSWORD_REGEX)) {
             logger.error("VALIDATION PASSWORD WAS FAILED");
-          throw new ValidationException("Invalid password!");
-      }
-     }
-    public void validateInputNameSurname(String name,String surname,HttpServletRequest request) throws ValidationException{
-        if(!name.matches(REGEX_ONLY_WORDS) && surname.matches(REGEX_ONLY_WORDS)){
+            throw new ValidationException("Invalid password!");
+        }
+    }
+
+
+    public void validateInputNameSurname(String name, String surname, HttpServletRequest request) throws ValidationException {
+        if (!name.matches(REGEX_ONLY_WORDS) && surname.matches(REGEX_ONLY_WORDS)) {
             logger.error("VALIDATION NAME OR SURNAME WERE FAILED");
             throw new ValidationException("Please check your name or surname the input data were entered incorrect!");
         }
         System.out.println("validation name surname work please try again");
     }
-    public void validatePhoneNumber(String phoneNumber,HttpServletRequest request) throws ValidationException{
-        if(!phoneNumber.matches(REGEX_PHONE)){
-           logger.warn("VALIDATION PHONE WAS FAILED");
-           throw new ValidationException("The phone number were entered incorrect!");
-       }
-     }
 
-    public boolean validateUserIsBlocked(String login,HttpServletRequest request) throws ValidationException{
+
+    public void validatePhoneNumber(String phoneNumber, HttpServletRequest request) throws ValidationException {
+        if (!phoneNumber.matches(REGEX_PHONE)) {
+            logger.warn("VALIDATION PHONE WAS FAILED");
+            throw new ValidationException("The phone number were entered incorrect!");
+        }
+    }
+
+
+    public boolean validateUserIsBlocked(String login, HttpServletRequest request) throws ValidationException {
         boolean isBlocked = false;
         String response;
         try {
-           response = userService.checkUserStatus(login);
-           if (response.equals(GeneralConstant.BLOCKED_STATUS)){
-               isBlocked = true;
-           }
+            response = userService.checkUserStatus(login);
+            if (response.equals(GeneralConstant.BLOCKED_STATUS)) {
+                isBlocked = true;
+            }
         } catch (ServiceException e) {
             logger.error("BLOCKED USER " + login + " TRIED TO ENTER INTO THE SYSTEM");
-            throw new ValidationException("BY SOME REASON YOU WERE BLOCKED. PLEASE CONTACT OUR MANAGER!",e);
+            throw new ValidationException("BY SOME REASON YOU WERE BLOCKED. PLEASE CONTACT OUR MANAGER!", e);
         }
         return isBlocked;
+    }
+
+
+    public static boolean validateDatesAndTime(LocalDateTime fromDate, LocalDateTime toDate) throws ValidationException {
+        LocalDateTime now = LocalDateTime.now();
+        if (fromDate.isEqual(now) || fromDate.isAfter(now) && (toDate.isAfter(now) && toDate.isAfter(fromDate))) {
+            return true;
+        }
+        logger.warn("Attempt to enter incorrect date and time");
+        throw new ValidationException("Please enter the date and the time properly");
     }
 }

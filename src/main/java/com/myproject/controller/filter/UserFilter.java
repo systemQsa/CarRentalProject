@@ -119,6 +119,7 @@ public class UserFilter implements Filter {
         }
         else if(request.getServletPath().contains("admin") && request.getSession().getAttribute("userName") == null){
            response.sendRedirect("/car/login.jsp");
+           return;
         }
 
 
@@ -141,6 +142,8 @@ public class UserFilter implements Filter {
                 }
             }
             request.getRequestDispatcher(ConstantPage.WEB_INF_FULL_PATH_TO_USER).forward(request, response);
+            filterChain.doFilter(request, response);
+            return;
         }
 
 
@@ -151,9 +154,17 @@ public class UserFilter implements Filter {
 
             //System.out.println(CommandUtil.getUserRoleFromPage(request));
             response.sendRedirect("/car"+ConstantPage.LOG_IN_PAGE);
+            filterChain.doFilter(request, response);
+            return;
         }else if(request.getSession().getAttribute("userName") == null && request.getRequestURI().contains(GeneralConstant.ADMIN)){
             response.sendRedirect("/car/login.jsp");
+            filterChain.doFilter(request, response);
+            return;
         }
+
+//        if (request.getRequestURI().contains("/include/header.jsp")){
+//            request.getRequestDispatcher("/WEB-INF/view/include/header.jsp").forward(request,response);
+//        }
 
         logger.info("UserFilter WORKING");
         filterChain.doFilter(request, response);

@@ -1,6 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="lang" value="${not empty param.lang ? param.lang : not empty lang ? lang : pageContext.request.locale}"/>
+<fmt:setLocale value="${lang}"/>
+<fmt:setBundle basename="resources" var="locale"/>
 <html>
 <head>
     <title>USER</title>
@@ -13,7 +16,7 @@
 <h1>WELCOME USER</h1>
 <form method="get" action="${pageContext.request.contextPath}/helloServlet">
     <input type="hidden" name="action" value="logout">
-    <button type="submit"> ${language['label.Logout']}</button>
+    <button type="submit"> <fmt:message bundle="${locale}" key="label.Logout"/> </button>
 </form>
 <h4>TOP UP BALANCE</h4>
 <p>${pageContext.session.servletContext.getAttribute("userName")}</p>
@@ -85,5 +88,6 @@
     </c:forEach>
     </tbody>
 </table>
+<jsp:include page="/WEB-INF/view/include/header.jsp"/>
 </body>
 </html>

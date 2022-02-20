@@ -29,7 +29,7 @@ public class LangFilter implements Filter {
         response.setHeader(GeneralConstant.CACHE_CONTROL, GeneralConstant.NO_STORE_MUST_REVALIDATE);
         response.setHeader(GeneralConstant.PRAGMA, GeneralConstant.NO_CACHE);
         response.setDateHeader(GeneralConstant.EXPIRES, 0);
-
+        System.out.println("Lang " + request.getParameter(GeneralConstant.LANG));
         ResourceBundle bundle;
         if (request.getParameter(GeneralConstant.LANG) == null
                 || Objects.equals(request.getParameter(GeneralConstant.LANG), GeneralConstant.LANGUAGE_ENG)) {

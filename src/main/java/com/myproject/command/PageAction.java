@@ -22,7 +22,8 @@ public enum PageAction {
     BOOK_CAR_REQ("bookCarReq",new BookCarReqCommand()),
     CONFIRM_BOOKING("confirmBooking",new ConfirmBookingCommand()),
     COUNT_RECEIPT("countReceipt",new CountTotalReceiptCommand()),
-    CANCEL_CAR_BOOKING("cancelBooking",new CancelCarBookingCommand());
+    CANCEL_CAR_BOOKING("cancelBooking",new CancelCarBookingCommand()),
+    SWITCH_LANG("switchLang",new ChangeLocaleCommand());
 
 
     private final String action;

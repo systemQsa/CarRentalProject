@@ -30,23 +30,24 @@ public class CatchPageFilter implements Filter {
 
         if (httpRequest.getRequestURI().contains("/addNewCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.ADD_CAR_PAGE).forward(httpRequest, httpResponse);
-            filterChain.doFilter(httpRequest, httpResponse);
+            //httpResponse.sendRedirect("redirect:/view/admin/addNewCar.jsp");
+           // filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/updateCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.UPDATE_CAR_PAGE).forward(httpRequest, httpResponse);
-            filterChain.doFilter(httpRequest, httpResponse);
+            //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
 
         if (httpRequest.getRequestURI().contains("/bookCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.FULL_PATH_USER_CREATE_BOOKING).forward(httpRequest, httpResponse);
-            filterChain.doFilter(httpRequest, httpResponse);
+            //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/confirmReceipt.jsp")){
             httpRequest.getRequestDispatcher(ConstantPage.CONFIRM_RECEIPT_FULL_PATH).forward(httpRequest,httpResponse);
-            filterChain.doFilter(httpRequest, httpResponse);
+            //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/user.jsp")) {

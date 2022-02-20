@@ -6,14 +6,18 @@
     <title>Error Page</title>
 </head>
 <body>
-<h1> OOPS Error page</h1>
+
 
 <c:if test="${ not empty pageContext.exception.message}">
     <h2>${pageContext.exception.message}</h2>
 
 </c:if>
-<c:if test="${ not empty pageContext.exception.message}">
-    <h3>${pageContext.exception.message}</h3>
+<c:if test="${ not empty pageContext.exception.localizedMessage}">
+    <h3>${pageContext.exception.localizedMessage}</h3>
+</c:if>
+
+<c:if test="${ not empty pageContext.exception.stackTrace}">
+    <h3>${pageContext.exception.stackTrace}</h3>
 </c:if>
 
 <c:out value="${pageContext.request.requestURL}"/>
@@ -21,7 +25,7 @@
     <p>${sessionScope.errorMSG}</p>
 </c:if>
 
-
+<img src="<c:url value="/png/404.png" />" style="width: 60%; height: 70%;"/>
 
 </body>
 </html>

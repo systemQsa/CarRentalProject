@@ -22,29 +22,12 @@ public class ConfirmBookingCommand implements Command {
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         boolean isSuccess;
-        String carId = request.getParameter("carId");
-        String rentPrice = request.getParameter("rentPrice");
-        String userLogin = (String) request.getSession().getServletContext().getAttribute("userName");
-        String carName = request.getParameter("carName");
-        String carClass = request.getParameter("carClass");
-        String carBrand = request.getParameter("carBrand");
-        String carRentPrice = request.getParameter("carRentPrice");
-        String userPassport = request.getParameter("userPassport");
-        String fromDate = request.getParameter("fromDate");
-        String toDate = request.getParameter("toDate");
-        String withDriver = request.getParameter("withDriver");
-        String userId = request.getParameter("userIdByLogin");
-        String userBalance = request.getParameter("userBalance");
-        String totalPrice = request.getParameter("totalPrice");
-
-        System.out.println("carId " + carId + " " + carRentPrice + " + carRentPrice + " + userLogin + " + userLogin" +
-                " userPassport " + userPassport + " fromDate " + fromDate + " toDate " + toDate + " " +
-                userId + " " + userBalance + " withDriver " + withDriver + " totalPrice " + totalPrice);
-
         try {
-            isSuccess = carOrderService.setOrder(userPassport, fromDate, toDate, withDriver,
-                    Double.parseDouble(totalPrice), Integer.parseInt(userId),
-                    userLogin, Integer.parseInt(carId));
+            isSuccess = carOrderService.setOrder(request.getParameter("userPassport"), request.getParameter("fromDate"),
+                    request.getParameter("toDate"), request.getParameter("withDriver"),
+                    Double.parseDouble(request.getParameter("totalPrice")), Integer.parseInt(request.getParameter("userIdByLogin")),
+                    (String) request.getSession().getServletContext().getAttribute("userName"),
+                    Integer.parseInt(request.getParameter("carId")));
             if (isSuccess) {
                 route.setPathOfThePage(ConstantPage.USER_HOME_PAGE);
             } else {

@@ -47,21 +47,28 @@
         <input type="hidden" name="totalPrice" value="${sessionScope.totalPrice}">
         <p>${sessionScope.totalPrice}</p>
 
-        <c:choose>
-            <c:when test="${not empty sessionScope.resultIfBalanceOk}">
-                <p>Confirm the booking?</p>
-                <input type="hidden" name="action" value="confirmBooking">
-                <button type="submit" class="btn btn-primary btn-sm">CONFIRM</button>
-            </c:when>
-            <c:otherwise>
-                <p>You dont have enough money on balance for booking.Please pop up your balance and try again!</p>
-                <button type="button" class="btn btn-primary btn-sm">CONFIRM</button>
-            </c:otherwise>
-        </c:choose>
-        <input type="hidden" name="action" value="cancelBooking">
-        <button type="submit">CANCEL</button>
-    </div>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.resultIfBalanceOk}">
+                        <p>Confirm the booking?</p>
+                        <input type="hidden" name="action" value="confirmBooking">
+                        <button type="submit" class="btn btn-primary btn-sm">CONFIRM</button>
+                    </c:when>
+                    <c:otherwise>
+                        <p>You dont have enough money on balance for booking.Please pop up your balance and try again!</p>
+                        <button type="button" class="btn btn-primary btn-sm">CONFIRM</button>
+                    </c:otherwise>
+                </c:choose>
 
+    </div>
+</form>
+<form method="post" action="${pageContext.request.contentType}/car/helloServlet">
+    <input type="hidden" name="userPassport" value="${sessionScope.passport}">
+    <input type="hidden" name="fromDate" value="${sessionScope.fromDate}">
+    <input type="hidden" name="toDate" value="${sessionScope.toDate}">
+    <input type="hidden" name="withDriver" value="${sessionScope.withDriver}">
+    <input type="hidden" name="totalPrice" value="${sessionScope.totalPrice}">
+    <input type="hidden" name="action" value="cancelBooking">
+            <button type="submit">CANCEL</button>
 </form>
 
 </body>
