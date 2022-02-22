@@ -62,6 +62,7 @@ public class LoginCommand implements Command {
             try {
                 request.getSession().setAttribute("userBalance",userService.getBalance(login));
                 request.getSession().setAttribute("userIdByLogin",user.getUserId());
+                request.getSession().setAttribute("userLogin",user.getLogin());
             } catch (ServiceException e) {
                 logger.error("USER CANT LOGIN SOMETHING WENT WRONG");
                 throw new CommandException(e.getMessage());
@@ -71,7 +72,10 @@ public class LoginCommand implements Command {
         }
 
         route.setRoute(Route.RouteType.REDIRECT);
-        //request.getSession().getServletContext().setAttribute("loggedUsers", login);
+
+        loggedUsers.add(login);
+        request.getSession().getServletContext().setAttribute("loggedUsers", loggedUsers);
+        System.out.println("\n USER LOGIN " + login + "\n" + loggedUsers+"'\n");
         return route;
     }
 }

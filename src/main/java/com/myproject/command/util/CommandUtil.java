@@ -20,6 +20,7 @@ public class CommandUtil {
         ServletContext context = req.getServletContext();
         context.setAttribute(GeneralConstant.USER_NAME, login);
         session.setAttribute(GeneralConstant.ROLE, role);
+        session.setAttribute(GeneralConstant.USER_NAME,login);
         req.setAttribute(GeneralConstant.LOGIN,login);
         logger.info("setRoleForUser() method wordks");
     }
@@ -32,13 +33,14 @@ public class CommandUtil {
         //todo  create structure to store logged users / check if  user is logged!!!
         if (loggedUsers.contains(userName)
                 && (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.ADMIN)
-                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.USER))) {
-            System.out.println("loggedUsers 1 " + loggedUsers + " userName " + userName + " Login" + request.getAttribute("login"));
+                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.USER)
+                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.MANAGER))) {
+            System.out.println("\n\nloggedUsers 1 " + loggedUsers + " userName " + userName + " Login" + request.getAttribute("login"));
              logger.info("userIsLogged() method");
             return true;
         }
-        loggedUsers.add(request.getParameter(GeneralConstant.LOGIN));
-        request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
+        //loggedUsers.add(request.getParameter(GeneralConstant.LOGIN));
+       // request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
         logger.info("userIsLogged() method");
         return false;
     }

@@ -1,5 +1,7 @@
 package com.myproject.util;
 
+import com.myproject.dao.entity.Order;
+import com.myproject.exception.CommandException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -10,12 +12,13 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Stream;
 
 
 public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, CommandException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         String dateTime = "01/10/2020 06:43:21";
       //  DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -43,14 +46,14 @@ public class Main {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        LocalDateTime dateTime1= LocalDateTime.parse("2022-02-20 19:00:00", formatter);
-        LocalDateTime dateTime2= LocalDateTime.parse("2022-02-21 16:00:00", formatter);
-        LocalDateTime now = LocalDateTime.now();
-//        System.out.println(formatter.format(now));
-        System.out.println(dateTime1.isEqual(now));
-        System.out.println(dateTime1.isBefore(dateTime2));
-        System.out.println(dateTime2.isAfter(now));
-        long diffInMinutes = java.time.Duration.between(dateTime1, dateTime2).toMinutes();
+//        LocalDateTime dateTime1= LocalDateTime.parse("2022-02-20 19:00:00", formatter);
+//        LocalDateTime dateTime2= LocalDateTime.parse("2022-02-21 16:00:00", formatter);
+//        LocalDateTime now = LocalDateTime.now();
+////        System.out.println(formatter.format(now));
+//        System.out.println(dateTime1.isEqual(now));
+//        System.out.println(dateTime1.isBefore(dateTime2));
+//        System.out.println(dateTime2.isAfter(now));
+//        long diffInMinutes = java.time.Duration.between(dateTime1, dateTime2).toMinutes();
        // System.out.println(diffInMinutes/60);
 
 //        System.out.println(dateTime1.isBefore(dateTime2));
@@ -59,6 +62,42 @@ public class Main {
 //        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        LocalDateTime now = LocalDateTime.now();
 //        System.out.println(dtf.format(now));
+
+     List<String> list = new ArrayList<>();
+     list.add("sahsa");
+     list.add("alex");
+     list.add("anya");
+        HashMap<String,Boolean> map = new HashMap<>();
+        map.put("sahsa",true);
+        map.put("alex",false);
+        map.put("anya",true);
+        for (String s:list) {
+            for (Map.Entry<String,Boolean> element :map.entrySet()) {
+                if (element.getKey().equals(s)){
+                    System.out.println("Answer " + element.getValue());
+                }
+            }
+        }
+    }
+
+    private static Order parseIncomeOrder(String freshOrder) throws CommandException {
+        return Stream.of(freshOrder).map(value -> value.substring(6, value.length() - 1).replaceAll("\\S+\\=","")
+                        .replaceAll("","")
+                        .replaceAll("", ""))
+                .map(str -> str.split(","))
+                .map(elements -> {
+                            Order.OrderBuilder orderBuilder = new Order.OrderBuilder();
+                            orderBuilder.setUserId(Integer.parseInt(elements[1].trim()))
+                                    .setCar(Integer.parseInt(elements[2].trim()))
+                                    .setPassport(elements[3].trim())
+                                    .setWithDriver(elements[4].trim())
+                                    .setFromDate(elements[5].trim())
+                                    .setToDate(elements[6].trim())
+                                    .setReceipt(Double.parseDouble(elements[7].trim()))
+                                    .setUserLogin(elements[10].trim());
+                            return orderBuilder.build();
+                        }
+                ).findFirst().orElseThrow(() -> new CommandException("CANT PARSE THE OBJECT"));
 
     }
 }

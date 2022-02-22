@@ -1,8 +1,10 @@
 package com.myproject.dao.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Car {
+public class Car implements Serializable {
+    private static final long serialUID = 1L;
     private int carId;
     private String name;
     private String brand;

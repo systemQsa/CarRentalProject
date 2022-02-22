@@ -24,13 +24,14 @@ public class CarOrderServiceImpl implements CarOrderService {
     private final OrderDaoImpl orderDao = new OrderDaoImpl();
     private static final Logger logger = LogManager.getLogger(CarOrderServiceImpl.class);
     private final Lock lock = new ReentrantLock();
+
     @Override
     public boolean confirmTheBooking() {
         return false;
     }
 
     @Override
-    public boolean setUserOrderRelation(int orderId, int userId) throws ServiceException {
+    public boolean setUserOrderRelation(long orderId, long userId) throws ServiceException {
         return false;
     }
 
@@ -38,6 +39,9 @@ public class CarOrderServiceImpl implements CarOrderService {
     public BigDecimal countReceipt(long diffHours, double carRentPrice, boolean isWithDriver) throws ServiceException {
         int idPriceDriverByDefault = 1;
         double optionWithDriverCoast = 0;
+        if (diffHours <= 0) {
+            throw new ServiceException("The minimum order time is an hour! Please enter time properly!");
+        }
         if (isWithDriver) {
             try {
                 optionWithDriverCoast = orderDao.getDriverRentPrice(idPriceDriverByDefault);
@@ -54,10 +58,22 @@ public class CarOrderServiceImpl implements CarOrderService {
     }
 
     @Override
-    public boolean setOrder(String passport, String fromDate, String toDate,
-                            String withDriver, double receipt, int userId, String userLogin, int carId) throws ServiceException {
+    public boolean updateOrderByManager(String managerLogin, long orderId, String approved, String feedback) throws ServiceException {
+        boolean isApproved;
+        try {
+            isApproved = orderDao.setApprovedOrderByManager(managerLogin, feedback, approved, orderId);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
+        return isApproved;
+    }
+
+    @Override
+    public Order setOrder(String passport, String fromDate, String toDate,
+                          String withDriver, double receipt, long userId, String userLogin, int carId, boolean processPayment) throws ServiceException {
         Order.OrderBuilder order = new Order.OrderBuilder();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Order orderResult;
         boolean isPaymentSuccessful;
         Date parseFromDate = null;
         Date parseToDate = null;
@@ -81,13 +97,13 @@ public class CarOrderServiceImpl implements CarOrderService {
                 .setDateTo(toDateTime);
         try {
             lock.lock();
-            isPaymentSuccessful = orderDao.processTheBooking(order.build(), userLogin, carId);
+            orderResult = orderDao.processTheBooking(order.build(), userLogin, carId, processPayment);
             lock.unlock();
         } catch (DaoException e) {
             logger.fatal("SOME PROBLEM CANT PROCESS THE USER PAYMENT");
-            throw new ServiceException("CANT PROCESS THE USER PAYMENT", e);
+            throw new ServiceException(e);
         }
-        return isPaymentSuccessful;
+        return orderResult;
     }
 
     @Override

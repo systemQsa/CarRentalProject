@@ -25,6 +25,7 @@ public class TopUpBalanceCommand implements Command {
        String userLogin = request.getParameter("userLogin");
        String topUpBalance = request.getParameter("topUpBalance");
         String login = (String) request.getSession().getServletContext().getAttribute(GeneralConstant.USER_NAME);
+
         try {
              boolean isTopUpBalanceWasSuccessful  = userService.updateUserBalance(Double.parseDouble(topUpBalance),userLogin);
              if (isTopUpBalanceWasSuccessful){
@@ -36,7 +37,7 @@ public class TopUpBalanceCommand implements Command {
              }
         } catch (ServiceException e) {
             logger.error("PROBLEM IN TopUpBalanceCommand class CANT TOP UP USER BALANCE");
-           throw new CommandException("CANT TOP UP USER BALANCE IN COMMAND",e);
+           throw new CommandException(e.getMessage());
         }
         route.setRoute(Route.RouteType.REDIRECT);
         return route;

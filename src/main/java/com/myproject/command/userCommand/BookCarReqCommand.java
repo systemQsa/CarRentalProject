@@ -30,15 +30,20 @@ public class BookCarReqCommand implements Command {
             if (isSuccessfullyBooked) {
                 String carId = request.getParameter("carId");
                 String rentPrice = request.getParameter("rentPrice");
-                Object userLogin = request.getSession().getServletContext().getAttribute("userName");
-                 session.setAttribute("carIdReq",request.getParameter("carId"));
-                session.setAttribute("carNameReq",request.getParameter("carName"));
-                session.setAttribute("carClassReq",request.getParameter("carClass"));
-                 session.setAttribute("carBrandReq",request.getParameter("carBrand"));
-                session.setAttribute("rentPriceReq",request.getParameter("rentPrice"));
-                session.setAttribute("userLoginReq",request.getSession().getServletContext().getAttribute("userName"));
+                // Object userLogin = request.getSession().getServletContext().getAttribute("userName");
+                session.setAttribute("carIdReq", request.getParameter("carId"));
+                session.setAttribute("carNameReq", request.getParameter("carName"));
+                session.setAttribute("carClassReq", request.getParameter("carClass"));
+                session.setAttribute("carBrandReq", request.getParameter("carBrand"));
+                session.setAttribute("rentPriceReq", request.getParameter("rentPrice"));
+                session.setAttribute("userLogin", request.getParameter("userLogin"));
+                //request.setAttribute("userLogin",userLogin);
+
+                System.out.println("\nBOOK THE CAR " + request.getParameter("userLogin") + "\n");
+                session.setAttribute("userLoginReq", request.getParameter("userLogin"));
+
                 route.setPathOfThePage(ConstantPage.USER_CREATE_BOOKING_PAGE);
-            }else {
+            } else {
                 route.setPathOfThePage("/car/error.jsp");
             }
         } catch (ServiceException e) {

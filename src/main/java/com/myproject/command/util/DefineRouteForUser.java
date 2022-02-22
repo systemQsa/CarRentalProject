@@ -13,9 +13,12 @@ public class DefineRouteForUser {
         }else if (role.equals(GeneralConstant.USER)){
             logger.warn("in DefineRouteForUser class");
             return ConstantPage.USER_HOME_PAGE;
+        }else if (role.equals(GeneralConstant.MANAGER)){
+             return ConstantPage.MANAGER_HOME_PAGE;
         }else {
             logger.warn("something went wrong in DefineRouteForUser");
             return ConstantPage.HOME_PAGE;
         }
+
     }
 }

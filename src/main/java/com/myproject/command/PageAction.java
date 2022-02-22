@@ -1,6 +1,10 @@
 package com.myproject.command;
 
 import com.myproject.command.adminCommad.*;
+import com.myproject.command.managerCommand.AcceptOrderCommand;
+import com.myproject.command.managerCommand.DeclineOrderCommand;
+import com.myproject.command.managerCommand.ViewAllNotConfirmedOrdersCommand;
+import com.myproject.command.managerCommand.ViewOrdersCommand;
 import com.myproject.command.userCommand.*;
 
 public enum PageAction {
@@ -23,7 +27,11 @@ public enum PageAction {
     CONFIRM_BOOKING("confirmBooking",new ConfirmBookingCommand()),
     COUNT_RECEIPT("countReceipt",new CountTotalReceiptCommand()),
     CANCEL_CAR_BOOKING("cancelBooking",new CancelCarBookingCommand()),
-    SWITCH_LANG("switchLang",new ChangeLocaleCommand());
+    SWITCH_LANG("switchLang",new ChangeLocaleCommand()),
+    ACCEPT_ORDER("acceptOrder",new AcceptOrderCommand()),
+    VIEW_NOT_ACCEPTED_ORDERS("viewAllUnAcceptedOrders",new ViewAllNotConfirmedOrdersCommand()),
+    DECLINE_ORDER_BY_MANAGER("declineOrder",new DeclineOrderCommand()),
+    VIEW_USER_ORDERS("viewOrders",new ViewOrdersCommand());
 
 
     private final String action;

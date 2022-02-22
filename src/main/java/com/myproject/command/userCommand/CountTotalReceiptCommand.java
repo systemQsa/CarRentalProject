@@ -37,6 +37,7 @@ public class CountTotalReceiptCommand implements Command {
         String withDriver = request.getParameter("flexRadioDefault");
         String userBalance = request.getParameter("userBalance");
 
+        System.out.println("\nCount receipt " + request.getParameter("userLoginReq") + " \n");
 
         BigDecimal totalPrice;
         if (request.getParameter("fromDate") != null && request.getParameter("toDate") != null) {
@@ -57,15 +58,17 @@ public class CountTotalReceiptCommand implements Command {
                     throw new CommandException("Please enter date and time properly!!");
                 }
                 if (Boolean.parseBoolean(withDriver)) {
-                    request.getSession().setAttribute("withDriver", "Y");
+                    request.getSession().getServletContext().setAttribute("withDriver", "Y");
                 } else {
-                    request.getSession().setAttribute("withDriver", "N");
+                    request.getSession().getServletContext().setAttribute("withDriver", "N");
                 }
+                request.getSession().getServletContext().setAttribute("userLogin",request.getParameter("userLoginReq") );
+                 request.getSession().getServletContext().setAttribute("rentPriceReq",carRentPrice);
+                request.getSession().getServletContext().setAttribute("passport", userPassport);
+                request.getSession().getServletContext().setAttribute("fromDate", fromDate);
+                request.getSession().getServletContext().setAttribute("toDate", toDate);
+                request.getSession().getServletContext().setAttribute("totalPrice", String.format("%.2f", totalPrice));
 
-                request.getSession().setAttribute("passport", userPassport);
-                request.getSession().setAttribute("fromDate", fromDate);
-                request.getSession().setAttribute("toDate", toDate);
-                request.getSession().setAttribute("totalPrice", String.format("%.2f", totalPrice));
                 if (BigDecimal.valueOf(Double.parseDouble(userBalance)).compareTo(totalPrice) > 0) {
                     request.getSession().setAttribute("resultIfBalanceOk", "You have enough balance for booking!");
                 } else {

@@ -17,4 +17,10 @@ public final class ConstantPage {
     public static final String UPDATE_CAR_PAGE = "/WEB-INF/view/admin/updateCar.jsp";
     public static final String CONFIRM_RECEIPT_PAGE = "redirect:/view/user/confirmReceipt.jsp";
     public static final String CONFIRM_RECEIPT_FULL_PATH = "/WEB-INF/view/user/confirmReceipt.jsp";
+    public static final String MANAGER_HOME_PAGE = "redirect:/view/manager/manager.jsp";
+    public static final String WEB_INF_FULL_PATH_TO_MANAGER = "/WEB-INF/view/manager/manager.jsp";
+    public static final String VIEW_ALL_NOT_ACCEPTED_ORDERS = "/WEB-INF/view/manager/allOrdersToAccept.jsp";
+    public static final String ALL_ORDERS = "redirect:/view/manager/allOrdersToAccept.jsp";
+    public static final String VIEW_ALL_APPROVED_ORDERS = "/WEB-INF/view/manager/viewAllApprovedOrders.jsp";
+    public static final String VIEW_ALL_DECLINED_ORDERS = "/WEB-INF/view/manager/viewAllDeclinedOrders.jsp";
 }

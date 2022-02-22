@@ -74,6 +74,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             if (resultSet.next()) {
                 user.setUserId(resultSet.getInt("id_user"))
                         .setFirstName(resultSet.getString("name"))
+                        .setLogin(login)
                         .setIsBanned(resultSet.getString("banned"))
                         .setHashPass(resultSet.getString("password"))
                         .setRole(resultSet.getInt("role_id"));
@@ -124,6 +125,8 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         boolean response = false;
         double resultBalance = 0;
         ResultSet resultSet;
+
+
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SEE_USER_BALANCE)) {
             PreparedStatement statement2 = connection.prepareStatement(QuerySQL.TOP_UP_USER_BALANCE);
             connection.setAutoCommit(false);
@@ -155,7 +158,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         } finally {
             ConnectionPool.closeConnection(connection);
         }
-        logger.info("USER TOP UP BALANCE SUCCESSFULLY");
+        logger.info("USER TOP UP BALANCE SUCCESSFULLY " + response);
         return response;
     }
 

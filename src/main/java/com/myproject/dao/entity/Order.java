@@ -1,11 +1,13 @@
 package com.myproject.dao.entity;
 
- import java.sql.Timestamp;
- import java.util.Objects;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Objects;
 
-public class Order {
-    private int orderId;
-    private int userId;
+public class Order implements Serializable {
+    private static final long serialUID = 1L;
+    private long orderId;
+    private long userId;
     private int carId;
     private String passport;
     private String withDriver;
@@ -14,6 +16,7 @@ public class Order {
     private double receipt;
     private Timestamp dateFrom;
     private Timestamp dateTo;
+    private String userLogin;
 
     public static class OrderBuilder {
         private final Order order;
@@ -22,13 +25,14 @@ public class Order {
             order = new Order();
         }
 
-        public OrderBuilder setOrderId(int orderId) {
-            order.orderId = orderId;
+
+        public OrderBuilder setUserId(long userId) {
+            order.userId = userId;
             return this;
         }
 
-        public OrderBuilder setUserId(int userId) {
-            order.userId = userId;
+        public OrderBuilder setUserLogin(String userLogin) {
+            order.userLogin = userLogin;
             return this;
         }
 
@@ -36,11 +40,13 @@ public class Order {
             order.carId = car;
             return this;
         }
-        public OrderBuilder setDateFrom(Timestamp dateFrom){
+
+        public OrderBuilder setDateFrom(Timestamp dateFrom) {
             order.dateFrom = dateFrom;
             return this;
         }
-        public OrderBuilder setDateTo(Timestamp dateTo){
+
+        public OrderBuilder setDateTo(Timestamp dateTo) {
             order.dateTo = dateTo;
             return this;
         }
@@ -75,6 +81,9 @@ public class Order {
         }
     }
 
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
+    }
 
     public Timestamp getDateFrom() {
         return dateFrom;
@@ -88,7 +97,7 @@ public class Order {
         return orderId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -100,7 +109,7 @@ public class Order {
         return passport;
     }
 
-    public  String getWithDriver() {
+    public String getWithDriver() {
         return withDriver;
     }
 
@@ -116,20 +125,25 @@ public class Order {
         return receipt;
     }
 
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return getOrderId() == order.getOrderId() && getWithDriver() == order.getWithDriver()
-                && Objects.equals(getUserId(), order.getUserId()) && Objects.equals(getCarId(), order.getCarId())
-                && Objects.equals(getPassport(), order.getPassport()) && Objects.equals(getFromDate(), order.getFromDate())
-                && Objects.equals(getToDate(), order.getToDate()) && Objects.equals(getReceipt(), order.getReceipt());
+        return getOrderId() == order.getOrderId() && getUserId() == order.getUserId()
+                && Double.compare(order.getReceipt(), getReceipt()) == 0 && Objects.equals(getPassport(),
+                order.getPassport()) && Objects.equals(getWithDriver(), order.getWithDriver())
+                && Objects.equals(getFromDate(), order.getFromDate()) && Objects.equals(getToDate(), order.getToDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrderId(), getUserId(), getCarId(), getPassport(),
+        return Objects.hash(getOrderId(), getUserId(), getPassport(),
                 getWithDriver(), getFromDate(), getToDate(), getReceipt());
     }
 
@@ -137,13 +151,15 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "orderId=" + orderId +
-                ", user=" + userId +
-                ", car=" + carId +
-                ", passport='" + passport + '\'' +
+                ", userId=" + userId +
+                ", carId=" + carId +
+                ", passport=" + passport +
                 ", withDriver=" + withDriver +
                 ", fromDate=" + fromDate +
                 ", toDate=" + toDate +
                 ", receipt=" + receipt +
-                '}';
+                ", dateFrom=" + dateFrom +
+                ", dateTo=" + dateTo +
+                ", userLogin=" + userLogin + "}";
     }
 }

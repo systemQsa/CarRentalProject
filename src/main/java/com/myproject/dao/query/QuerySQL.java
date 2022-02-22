@@ -1,5 +1,6 @@
 package com.myproject.dao.query;
 
+
 public final class QuerySQL {
     public static final String GET_USER_ID_ACCORDING_TO_INPUT = "SELECT role_id,password FROM users WHERE login=?";
     public static final String ADD_NEW_USER = "INSERT INTO users(name,surname,login,password,phone) VALUES(?,?,?,?,?)";
@@ -7,7 +8,7 @@ public final class QuerySQL {
     public static final String GET_ALL_CARS = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY id_car DESC";
     public static final String GET_ALL_CARS_SORT_BY_NAME = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY name";
     public static final String GET_ALL_CARS_SORT_BY_CAR_CLASS = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY carClass";
-    public static final String GET_ALL_CARS_SORT_BY_RENT_PRICE ="SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY rent_price";
+    public static final String GET_ALL_CARS_SORT_BY_RENT_PRICE = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY rent_price";
     public static final String GET_ALL_CARS_SORT_BY_BRAND = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY brand";
     public static final String DELETE_CAR = "DELETE FROM cars WHERE id_car=?";
     public static final String GET_USER_BY_LOGIN = "SELECT id_user,name,password,banned,role_id FROM users WHERE login=?";
@@ -24,5 +25,15 @@ public final class QuerySQL {
     public static final String INSERT_NEW_ORDER = "INSERT INTO orders (passport,from_date,to_date,with_driver,receipt,user_id) VALUES (?,?,?,?,?,?)";
     public static final String SET_ORDERS_FOR_USER = "INSERT INTO orders_cars (order_id,car_id) VALUES (?,?)";
     public static final String GET_USER_BALANCE = "SELECT balance FROM users WHERE id_user=?";
+    public static final String SET_APPROVED_ORDER_BY_MANAGER = "UPDATE orders_cars SET feedback=?,manager_login=?,approved=? WHERE order_id=?";
+    public static final String VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER = "SELECT login,o.passport,receipt," +
+                                                  "from_date,to_date,with_driver,c.name,c.carClass,c.brand FROM users\n" +
+                                                   "JOIN orders o ON users.id_user = o.user_id\n" +
+                                                   "JOIN orders_cars oc ON o.id_order = oc.order_id\n" +
+                                                   "JOIN cars c ON oc.car_id = c.id_car WHERE approved=?";
+    public static final String ALL_ORDERS_USER_VIEW ="SELECT passport,from_date,to_date,with_driver,receipt," +
+            "name,carClass,brand,feedback,approved FROM orders\n" +
+            "JOIN orders_cars oc ON orders.id_order = oc.order_id\n" +
+            "JOIN cars c ON c.id_car = oc.car_id WHERE user_id=(SELECT id_user FROM users WHERE login=?)";
 }
 

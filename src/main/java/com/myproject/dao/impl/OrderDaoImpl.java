@@ -8,7 +8,6 @@ import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,7 +16,28 @@ public class OrderDaoImpl implements OrderDao {
     private static final Logger logger = LogManager.getLogger(OrderDaoImpl.class);
 
     @Override
-    public boolean processTheBooking(Order order, String login, int carId) throws DaoException {
+    public boolean setApprovedOrderByManager(String managerLogin, String feedback, String approved, long orderId) throws DaoException {
+        connection = ConnectionPool.getInstance().getConnection();
+        boolean response = false;
+        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_APPROVED_ORDER_BY_MANAGER)) {
+            statement.setString(1, feedback);
+            statement.setString(2, managerLogin);
+            statement.setString(3, approved);
+            statement.setLong(4, orderId);
+            if (statement.executeUpdate() > 0) {
+                response = true;
+            }
+        } catch (SQLException e) {
+            logger.warn("Cant approve the order by manager");
+            throw new DaoException("SOME PROBLEM CANT APPROVE THE ORDER");
+        } finally {
+            ConnectionPool.closeConnection(connection);
+        }
+        return response;
+    }
+
+    @Override
+    public Order processTheBooking(Order order, String login, int carId,boolean processPayment) throws DaoException {
         connection = ConnectionPool.getInstance().getConnection();
         boolean result = false;
         ResultSet resultSet;
@@ -42,13 +62,14 @@ public class OrderDaoImpl implements OrderDao {
             setOrderToDB.setTimestamp(3, order.getDateTo());
             setOrderToDB.setString(4, order.getWithDriver());
             setOrderToDB.setDouble(5, order.getReceipt());
-            setOrderToDB.setInt(6, order.getUserId());
+            setOrderToDB.setLong(6, order.getUserId());
 
             //1
             if (setOrderToDB.executeUpdate() > 0) {
                 resultSet2 = setOrderToDB.getGeneratedKeys();
                 if (resultSet2.next()) {
                     orderId = resultSet2.getInt(1);
+                    order.setOrderId(orderId);
                 }
             }
 
@@ -59,33 +80,29 @@ public class OrderDaoImpl implements OrderDao {
                 result = true;
             }
 
-            //3
-            getUserBalance.setInt(1, order.getUserId());
-            resultSet = getUserBalance.executeQuery();
-            if (resultSet.next()) {
-                balance = resultSet.getDouble("balance");
-                userBalance.set(balance);
-            }
 
+             if (processPayment){
 
-            Double res = userBalance.get();
-            Double value = res - orderAtomicReference.get().getReceipt();
-            userBalance.compareAndSet(res,value);
-            changeUserBalance.setDouble(1,userBalance.get());
-            changeUserBalance.setString(2,login);
-            if (changeUserBalance.executeUpdate() > 0){
-                result = true;
-            }
+                 //3
+                 getUserBalance.setLong(1, order.getUserId());
+                 resultSet = getUserBalance.executeQuery();
+                 if (resultSet.next()) {
+                     balance = resultSet.getDouble("balance");
+                     userBalance.set(balance);
+                 }
+                 Double res = userBalance.get();
+                 Double value = res - orderAtomicReference.get().getReceipt();
+                 if (value <= 0) {
+                     throw new SQLException("NOT ENOUGH BALANCE ON YOUR CARD");
+                 }
 
-            //4
-//            if (balance != 0) {
-//                balance -= (order.getReceipt());
-//                changeUserBalance.setDouble(1, balance);
-//                changeUserBalance.setString(2, login);
-//                if (changeUserBalance.executeUpdate() > 0){
-//                    result = true;
-//                }
-//             }
+                 userBalance.compareAndSet(res, value);
+                 changeUserBalance.setDouble(1, userBalance.get());
+                 changeUserBalance.setString(2, login);
+                 if (changeUserBalance.executeUpdate() > 0) {
+                     result = true;
+                 }
+             }
 
             connection.commit();
             getUserBalance.close();
@@ -102,7 +119,7 @@ public class OrderDaoImpl implements OrderDao {
             logger.fatal("SOME PROBLEM CANT PROCESS THE USER PAYMENT");
             throw new DaoException("CANT PROCESS THE PAYMENT IN OrderDaoImpl class", e);
         }
-        return result;
+        return order;
     }
 
     @Override
@@ -124,4 +141,5 @@ public class OrderDaoImpl implements OrderDao {
         }
         return rentalPrice;
     }
+
 }

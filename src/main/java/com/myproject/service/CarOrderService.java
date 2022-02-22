@@ -1,5 +1,6 @@
 package com.myproject.service;
 
+ import com.myproject.dao.entity.Order;
  import com.myproject.exception.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,8 @@ public interface CarOrderService {
     boolean bookTheCar(HttpServletRequest request, HttpServletResponse response)throws ServiceException;
     boolean confirmTheBooking() throws ServiceException;
     BigDecimal countReceipt(long diffHours, double carRentPrice, boolean isWithDriver) throws ServiceException;
-    boolean setOrder(String passport, String fromDate,String toDate,String withDriver,double receipt,int userId,String userLogin,int carId) throws ServiceException;
-    boolean setUserOrderRelation(int orderId, int userId) throws ServiceException;
+    Order setOrder(String passport, String fromDate, String toDate, String withDriver, double receipt, long userId,
+                   String userLogin, int carId,boolean processPayment) throws ServiceException;
+    boolean setUserOrderRelation(long orderId, long userId) throws ServiceException;
+    boolean updateOrderByManager(String managerLogin,long orderId,String approved,String feedback) throws ServiceException;
 }

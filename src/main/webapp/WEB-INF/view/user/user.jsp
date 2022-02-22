@@ -22,13 +22,15 @@
 <p>${pageContext.session.servletContext.getAttribute("userName")}</p>
 <p>${sessionScope.userIdByLogin}</p>
 
+<p>${sessionScope.userLogin}</p>
+
 <p>User Balance</p>
 <h4>${sessionScope.userBalance}</h4>
 
 <form method="post" action="${pageContext.request.contentType}/car/helloServlet">
     <input type="hidden" name="action" value="topUpBalance">
-    <input type="hidden" name="userLogin" value="${pageContext.session.servletContext.getAttribute("userName")}">
-    <input type="hidden" name="userIdByLogin" value="${pageContext.session.servletContext.getAttribute("userIdByLogin")}">
+    <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
+    <input type="hidden" name="userIdByLogin" value="${sessionScope.userIdByLogin}">
     <input type="text" name="topUpBalance">
     <button type="submit">TOP UP</button>
 </form>
@@ -77,6 +79,7 @@
             <td>
             <form method="post" action="${pageContext.request.contentType}/car/helloServlet">
                 <input type="hidden" name="action" value="bookCarReq">
+                <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
                 <input type="hidden" name="carId" value="${car.carId}">
                 <input type="hidden" name="carName" value="${car.name}">
                 <input type="hidden" name="carClass" value="${car.carClass}">

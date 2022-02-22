@@ -1,6 +1,6 @@
 package com.myproject.controller.filter;
 
-import com.myproject.command.LogOutCommand;
+import com.myproject.command.OrderStorage;
 import com.myproject.command.util.CommandUtil;
 import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.GeneralConstant;
@@ -130,13 +130,14 @@ public class UserFilter implements Filter {
           //  System.out.println("LOGGED USERS  FILTER 4" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
           //  System.out.println("userName Context 4"+ request.getSession().getServletContext().getAttribute("userName"));
 
-           // System.out.println("userName  USER "+request.getSession().getAttribute("userName"));
+            //System.out.println("userName  USER "+request.getSession().getAttribute("userName"));
             if (request.getParameter("action") == null){
 
                 try {
                     Optional<List<Car>> allCars = carService.getAllCars();
                     allCars.ifPresent(cars -> request.setAttribute("allCars", cars));
                    // request.setAttribute("allCars",allCars);
+                   // request.getSession().setAttribute("userNameLogin",request.getSession().getAttribute("userName"));
                 } catch (ServiceException e) {
                     e.printStackTrace();
                 }
@@ -161,6 +162,17 @@ public class UserFilter implements Filter {
             filterChain.doFilter(request, response);
             return;
         }
+
+
+        if (request.getRequestURI().contains(GeneralConstant.MANAGER)
+                && request.getSession().getAttribute(GeneralConstant.ROLE).equals("manager")
+                && (request.getSession().getAttribute(GeneralConstant.ROLE) != null)) {
+            request.getSession().getServletContext().setAttribute("orderList", OrderStorage.getOrders());
+            request.getRequestDispatcher(ConstantPage.WEB_INF_FULL_PATH_TO_MANAGER).forward(request,response);
+            return;
+        }
+
+
 
 //        if (request.getRequestURI().contains("/include/header.jsp")){
 //            request.getRequestDispatcher("/WEB-INF/view/include/header.jsp").forward(request,response);

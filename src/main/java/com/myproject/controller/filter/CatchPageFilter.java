@@ -28,34 +28,35 @@ public class CatchPageFilter implements Filter {
         httpResponse.setHeader(GeneralConstant.PRAGMA, GeneralConstant.NO_CACHE);
         httpResponse.setDateHeader(GeneralConstant.EXPIRES, 0);
 
-        if (httpRequest.getRequestURI().contains("/addNewCar.jsp")) {
+        if (httpRequest.getRequestURI().contains("/view/admin/addNewCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.ADD_CAR_PAGE).forward(httpRequest, httpResponse);
             //httpResponse.sendRedirect("redirect:/view/admin/addNewCar.jsp");
            // filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
-        if (httpRequest.getRequestURI().contains("/updateCar.jsp")) {
+        if (httpRequest.getRequestURI().contains("/view/admin/updateCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.UPDATE_CAR_PAGE).forward(httpRequest, httpResponse);
             //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
 
-        if (httpRequest.getRequestURI().contains("/bookCar.jsp")) {
+        if (httpRequest.getRequestURI().contains("/view/user/bookCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.FULL_PATH_USER_CREATE_BOOKING).forward(httpRequest, httpResponse);
             //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
-        if (httpRequest.getRequestURI().contains("/confirmReceipt.jsp")){
+        if (httpRequest.getRequestURI().contains("/view/user/confirmReceipt.jsp")){
             httpRequest.getRequestDispatcher(ConstantPage.CONFIRM_RECEIPT_FULL_PATH).forward(httpRequest,httpResponse);
             //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
-        if (httpRequest.getRequestURI().contains("/user.jsp")) {
+        if (httpRequest.getRequestURI().contains("/view/user/user.jsp")) {
             try {
+                System.out.println("\nCatch Page  " + httpRequest.getSession().getAttribute("userLogin") + "\n" );
+
                 UserService userService = new UserServiceImpl();
                 httpRequest.getSession().setAttribute("userBalance",
-                        userService.getBalance((String) httpRequest.getSession().getServletContext().
-                                getAttribute(GeneralConstant.USER_NAME)));
+                        userService.getBalance((String) httpRequest.getSession().getAttribute(GeneralConstant.USER_NAME)));
             } catch (ServiceException e) {
                 logger.warn("SOME PROBLEM IN CatchPageFilter filter");
             }

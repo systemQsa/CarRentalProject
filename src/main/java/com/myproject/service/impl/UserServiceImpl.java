@@ -10,7 +10,6 @@ import com.myproject.service.UserService;
 import com.myproject.util.EncryptUtil;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
@@ -116,9 +115,9 @@ public class UserServiceImpl implements UserService {
             response = userDao.topUpBalance(balance, login);
         } catch (DaoException e) {
             logger.warn("CANT TOP UP USER BALANCE SOMETHING WENT WRONG IN UserServiceImpl class");
-            throw new ServiceException("CANT TOP UP USER BALANCE", e);
+            throw new ServiceException(e);
         }
-        return response;
+         return response;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.myproject.dao.entity.Order;
 import com.myproject.exception.DaoException;
 
 public interface  OrderDao {
-    boolean processTheBooking(Order order,String userLogin,int carId) throws DaoException;
+    Order processTheBooking(Order order,String userLogin,int carId,boolean processPayment) throws DaoException;
     double getDriverRentPrice(int id) throws DaoException;
+    boolean setApprovedOrderByManager(String managerLogin,String feedback,String approved,long orderId)throws DaoException;
 }

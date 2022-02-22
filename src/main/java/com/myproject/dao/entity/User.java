@@ -1,11 +1,13 @@
 package com.myproject.dao.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Objects;
 
-public class User {
-    private int userId;
+public class User implements Comparable<User>, Serializable {
+    private static final long serialUID = 1L;
+    private long userId;
     private String name;
     private String surname;
     private String serialPassportNumber;
@@ -26,7 +28,7 @@ public class User {
             user = new User();
         }
 
-        public UserBuilder setUserId(int userId) {
+        public UserBuilder setUserId(long userId) {
             user.userId = userId;
             return this;
         }
@@ -91,7 +93,7 @@ public class User {
 
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
@@ -161,6 +163,11 @@ public class User {
     public int hashCode() {
         return Objects.hash(getUserId(), getName(), getSurname(), getSerialPassportNumber(), getLogin(),
                 getUserRole(), getRegisterDate(), getBalance(), getIsBanned(), getPassword(), getSalt(), getPhone());
+    }
+
+    @Override
+    public int compareTo(User anotherUser) {
+        return login.compareTo(anotherUser.login);
     }
 
     @Override
