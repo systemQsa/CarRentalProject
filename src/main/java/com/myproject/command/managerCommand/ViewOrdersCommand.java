@@ -26,7 +26,6 @@ public class ViewOrdersCommand implements Command {
         String viewSuchOrders = request.getParameter("viewSuchOrders");
         Optional<List<OrderViewForUserRequest>> resultForRequest;
 
-        System.out.println("viewSuchOrders   " + viewSuchOrders);
         try {
 
             if (viewSuchOrders.equals("approved")){

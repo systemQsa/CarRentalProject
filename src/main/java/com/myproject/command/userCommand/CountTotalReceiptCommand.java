@@ -37,9 +37,9 @@ public class CountTotalReceiptCommand implements Command {
         String withDriver = request.getParameter("flexRadioDefault");
         String userBalance = request.getParameter("userBalance");
 
-        System.out.println("\nCount receipt " + request.getParameter("userLoginReq") + " \n");
-
-        BigDecimal totalPrice;
+        // System.out.println("\nCount receipt " + request.getParameter("userLoginReq") + " \n");
+        ValidateInput.validatePassport(userPassport);
+         BigDecimal totalPrice;
         if (request.getParameter("fromDate") != null && request.getParameter("toDate") != null) {
 
             try {

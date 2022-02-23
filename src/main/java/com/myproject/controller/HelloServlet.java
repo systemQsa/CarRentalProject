@@ -7,6 +7,7 @@ import com.myproject.command.util.Route;
 import com.myproject.exception.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,18 +29,18 @@ public class HelloServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             processTheRequest(request, response);
         } catch (ServletException | IOException | ControllerException e) {
-           logger.fatal("GET METHOD FAILED IN SERVLET");
+            logger.fatal("GET METHOD FAILED IN SERVLET");
             throw new ServletException(e.getMessage());
         }
         logger.info("GET METHOD WORK");
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             processTheRequest(req, resp);
         } catch (ServletException | IOException | ControllerException e) {
@@ -58,8 +59,7 @@ public class HelloServlet extends HttpServlet {
         logger.info("Action " + action + "  " + request.getParameter("action"));
         logger.info("Role " + request.getSession().getAttribute("login"));
 
-
-          String str = request.getContextPath();
+         String str = request.getContextPath();
         Command command = PageAction.getCommand(action);
 
         assert command != null;
@@ -70,7 +70,7 @@ public class HelloServlet extends HttpServlet {
             logger.warn("CONTROLLER EXCEPTION");
             throw new ControllerException(e.getMessage());
         }
-         String path = route.getPathOfThePage();
+        String path = route.getPathOfThePage();
         System.out.println("PATH " + path);
         if (route.getRoute().equals(Route.RouteType.FORWARD)) {
             System.gc();
@@ -83,9 +83,5 @@ public class HelloServlet extends HttpServlet {
             response.sendRedirect(str + path);
         }
 
-
-//        if (route.getPathOfThePage().equals("")) {
-//            System.out.println("HEREEEEE");
-//        }
     }
 }

@@ -12,6 +12,19 @@ import java.util.Optional;
 
 public class ViewOrderServiceImpl implements OrderViewService {
     private final OrderViewDao orderViewDao = new OrderViewDaoImpl();
+
+    @Override
+    public Optional<List<OrderViewForUserRequest>> getAllUserPersonalOrders(String login,int startPage) throws ServiceException {
+        List<OrderViewForUserRequest> allUserOrdersPersonal;
+        try {
+           allUserOrdersPersonal =  orderViewDao.getOrdersForUser(login,startPage);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
+
+        return Optional.of(allUserOrdersPersonal);
+    }
+
     @Override
     public Optional<List<OrderViewForUserRequest>> getOrders(String approved) throws ServiceException {
         OrderViewForUserRequest orderViewForUserRequest = null;

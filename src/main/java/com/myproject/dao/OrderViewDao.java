@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface OrderViewDao {
     List<OrderViewForUserRequest> getOrdersForManager(String approved) throws DaoException;
-    List<OrderViewForUserRequest> getOrdersForUser(String login) throws  DaoException;
+    List<OrderViewForUserRequest> getOrdersForUser(String login,int startPage) throws  DaoException;
 }

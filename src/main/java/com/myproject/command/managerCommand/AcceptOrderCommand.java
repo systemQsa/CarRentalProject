@@ -42,7 +42,7 @@ public class AcceptOrderCommand implements Command {
                         resultOrder.getOrderId(), request.getParameter("approved"),
                         request.getParameter("feedback"));
                 List<Order> orders = OrderStorage.getOrders();
-                System.out.println("\n OrDER  Accept" + acceptOrder + "\n");
+               // System.out.println("\n OrDER  Accept" + acceptOrder + "\n");
                  orders.remove(acceptOrder);
                  request.getSession().getServletContext().setAttribute("orderList", orders);
                 route.setPathOfThePage(ConstantPage.MANAGER_HOME_PAGE);

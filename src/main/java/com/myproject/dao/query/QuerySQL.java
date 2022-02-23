@@ -30,10 +30,10 @@ public final class QuerySQL {
                                                   "from_date,to_date,with_driver,c.name,c.carClass,c.brand FROM users\n" +
                                                    "JOIN orders o ON users.id_user = o.user_id\n" +
                                                    "JOIN orders_cars oc ON o.id_order = oc.order_id\n" +
-                                                   "JOIN cars c ON oc.car_id = c.id_car WHERE approved=?";
+                                                   "JOIN cars c ON oc.car_id = c.id_car WHERE approved=? order by order_id desc";
     public static final String ALL_ORDERS_USER_VIEW ="SELECT passport,from_date,to_date,with_driver,receipt," +
             "name,carClass,brand,feedback,approved FROM orders\n" +
             "JOIN orders_cars oc ON orders.id_order = oc.order_id\n" +
-            "JOIN cars c ON c.id_car = oc.car_id WHERE user_id=(SELECT id_user FROM users WHERE login=?)";
+            "JOIN cars c ON c.id_car = oc.car_id WHERE user_id=(SELECT id_user FROM users WHERE login=?) order by order_id desc";
 }
 

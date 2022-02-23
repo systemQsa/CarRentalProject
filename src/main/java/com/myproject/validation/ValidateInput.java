@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ValidateInput {
     public static final String INPUT_REGEX_UKR = "^[А-ЯІЇЄ][а-яіїє']{1,20}$";
@@ -20,6 +22,7 @@ public class ValidateInput {
     public static final String LOGIN_REGEX = "^[\\w+]{8,30}$";
     public static final String PASSWORD_REGEX = "^[\\w+]{3,20}$";
     public static final String EMAIL_REGEX = "^(([\\w-]+)@([\\w]+)\\.([\\p{Lower}]{2,8}))$";
+    public static final String EMAIL_CYRILLIC = "^(([\\p{IsCyrillic}]+)@([\\w]+)\\.([\\p{Lower}]{2,8}))$";
     public static final String REGEX_ONLY_WORDS = "^(\\p{L}+)$";
     public static final String REGEX_PHONE = "^[+]?[\\d]{7,16}$";
     public static final String REGEX_PASSPORT = "^([A-Z]{2}[0-9]{2,8})$";
@@ -29,13 +32,23 @@ public class ValidateInput {
 
 
     public void validateLogin(String login, HttpServletRequest request) throws ValidationException {
-        if (login == null || login.equals(GeneralConstant.EMPTY_STRING) || (!login.matches(EMAIL_REGEX))) {
+        Pattern englishLogin = Pattern.compile(EMAIL_REGEX);
+        Pattern cyrillicLogin = Pattern.compile(EMAIL_CYRILLIC);
+        Matcher english = englishLogin.matcher(login);
+        Matcher cyrillic = cyrillicLogin.matcher(login);
+        System.out.println("\n\n Login regex " + cyrillic.matches() + " " + english.matches());
+
+        if (login.equals(GeneralConstant.EMPTY_STRING)) {
             request.setAttribute("errorLogin", "incorrect login");
             logger.error("VALIDATION LOGIN WAS FAILED");
             throw new ValidationException("Invalid Login please try again");
         }
-        System.out.println("validation login work");
-    }
+        if (cyrillic.matches() || english.matches()){
+            logger.info("login validation passed");
+        }else{
+            throw new ValidationException("Invalid Login please try again");
+        }
+     }
 
 
     public void validatePassword(char[] password, HttpServletRequest request) throws ValidationException {
@@ -86,5 +99,14 @@ public class ValidateInput {
         }
         logger.warn("Attempt to enter incorrect date and time");
         throw new ValidationException("Please enter the date and the time properly");
+    }
+    public static boolean validatePassport(String passport) throws ValidationException{
+        Pattern pattern = Pattern.compile(REGEX_PASSPORT);
+        Matcher pass = pattern.matcher(passport);
+        if (pass.matches()){
+            logger.info("Passport validation passed");
+        }
+        logger.info("Passport validation was failed");
+        throw new ValidationException("Invalid Passport Credentials");
     }
 }

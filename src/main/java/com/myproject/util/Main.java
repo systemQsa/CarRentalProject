@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 
@@ -63,21 +65,12 @@ public class Main {
 //        LocalDateTime now = LocalDateTime.now();
 //        System.out.println(dtf.format(now));
 
-     List<String> list = new ArrayList<>();
-     list.add("sahsa");
-     list.add("alex");
-     list.add("anya");
-        HashMap<String,Boolean> map = new HashMap<>();
-        map.put("sahsa",true);
-        map.put("alex",false);
-        map.put("anya",true);
-        for (String s:list) {
-            for (Map.Entry<String,Boolean> element :map.entrySet()) {
-                if (element.getKey().equals(s)){
-                    System.out.println("Answer " + element.getValue());
-                }
-            }
-        }
+      String regex = "^(([\\p{L}]+)@([\\w]+)\\.([\\p{Lower}]{2,8}))$";
+        String s = "саша@gmail.com";
+        Pattern pattern = Pattern.compile("^(([\\p{IsCyrillic}]+)@([\\w]+)\\.([\\p{Lower}]{2,8}))$");
+        Matcher matcher = pattern.matcher(s);
+        System.out.println(matcher.matches());
+
     }
 
     private static Order parseIncomeOrder(String freshOrder) throws CommandException {

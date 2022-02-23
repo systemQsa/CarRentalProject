@@ -23,4 +23,5 @@ public final class ConstantPage {
     public static final String ALL_ORDERS = "redirect:/view/manager/allOrdersToAccept.jsp";
     public static final String VIEW_ALL_APPROVED_ORDERS = "/WEB-INF/view/manager/viewAllApprovedOrders.jsp";
     public static final String VIEW_ALL_DECLINED_ORDERS = "/WEB-INF/view/manager/viewAllDeclinedOrders.jsp";
+    public static final String VIEW_MY_ORDERS= "/WEB-INF/view/user/viewMyOrders.jsp";
 }

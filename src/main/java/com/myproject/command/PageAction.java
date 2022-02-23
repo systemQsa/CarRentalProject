@@ -31,7 +31,9 @@ public enum PageAction {
     ACCEPT_ORDER("acceptOrder",new AcceptOrderCommand()),
     VIEW_NOT_ACCEPTED_ORDERS("viewAllUnAcceptedOrders",new ViewAllNotConfirmedOrdersCommand()),
     DECLINE_ORDER_BY_MANAGER("declineOrder",new DeclineOrderCommand()),
-    VIEW_USER_ORDERS("viewOrders",new ViewOrdersCommand());
+    VIEW_USER_ORDERS("viewOrders",new ViewOrdersCommand()),
+    VIEW_USER_ORDERS_PERSONAL("myOrders",new ViewMyOrdersCommand()),
+    PAGINATION("pagination",new PaginationCommand());
 
 
     private final String action;

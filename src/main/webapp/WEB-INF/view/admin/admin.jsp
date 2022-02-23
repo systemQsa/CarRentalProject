@@ -147,7 +147,16 @@
         <p>=================</p>
     </c:forEach>
 </c:if>
-
+<form method="get" >
+    <input type="hidden" name="action" value="pagination">
+    <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="${pageContext.request.contentType}/car/helloServlet?action=pagination&page=1">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+    </ul>
+</form>
 
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

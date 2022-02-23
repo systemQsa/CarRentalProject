@@ -21,29 +21,33 @@ public class OrderViewDaoImpl implements OrderViewDao {
     private static final Logger logger = LogManager.getLogger(OrderViewDaoImpl.class);
 
     @Override
-    public List<OrderViewForUserRequest> getOrdersForUser(String login) throws DaoException {
+    public List<OrderViewForUserRequest> getOrdersForUser(String login,int startPage) throws DaoException {
         connection = ConnectionPool.getInstance().getConnection();
         ResultSet resultSet;
         List<OrderViewForUserRequest> list = new ArrayList<>();
-        OrderViewForUserRequest.OrderViewBuilder orderViewBuilder = new OrderViewForUserRequest.OrderViewBuilder();
-        Car.CarBuilder carBuilder = new Car.CarBuilder();
-        Order.OrderBuilder order = new Order.OrderBuilder();
+       // System.out.println("\n\nLogin " + login);
 
         try(PreparedStatement statement = connection.prepareStatement(QuerySQL.ALL_ORDERS_USER_VIEW)){
             statement.setString(1,login);
             resultSet = statement.executeQuery();
-            if (resultSet.next()){
-                  order.setPassport(resultSet.getString("passport"))
-                          .setDateFrom(resultSet.getTimestamp("fromDate"))
-                          .setDateTo(resultSet.getTimestamp("toDate"))
-                          .setWithDriver(resultSet.getString("withDriver"))
-                          .setReceipt(resultSet.getDouble("receipt"));
-                  carBuilder.setName(resultSet.getString("name"))
-                          .setCarClass(resultSet.getString("carClass"))
-                          .setBrand(resultSet.getString("brand"));
-                  orderViewBuilder.setFeedback(resultSet.getString("feedback"))
-                          .setApproved(resultSet.getString("approved"));
-                   list.add(orderViewBuilder.build());
+            while (resultSet.next()){
+                OrderViewForUserRequest.OrderViewBuilder orderViewBuilder = new OrderViewForUserRequest.OrderViewBuilder();
+                Car.CarBuilder carBuilder = new Car.CarBuilder();
+                Order.OrderBuilder order = new Order.OrderBuilder();
+
+                        OrderViewForUserRequest res =  orderViewBuilder
+                        .setOrder(order.setPassport(resultSet.getString("passport"))
+                                .setDateFrom(resultSet.getTimestamp("from_date"))
+                                .setDateTo(resultSet.getTimestamp("to_date"))
+                                .setWithDriver(resultSet.getString("with_driver"))
+                                .setReceipt(resultSet.getDouble("receipt")).build())
+                        .setCar(carBuilder.setName(resultSet.getString("name"))
+                                .setCarClass(resultSet.getString("carClass"))
+                                .setBrand(resultSet.getString("brand")).build())
+                        .setFeedback(resultSet.getString("feedback"))
+                        .setApproved(resultSet.getString("approved")).build();
+
+                        list.add(res);
             }
 
         }catch (SQLException e){
@@ -52,6 +56,7 @@ public class OrderViewDaoImpl implements OrderViewDao {
         }finally {
             ConnectionPool.closeConnection(connection);
         }
+        System.out.println("\n\nLogin " + list);
         return list;
     }
 
@@ -59,8 +64,6 @@ public class OrderViewDaoImpl implements OrderViewDao {
     public List<OrderViewForUserRequest> getOrdersForManager(String approved) throws DaoException {
         connection = ConnectionPool.getInstance().getConnection();
 
-        Order.OrderBuilder order = new Order.OrderBuilder();
-        Car.CarBuilder car = new Car.CarBuilder();
         ResultSet resultSet;
         List<OrderViewForUserRequest>list = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER)){
@@ -69,28 +72,19 @@ public class OrderViewDaoImpl implements OrderViewDao {
                while (resultSet.next()){
 
               OrderViewForUserRequest.OrderViewBuilder viewOrderBuilder = new OrderViewForUserRequest.OrderViewBuilder();
-//                   OrderViewForUserRequest res =  viewOrderBuilder.setLogin(resultSet.getString("login"))
-//                                   .setOrder(order.setPassport(resultSet.getString("passport"))
-//                                           .setReceipt(resultSet.getDouble("receipt"))
-//                                           .setDateFrom(resultSet.getTimestamp("from_date"))
-//                                           .setDateTo(resultSet.getTimestamp("to_date"))
-//                                           .setWithDriver(resultSet.getString("with_driver")).build())
-//                                   .setCar(car.setName(resultSet.getString("name"))
-//                                           .setCarClass(resultSet.getString("carClass"))
-//                                           .setBrand(resultSet.getString("brand")).build()).build();
+                   Order.OrderBuilder order = new Order.OrderBuilder();
+                   Car.CarBuilder car = new Car.CarBuilder();
+                   OrderViewForUserRequest res =  viewOrderBuilder.setLogin(resultSet.getString("login"))
+                                   .setOrder(order.setPassport(resultSet.getString("passport"))
+                                           .setReceipt(resultSet.getDouble("receipt"))
+                                           .setDateFrom(resultSet.getTimestamp("from_date"))
+                                           .setDateTo(resultSet.getTimestamp("to_date"))
+                                           .setWithDriver(resultSet.getString("with_driver")).build())
+                                   .setCar(car.setName(resultSet.getString("name"))
+                                           .setCarClass(resultSet.getString("carClass"))
+                                           .setBrand(resultSet.getString("brand")).build()).build();
 
-
-
-                   OrderViewForUserRequest res = viewOrderBuilder.setLogin(resultSet.getString("login"))
-                           .setPassport(resultSet.getString("passport"))
-                           .setReceipt(resultSet.getDouble("receipt"))
-                             .setFromDate(resultSet.getTimestamp("from_date"))
-                             .setToDate(resultSet.getTimestamp("to_date"))
-                             .setWithDriver(resultSet.getString("with_driver"))
-                              .setName(resultSet.getString("name"))
-                             .setCarClass(resultSet.getString("carClass"))
-                             .setBrand(resultSet.getString("brand")).build();
-                   list.add(res);
+                                   list.add(res);
                }
 
 
