@@ -36,7 +36,8 @@ public class ViewMyOrdersCommand implements Command {
             }
         } catch (ServiceException e) {
             logger.warn("something went wrong with sending user his orders in ViewMyOrdersCommand class");
-            throw new CommandException(e.getMessage());
+            setInformMessageIfErrorOccur("You don`t have orders yet",9,request);
+            throw new CommandException("/WEB-INF/view/user/viewMyOrders.jsp");
         }
         route.setRoute(Route.RouteType.FORWARD);
         return route;

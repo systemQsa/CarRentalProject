@@ -124,17 +124,15 @@ public class UserFilter implements Filter {
 
 
 
-        if (request.getRequestURI().contains(GeneralConstant.USER)
+        if ((request.getRequestURI().contains(GeneralConstant.USER)
                 && request.getSession().getAttribute(GeneralConstant.ROLE).equals("user")
-                 && (request.getSession().getAttribute(GeneralConstant.ROLE) != null)) {
-          //  System.out.println("LOGGED USERS  FILTER 4" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-          //  System.out.println("userName Context 4"+ request.getSession().getServletContext().getAttribute("userName"));
+                 && (request.getSession().getAttribute(GeneralConstant.ROLE) != null))
+                || (request.getSession().getAttribute(GeneralConstant.ROLE) == null)) {
 
-            //System.out.println("userName  USER "+request.getSession().getAttribute("userName"));
-            if (request.getParameter("action") == null){
+             if (request.getParameter("action") == null){
 
                 try {
-                    Optional<List<Car>> allCars = carService.getAllCars();
+                    Optional<List<Car>> allCars = carService.getAllCars(0);
                     allCars.ifPresent(cars -> request.setAttribute("allCars", cars));
                    // request.setAttribute("allCars",allCars);
                    // request.getSession().setAttribute("userNameLogin",request.getSession().getAttribute("userName"));
@@ -142,7 +140,10 @@ public class UserFilter implements Filter {
                     e.printStackTrace();
                 }
             }
-            request.getRequestDispatcher(ConstantPage.WEB_INF_FULL_PATH_TO_USER).forward(request, response);
+            if (request.getRequestURI().contains(GeneralConstant.USER)){
+                request.getRequestDispatcher(ConstantPage.WEB_INF_FULL_PATH_TO_USER).forward(request, response);
+
+           }
             filterChain.doFilter(request, response);
             return;
         }

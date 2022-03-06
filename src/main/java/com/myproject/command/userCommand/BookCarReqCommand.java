@@ -6,6 +6,7 @@ import com.myproject.command.util.Route;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
 import com.myproject.service.impl.CarOrderServiceImpl;
 import org.apache.log4j.LogManager;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpSession;
 
 public class BookCarReqCommand implements Command {
     private static final Logger logger = LogManager.getLogger(BookCarReqCommand.class);
-    private final CarOrderService carBookingService = new CarOrderServiceImpl();
+    private final CarOrderService carBookingService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
 
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {

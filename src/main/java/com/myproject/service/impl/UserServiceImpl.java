@@ -1,56 +1,80 @@
 package com.myproject.service.impl;
 
 import com.myproject.command.util.GeneralConstant;
+import com.myproject.dao.UserDao;
+import com.myproject.dao.connection.ConnectManager;
+import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.User;
 import com.myproject.dao.entity.UserRole;
-import com.myproject.dao.impl.UserDao;
+import com.myproject.dao.impl.UserDaoImpl;
 import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
+import com.myproject.exception.ValidationException;
+import com.myproject.factory.AbstractFactory;
+import com.myproject.factory.DaoFactory;
+import com.myproject.factory.impl.AbstractFactoryImpl;
+import com.myproject.factory.impl.DaoFactoryImpl;
 import com.myproject.service.UserService;
 import com.myproject.util.EncryptUtil;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
-    private final UserDao userDao = new UserDao();
+    private final UserDao<User> userDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getUserDao();
+
+    public UserServiceImpl(){
+    }
+
+     @Override
+    public Optional<User> getUser(String login) throws ServiceException {
+
+        try {
+            return Optional.of(userDao.findByLogin(login));
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
 
     @Override
-    public User getUserByLoginAndPass(String login,char[]password) throws ServiceException{
+    public User getUserByLoginAndPass(String login, char[] password) throws ServiceException {
         User user;
         try {
             user = userDao.getUserByLogin(login);
         } catch (DaoException e) {
             logger.error("SOME PROBLEM CANT GET USER FROM DB");
-           throw new ServiceException("CANT GET INFO ABOUT USER",e);
+            throw new ServiceException("/login.jsp");
         }
         return user;
     }
 
     @Override
-    public String logInValidation(String login, char[] password) throws ServiceException {
-        //todo validate date on front
+    public String logInValidation(String login, char[] password, HttpServletRequest request) throws ValidationException {
         int userId = 0;
         User user;
         try {
-             user = getUserByLoginAndPass(login,password);
-            System.out.println("PASSWORD DECRYPT");
-            boolean decrypt = EncryptUtil.decryptPass(user.getPassword(), "123", password);
+            user = getUserByLoginAndPass(login, password);
+        } catch (ServiceException e) {
+            request.setAttribute("err", 2);
+            request.setAttribute("errMSG", "You are not registered yet");
+            throw new ValidationException(e.getMessage());
+        }
+
+        boolean decrypt;
+        try {
+            decrypt = EncryptUtil.decryptPass(user.getPassword(), "123", password);
             if (decrypt) {
                 userId = user.getRole();
                 System.out.println("PASSWORD MATCHES!!");
-            } else {
-                throw new ServiceException("FORGOT PASSWORD ?");
             }
-
-        } catch (DaoException e) {
-            logger.warn("CANT FIND SUCH USER IN DATABASE CREDENTIALS ARE NOT MATCH");
-            throw new ServiceException("USER LOGIN CHECK FAILED", e);
         } catch (Exception e) {
-            throw new ServiceException("Incorrect login or password! Please try again...",e);
+            throw new ValidationException(e.getMessage());
         }
 
         return UserRole.getRoleId(userId);
@@ -63,7 +87,7 @@ public class UserServiceImpl implements UserService {
             return Optional.of(userDao.findAll());
         } catch (DaoException e) {
             logger.warn("CANT FIND ALL USERS IN UserServiceImpl class");
-            throw new ServiceException("CANT FIND ALL USERS", e);
+            throw new ServiceException("CANT FIND ALL USERS");
         }
     }
 
@@ -117,7 +141,7 @@ public class UserServiceImpl implements UserService {
             logger.warn("CANT TOP UP USER BALANCE SOMETHING WENT WRONG IN UserServiceImpl class");
             throw new ServiceException(e);
         }
-         return response;
+        return response;
     }
 
     @Override
@@ -157,20 +181,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserStatus(String login,UserRole userRole)throws ServiceException {
+    public boolean updateUserStatus(String login, UserRole userRole) throws ServiceException {
         boolean statusChanged = false;
         try {
             User user = userDao.getUserByLogin(login);
-            if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS) && user.getRole()!= UserRole.MANAGER.getId()
-                    && userRole.getRole().equals(GeneralConstant.MANAGER)){
-                statusChanged = userDao.setUserRole(login,UserRole.MANAGER);
-            }else if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS) && user.getRole() != UserRole.USER.getId()
-                    && userRole.getRole().equals(GeneralConstant.USER)){
-                statusChanged = userDao.setUserRole(login,UserRole.USER);
+            if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS) && user.getRole() != UserRole.MANAGER.getId()
+                    && userRole.getRole().equals(GeneralConstant.MANAGER)) {
+                statusChanged = userDao.setUserRole(login, UserRole.MANAGER);
+            } else if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS) && user.getRole() != UserRole.USER.getId()
+                    && userRole.getRole().equals(GeneralConstant.USER)) {
+                statusChanged = userDao.setUserRole(login, UserRole.USER);
             }
         } catch (DaoException e) {
             logger.warn("CANT SET NEW ROLE FOR USER IN UserServiceImpl class");
-            throw new ServiceException("CANT SET NEW ROLE FOR GIVEN USER",e);
+            throw new ServiceException("CANT SET NEW ROLE FOR GIVEN USER", e);
         }
         return statusChanged;
     }

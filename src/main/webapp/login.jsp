@@ -3,10 +3,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false"%>
-<c:set var="lang" value="${not empty param.lang ? param.lang : not empty lang ? lang : pageContext.request.locale}" scope="session"/>
-<c:set var="lang" value="${not empty param.lang ? param.lang : not empty lang ? lang : pageContext.request.locale}"/>
-<fmt:setLocale value="${lang}"/>
-<fmt:setBundle basename="resources" var="locale"/>
+<%--<c:set var="lang" value="${not empty param.lang ? param.lang : not empty lang ? lang : pageContext.request.locale}" scope="session"/>--%>
+<%--<c:set var="lang" value="${not empty param.lang ? param.lang : not empty lang ? lang : pageContext.request.locale}"/>--%>
+<%--<fmt:setLocale value="${lang}"/>--%>
+<%--<fmt:setBundle basename="resources" var="locale"/>--%>
 <html>
 <head >
        <title>Login</title>
@@ -17,20 +17,32 @@
 </head>
 <body>
 <h1>LOGIN</h1>
+<c:if test="${requestScope.err == 1}">
+    <p class="text-center">${requestScope.errMSG}</p>
+</c:if>
+
 <div class="col-md-6 col-lg-4 offset-lg-4 offset-md-3 mt-5">
     <div class="bg-light p-5 border shadow">
         <h3>${pageContext.request.locale}</h3>
         <!-- Login Form -->
         <form method="post" action="helloServlet" name="login">
             <input type="hidden" name="action" value="login">
-            <h4><fmt:message bundle="${locale}" key="label.Login"/></h4>
+<%--            <h4><fmt:message bundle="${locale}" key="label.Login"/></h4>--%>
             <div class="mb-4">
-                <input  name="login" type="text" placeholder="${language['label.login']}">
-                <p class="form-text text-end">${language['label.Enter']}${language['label.username']}</p>
+                <input  name="login" type="text" placeholder="${sessionScope.language['label.login']}">
+                <p class="form-text text-end">${sessionScope.language['label.Enter']}${sessionScope.language['label.username']}</p>
+                <c:if test="${requestScope.err == 2}">
+                    <p>${requestScope.errMSG}</p>
+                </c:if>
+
             </div>
             <div class="mb-4">
-                <input name="password" type="password" class="form-control" placeholder="${language['label.password']}">
-                <p class="form-text text-end"> ${language['label.Enter']}${language['label.email']}</p>
+                <input name="password" type="password" class="form-control" placeholder="${sessionScope.language['label.password']}">
+                <p class="form-text text-end"> ${sessionScope.language['label.Enter']}${sessionScope.language['label.email']}</p>
+                <c:if test="${requestScope.err == 3}">
+                    <p>${requestScope.errMSG}</p>
+                </c:if>
+
             </div>
             <div class="mb-4 form-check w-100">
                 <%--                <label class="form-check-label">--%>
@@ -38,20 +50,12 @@
                 <%--                </label>--%>
                 <a href="#" class="float-end">FORGOT PASSWORD</a>
             </div>
-            <button type="submit" class="btn btn-primary w-100 my-3 shadow" >${language['label.Login']}</button>
-            <p class="text-center m-0">Not yet account,<a href="${pageContext.request.contextPath}/register.jsp">${language['label.register']}</a></p>
+            <button type="submit" class="btn btn-primary w-100 my-3 shadow" >${sessionScope.language['label.Login']}</button>
+            <p class="text-center m-0">Not yet account,<a href="${pageContext.request.contextPath}/register.jsp">${sessionScope.language['label.register']}</a></p>
         </form>
     </div>
 </div>
 
-<h1><fmt:message  bundle="${locale}" key="label.WELCOME"/>
-    <h2>
-        <fmt:message bundle="${locale}" key="label.Login"/>
-    </h2>
-    <h2>
-        <fmt:message bundle="${locale}" key="label.register"/>
-    </h2>
 
-    <h1> <fmt:message bundle="${locale}" key="label.WELCOME"/> </h1>
 </body>
 </html>

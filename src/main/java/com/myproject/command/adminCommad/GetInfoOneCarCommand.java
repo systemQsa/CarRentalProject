@@ -7,6 +7,7 @@ import com.myproject.dao.entity.Car;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
 import com.myproject.service.impl.CarServiceImpl;
 import org.apache.log4j.LogManager;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class GetInfoOneCarCommand implements Command {
-    private final CarService<Car> carService = new CarServiceImpl();
+    private final CarService<Car> carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
     private static final Logger logger = LogManager.getLogger(GetInfoOneCarCommand.class);
 
     @Override

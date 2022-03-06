@@ -1,6 +1,7 @@
 package com.myproject.dao.impl;
 
 import com.myproject.dao.OrderViewDao;
+import com.myproject.dao.connection.ConnectManager;
 import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.Car;
 import com.myproject.dao.entity.Order;
@@ -9,6 +10,7 @@ import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,23 +21,48 @@ import java.util.List;
 public class OrderViewDaoImpl implements OrderViewDao {
     private Connection connection = null;
     private static final Logger logger = LogManager.getLogger(OrderViewDaoImpl.class);
+    private ConnectManager connectManager;
+
+    public OrderViewDaoImpl(){
+        connectManager = ConnectionPool.getInstance();
+    }
 
     @Override
-    public List<OrderViewForUserRequest> getOrdersForUser(String login,int startPage) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
-        ResultSet resultSet;
-        List<OrderViewForUserRequest> list = new ArrayList<>();
-       // System.out.println("\n\nLogin " + login);
+    public void setConnection(ConnectManager connectManager) {
+        this.connectManager = connectManager;
+    }
 
-        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.ALL_ORDERS_USER_VIEW)){
-            statement.setString(1,login);
+
+    @Override
+    public List<OrderViewForUserRequest> getOrdersForUser(String login, int startPage) throws DaoException {
+        connection =connectManager.getConnection();
+        ResultSet resultSet;
+        ResultSet totalTableRecords;
+        int itemsPerPage = 2;
+        int temp = 0;
+        List<OrderViewForUserRequest> list = new ArrayList<>();
+        System.out.println("\nLogin " + login + " page# " + startPage);
+
+        try (PreparedStatement statement = connection.prepareStatement("SELECT " + QuerySQL.ALL_ORDERS_USER_VIEW + "LIMIT ?,?")) {
+            PreparedStatement countTotalRecordsInTable = connection.prepareStatement("SELECT COUNT(user_id) AS records," + QuerySQL.ALL_ORDERS_USER_VIEW);
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            countTotalRecordsInTable.setString(1, login);
+            totalTableRecords = countTotalRecordsInTable.executeQuery();
+            if (totalTableRecords.next()) {
+                temp = totalTableRecords.getInt("records");
+            }
+            statement.setString(1, login);
+            statement.setInt(2, (startPage - 1));
+            statement.setInt(3, itemsPerPage);
             resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 OrderViewForUserRequest.OrderViewBuilder orderViewBuilder = new OrderViewForUserRequest.OrderViewBuilder();
                 Car.CarBuilder carBuilder = new Car.CarBuilder();
                 Order.OrderBuilder order = new Order.OrderBuilder();
 
-                        OrderViewForUserRequest res =  orderViewBuilder
+                OrderViewForUserRequest res = orderViewBuilder
+                        .setAmountOfRecords(temp)
                         .setOrder(order.setPassport(resultSet.getString("passport"))
                                 .setDateFrom(resultSet.getTimestamp("from_date"))
                                 .setDateTo(resultSet.getTimestamp("to_date"))
@@ -47,52 +74,82 @@ public class OrderViewDaoImpl implements OrderViewDao {
                         .setFeedback(resultSet.getString("feedback"))
                         .setApproved(resultSet.getString("approved")).build();
 
-                        list.add(res);
+                list.add(res);
             }
-
-        }catch (SQLException e){
+            connection.commit();
+            countTotalRecordsInTable.close();
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new DaoException(" Oops! Cant get all your orders.");
+            }
             logger.warn("Some problem cant get all user orders");
             throw new DaoException(" Oops! Cant get all your orders.");
-        }finally {
-            ConnectionPool.closeConnection(connection);
+        } finally {
+            connectManager.closeConnection(connection);
         }
-        System.out.println("\n\nLogin " + list);
+        System.out.println("\nList  Orders " + list);
         return list;
     }
 
     @Override
-    public List<OrderViewForUserRequest> getOrdersForManager(String approved) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
-
+    public List<OrderViewForUserRequest> getOrdersForManager(String approved, int startPage) throws DaoException {
+        connection = connectManager.getConnection();
+        int itemsPerPage = 2;
+        int temp = 0;
+        ResultSet totalRecords;
         ResultSet resultSet;
-        List<OrderViewForUserRequest>list = new ArrayList<>();
-        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER)){
-               statement.setString(1,approved);
-               resultSet = statement.executeQuery();
-               while (resultSet.next()){
+        List<OrderViewForUserRequest> list = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT " + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER + " LIMIT ?,?")) {
+            PreparedStatement statement2 = connection.prepareStatement("SELECT COUNT(user_id) as records," + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER);
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            System.out.println("START\n " + approved);
+            statement2.setString(1, approved);
+            totalRecords = statement2.executeQuery();
+            if (totalRecords.next()) {
+                temp = totalRecords.getInt("records");
+            }
+            System.out.println("TEMP " + temp);
 
-              OrderViewForUserRequest.OrderViewBuilder viewOrderBuilder = new OrderViewForUserRequest.OrderViewBuilder();
-                   Order.OrderBuilder order = new Order.OrderBuilder();
-                   Car.CarBuilder car = new Car.CarBuilder();
-                   OrderViewForUserRequest res =  viewOrderBuilder.setLogin(resultSet.getString("login"))
-                                   .setOrder(order.setPassport(resultSet.getString("passport"))
-                                           .setReceipt(resultSet.getDouble("receipt"))
-                                           .setDateFrom(resultSet.getTimestamp("from_date"))
-                                           .setDateTo(resultSet.getTimestamp("to_date"))
-                                           .setWithDriver(resultSet.getString("with_driver")).build())
-                                   .setCar(car.setName(resultSet.getString("name"))
-                                           .setCarClass(resultSet.getString("carClass"))
-                                           .setBrand(resultSet.getString("brand")).build()).build();
+            statement.setString(1, approved);
+            statement.setInt(2, (startPage - 1));
+            statement.setInt(3, itemsPerPage);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
 
-                                   list.add(res);
-               }
+                OrderViewForUserRequest.OrderViewBuilder viewOrderBuilder = new OrderViewForUserRequest.OrderViewBuilder();
+                Order.OrderBuilder order = new Order.OrderBuilder();
+                Car.CarBuilder car = new Car.CarBuilder();
+                OrderViewForUserRequest res =
+                        viewOrderBuilder.setAmountOfRecords(temp)
+                        .setLogin(resultSet.getString("login"))
+                        .setOrder(order.setPassport(resultSet.getString("passport"))
+                                .setReceipt(resultSet.getDouble("receipt"))
+                                .setDateFrom(resultSet.getTimestamp("from_date"))
+                                .setDateTo(resultSet.getTimestamp("to_date"))
+                                .setWithDriver(resultSet.getString("with_driver")).build())
+                        .setCar(car.setName(resultSet.getString("name"))
+                                .setCarClass(resultSet.getString("carClass"))
+                                .setBrand(resultSet.getString("brand")).build()).build();
 
+                list.add(res);
+            }
 
-        }catch (SQLException e){
+            statement2.close();
+           connection.commit();
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new DaoException("Cant find all Orders for Users", e);
+            }
             logger.warn("some problem occur manager cant get all users orders approved or not approved!");
-            throw new DaoException("Cant find all Orders for Users",e);
-        }finally {
-            ConnectionPool.closeConnection(connection);
+            throw new DaoException("Cant find all Orders for Users", e);
+        } finally {
+            connectManager.closeConnection(connection);
         }
         System.out.println("\nList" + list + "\n");
         return list;

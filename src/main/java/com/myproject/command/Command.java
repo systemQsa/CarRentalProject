@@ -13,8 +13,9 @@ import java.util.stream.Stream;
 
 public interface Command {
     Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException,ValidationException;
-    default void setInformMessageIfErrorOccur(String message,HttpServletRequest request){
-        request.getSession().setAttribute("errorMSG",message);
+    default void setInformMessageIfErrorOccur(String message,int errNumber,HttpServletRequest request){
+        request.setAttribute("errMSG",message);
+        request.setAttribute("err",errNumber);
     }
 
     default  Order parseIncomeOrder(String freshOrder) throws CommandException {

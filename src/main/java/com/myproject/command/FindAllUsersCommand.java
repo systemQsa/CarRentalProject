@@ -1,10 +1,12 @@
 package com.myproject.command;
 
 import com.myproject.command.util.ConstantPage;
+import com.myproject.command.util.GeneralConstant;
 import com.myproject.command.util.Route;
 import com.myproject.dao.entity.User;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
 import org.apache.log4j.LogManager;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class FindAllUsersCommand implements Command {
-    private final UserService userService = new UserServiceImpl();
+    private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private static final Logger logger = LogManager.getLogger(FindAllUsersCommand.class);
 
     @Override
@@ -30,8 +32,8 @@ public class FindAllUsersCommand implements Command {
             }
             assert users != null;
             users.forEach(System.out::println);
-            request.getSession().setAttribute("allCars",null);
-            request.setAttribute("allUsers",users);
+            request.getSession().setAttribute(GeneralConstant.Util.ALL_CARS,null);
+            request.setAttribute(GeneralConstant.Util.ALL_USERS,users);
             route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
             route.setRoute(Route.RouteType.FORWARD);
         } catch (ServiceException e) {

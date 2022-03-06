@@ -19,85 +19,94 @@
 
 </head>
 <body>
+ <h1 class="text-center">${sessionScope.language['Book_Car']}</h1>
+<span class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
+    <form method="post" action="${pageContext.request.contextPath}/helloServlet">
+        <input type="hidden" name="action" value="countReceipt">
+        <input type="hidden" name="userLogin" value="${requestScope.userLogin}">
+        <input type="hidden" name="carId" value="${sessionScope.carIdReq}">
+        <input type="hidden" name="userIdByLogin" value="${sessionScope.userIdByLogin}">
+        <input type="hidden" name="userBalance" value="${sessionScope.userBalance}">
+        <span class="d-block p-2">
+            <label>${sessionScope.language['Name']}</label>
+            <input type="hidden" name="carName" value="${sessionScope.carNameReq}">
+            <p>${sessionScope.carNameReq}</p>
+       </span>
+        <span class="d-block p-2">
+            <label>${sessionScope.language['Class']}</label>
+            <input type="hidden" name="carClass" value="${sessionScope.carClassReq}">
+            <p>${sessionScope.carClassReq}</p>
+        </span>
+        <span class="d-block p-2">
+             <label>${sessionScope.language['Brand']}</label>
+            <input type="hidden" name="carBrand" value="${sessionScope.carBrandReq}">
+            <p>${sessionScope.carBrandReq}</p>
+        </span>
+        <span class="d-block p-2 ">
+                 <label>${sessionScope.language['Rental_Price']}</label>
+                <input type="hidden" name="carRentPrice" value="${sessionScope.rentPriceReq}">
+                <p>${sessionScope.rentPriceReq}</p>
 
-
-<h5>${pageContext.request.locale}</h5>
-<h2> CAR ID ${sessionScope.carIdReq}</h2>
-
-<h1>BOOK CAR</h1>
-<p>${requestScope.userLogin}</p>
-<form method="post" action="${pageContext.request.contextPath}/helloServlet">
-    <input type="hidden" name="action" value="countReceipt">
-    <input type="hidden" name="userLogin" value="${requestScope.userLogin}">
-    <input type="hidden" name="carId" value="${sessionScope.carIdReq}">
-    <input type="hidden" name="userIdByLogin" value="${sessionScope.userIdByLogin}">
-    <input type="hidden" name="userBalance" value="${sessionScope.userBalance}">
-    <label>Name</label>
-    <input type="hidden" name="carName" value="${sessionScope.carNameReq}">
-    <p>${sessionScope.carNameReq}</p>
-
-    <label>Class</label>
-    <input type="hidden" name="carClass" value="${sessionScope.carClassReq}">
-    <p>${sessionScope.carClassReq}</p>
-
-    <label>Brand</label>
-    <input type="hidden"  name="carBrand" value="${sessionScope.carBrandReq}">
-    <p>${sessionScope.carBrandReq}</p>
-
-    <label>Rental Price</label>
-    <input type="hidden" name="carRentPrice" value="${sessionScope.rentPriceReq}">
-    <p>${sessionScope.rentPriceReq}</p>
-
-    <label>Passport</label>
-    <input type="text" name="userPassport">
-
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="true">
-        <label class="form-check-label" for="flexRadioDefault1">
-            With Driver
-        </label>
-    </div>
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="false">
-        <label class="form-check-label" for="flexRadioDefault2">
-            Without Driver
-        </label>
-    </div>
-<%--    <p> From Date: <input type="text" id="datepickerFrom" name="fromDate"/></p>--%>
-<%--    <p> To Date: <input type="text" id="datepickerTo" name="toDate"/></p>--%>
-    <div class='col-md-3'>
-        <div class="form-group">
-            <label class="control-label">From Date and Time</label>
-            <div class='input-group date' id='datetimepicker1'>
-                <input type='text' class="form-control" name="fromDate"/>
-                <span class="input-group-addon">
-                     <span class="glyphicon glyphicon-calendar"></span>
-                </span>
+        </span>
+       <span class="d-block p-2">
+            <label>${sessionScope.language['Passport']}</label>
+            <input type="text" name="userPassport">
+           <c:if test="${requestScope.err == 12}">
+               <p>${requestScope.errMSG}</p>
+           </c:if>
+       </span>
+        <span class="d-block p-2 ">
+             <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="true">
+                <label class="form-check-label" for="flexRadioDefault1">
+                    <p>${sessionScope.language['With_driver']} + 100</p>
+                 </label>
             </div>
-        </div>
-    </div>
-
-    <div class='col-md-3'>
-        <div class="form-group">
-            <label class="control-label">From Date and Time</label>
-            <div class='input-group date' id='datetimepicker2'>
-                <input type='text' class="form-control" name="toDate"/>
-                <span class="input-group-addon">
-                     <span class="glyphicon glyphicon-calendar"></span>
-                </span>
+        </span>
+        <span class="d-block p-2 ">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="false">
+                <label class="form-check-label" for="flexRadioDefault2">
+                  <p>${sessionScope.language['Without_driver']}</p>
+                </label>
             </div>
-        </div>
-    </div>
+        </span>
+     <span class="d-block p-2">
+            <div class='col-md-5'>
+                <div class="form-group">
+                    <label class="control-label">From Date</label>
+                    <div class='input-group date' id='datetimepicker1'>
+                        <input type='text' class="form-control" name="fromDate"/>
+                        <span class="input-group-addon">
+                             <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-    <button type="submit" class="btn btn-primary btn-sm">Count</button>
-</form>
 
-<h4> TODO Get receipt and confirm it</h4>
-<input type="text" name="receipt" placeholder="TOTAL PRICE">
-<button type="button" class="btn btn-success btn-sm">CONFIRM</button>
-<button type="button" class="btn btn-danger btn-sm">CANCEL</button>
+            <div class='col-md-5'>
+                <div class="form-group">
+                    <label class="control-label">To date</label>
+                    <div class='input-group date' id='datetimepicker2'>
+                        <input type='text' class="form-control" name="toDate"/>
+                        <span class="input-group-addon">
+                             <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+         <c:if test="${requestScope.err == 10}">
+             <p>${requestScope.errMSG}</p>
+         </c:if>
+        </span>
+
+        <button type="submit" class="btn btn-primary btn-sm">${sessionScope.language['Count']}</button>
+    </form>
+</div>
 
 
+</span>
 
 
 <script type="text/javascript" src="<c:url value='/js/date.js'/>"></script>

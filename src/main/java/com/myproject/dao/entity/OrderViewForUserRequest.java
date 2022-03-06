@@ -7,6 +7,7 @@ import java.util.Objects;
 public class OrderViewForUserRequest implements Serializable {
     private static final long serialUID = 1L;
     private String login;
+    private int amountOfRecords;
     private Order order;
     private Car car;
     private String approved;
@@ -22,6 +23,10 @@ public class OrderViewForUserRequest implements Serializable {
 
         public OrderViewBuilder setLogin(String login) {
             orderView.login = login;
+            return this;
+        }
+        public OrderViewBuilder setAmountOfRecords(int amountOfRecords){
+            orderView.amountOfRecords = amountOfRecords;
             return this;
         }
 
@@ -71,6 +76,10 @@ public class OrderViewForUserRequest implements Serializable {
 
     public String getFeedback() {
         return feedback;
+    }
+
+    public int getAmountOfRecords() {
+        return amountOfRecords;
     }
 
     @Override

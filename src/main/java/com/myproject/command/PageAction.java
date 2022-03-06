@@ -33,7 +33,8 @@ public enum PageAction {
     DECLINE_ORDER_BY_MANAGER("declineOrder",new DeclineOrderCommand()),
     VIEW_USER_ORDERS("viewOrders",new ViewOrdersCommand()),
     VIEW_USER_ORDERS_PERSONAL("myOrders",new ViewMyOrdersCommand()),
-    PAGINATION("pagination",new PaginationCommand());
+    PAGINATION("pagination",new PaginationCommand()),
+    SEARCH("search",new SearchCommand());
 
 
     private final String action;
@@ -59,7 +60,6 @@ public enum PageAction {
                 return command.command;
             }
         }
-        //todo return home page
         return null;
     }
     }

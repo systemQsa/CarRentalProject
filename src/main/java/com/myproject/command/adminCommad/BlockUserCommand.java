@@ -6,6 +6,7 @@ import com.myproject.command.util.Route;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
 
@@ -17,7 +18,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 public class BlockUserCommand implements Command {
-    private final UserService userService = new UserServiceImpl();
+    private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private static final Logger logger = LogManager.getLogger(AddCarCommand.class);
 
     @Override

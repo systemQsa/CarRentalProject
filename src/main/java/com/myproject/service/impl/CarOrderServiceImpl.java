@@ -1,9 +1,11 @@
 package com.myproject.service.impl;
 
+import com.myproject.dao.OrderDao;
 import com.myproject.dao.entity.Order;
 import com.myproject.dao.impl.OrderDaoImpl;
 import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -21,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 public class CarOrderServiceImpl implements CarOrderService {
-    private final OrderDaoImpl orderDao = new OrderDaoImpl();
+    private final OrderDao orderDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getOrderDao();
     private static final Logger logger = LogManager.getLogger(CarOrderServiceImpl.class);
     private final Lock lock = new ReentrantLock();
 
@@ -74,7 +76,6 @@ public class CarOrderServiceImpl implements CarOrderService {
         Order.OrderBuilder order = new Order.OrderBuilder();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Order orderResult;
-        boolean isPaymentSuccessful;
         Date parseFromDate = null;
         Date parseToDate = null;
         try {

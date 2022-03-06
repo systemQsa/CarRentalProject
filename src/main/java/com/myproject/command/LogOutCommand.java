@@ -23,20 +23,17 @@ public class LogOutCommand implements Command {
         ServletContext context = request.getServletContext();
         // ToDo delete current user (context & session)
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
-       // System.out.println("LOGGED USERS  LOGOUT" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
 
         Object userName = context.getAttribute(GeneralConstant.USER_NAME);
-        System.out.println("Login logout " + request.getAttribute("login"));
-       // System.out.println("userName Logout "+userName + " " + request.getSession().getAttribute(GeneralConstant.ROLE));
-       // System.out.println(request.getSession().getAttribute("userName"));
+        System.out.println("Login logout " + request.getAttribute(GeneralConstant.LOGIN));
         if (CommandUtil.userIsLogged(request)) {
             CommandUtil.setRoleForUser(request, null, null);
             context.setAttribute(GeneralConstant.USER_NAME, null);
-            session.setAttribute(GeneralConstant.ROLE,null);
-            request.setAttribute(GeneralConstant.LOGIN,null);
-            System.out.println("DELETED USER NAME "+ userName);
+            session.setAttribute(GeneralConstant.ROLE, null);
+            request.setAttribute(GeneralConstant.LOGIN, null);
+            System.out.println("DELETED USER NAME " + userName);
             loggedUsers.remove((String) userName);
-            request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
+            request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
             System.out.println(request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
             logger.info("USER LOGGED OUT");
             route.setPathOfThePage(ConstantPage.HOME_PAGE);
@@ -44,10 +41,8 @@ public class LogOutCommand implements Command {
             return route;
         }
         System.out.println("LOGGED USERS LOG OUT!");
-        //System.out.println(request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-       // loggedUsers.remove((String) userName);
         logger.info("USER LOGGED OUT");
-        request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
+        request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
         route.setPathOfThePage(ConstantPage.HOME_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);
         return route;

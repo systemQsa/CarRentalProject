@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderViewService {
-    Optional<List<OrderViewForUserRequest>> getOrders(String approved) throws ServiceException;
+    Optional<List<OrderViewForUserRequest>> getOrders(String approved,int startPage) throws ServiceException;
     Optional<List<OrderViewForUserRequest>> getAllUserPersonalOrders(String login,int startPage) throws ServiceException;
 }

@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionPool {
+public class ConnectionPool implements ConnectManager{
     private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
 
     private static volatile ConnectionPool instance;
@@ -30,6 +30,7 @@ public class ConnectionPool {
         return localInstance;
     }
 
+    @Override
     public Connection getConnection() {
         DataSource dataSource;
         Context initialContext;
@@ -44,11 +45,10 @@ public class ConnectionPool {
         } catch (NamingException | SQLException e) {
             logger.fatal("SOME PROBLEM OCCUR CANT CONNECT TO DB");
         }
-        System.out.println("RETURN CONNECTION" + connection);
-        return connection;
+         return connection;
     }
 
-    public static void closeConnection(Connection connection) {
+    public  void closeConnection(Connection connection) {
         if (connection != null) {
             try {
                 connection.close();

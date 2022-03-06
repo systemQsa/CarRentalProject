@@ -10,6 +10,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
@@ -29,24 +31,20 @@ public class ValidateInput {
     private final UserService userService = new UserServiceImpl();
     private static final Logger logger = LogManager.getLogger(ValidateInput.class);
 
-
-
-    public void validateLogin(String login, HttpServletRequest request) throws ValidationException {
+    public void validateLogin(String login, HttpServletRequest request, HttpServletResponse response) throws ValidationException {
         Pattern englishLogin = Pattern.compile(EMAIL_REGEX);
         Pattern cyrillicLogin = Pattern.compile(EMAIL_CYRILLIC);
         Matcher english = englishLogin.matcher(login);
         Matcher cyrillic = cyrillicLogin.matcher(login);
         System.out.println("\n\n Login regex " + cyrillic.matches() + " " + english.matches());
 
-        if (login.equals(GeneralConstant.EMPTY_STRING)) {
-            request.setAttribute("errorLogin", "incorrect login");
-            logger.error("VALIDATION LOGIN WAS FAILED");
-            throw new ValidationException("Invalid Login please try again");
-        }
         if (cyrillic.matches() || english.matches()){
             logger.info("login validation passed");
-        }else{
-            throw new ValidationException("Invalid Login please try again");
+        }else {
+            request.setAttribute("err",2);
+            request.setAttribute("errMSG", "incorrect login");
+            logger.error("VALIDATION LOGIN WAS FAILED");
+            throw new ValidationException("Invalid Login");
         }
      }
 
@@ -54,22 +52,27 @@ public class ValidateInput {
     public void validatePassword(char[] password, HttpServletRequest request) throws ValidationException {
         if (password == null || password.length == 0 || !String.valueOf(password).matches(PASSWORD_REGEX)) {
             logger.error("VALIDATION PASSWORD WAS FAILED");
+            request.setAttribute("errMSG","Invalid password");
+            request.setAttribute("err",3);
             throw new ValidationException("Invalid password!");
         }
     }
 
 
     public void validateInputNameSurname(String name, String surname, HttpServletRequest request) throws ValidationException {
-        if (!name.matches(REGEX_ONLY_WORDS) && surname.matches(REGEX_ONLY_WORDS)) {
+        if (name.matches(REGEX_ONLY_WORDS) && surname.matches(REGEX_ONLY_WORDS)) {
+            logger.info("Validation name and surname passed");
+        }else {
             logger.error("VALIDATION NAME OR SURNAME WERE FAILED");
             throw new ValidationException("Please check your name or surname the input data were entered incorrect!");
         }
-        System.out.println("validation name surname work please try again");
-    }
+     }
 
 
     public void validatePhoneNumber(String phoneNumber, HttpServletRequest request) throws ValidationException {
-        if (!phoneNumber.matches(REGEX_PHONE)) {
+        if (phoneNumber.matches(REGEX_PHONE)) {
+            logger.info("Validation phone passed");
+        }else {
             logger.warn("VALIDATION PHONE WAS FAILED");
             throw new ValidationException("The phone number were entered incorrect!");
         }
@@ -92,21 +95,26 @@ public class ValidateInput {
     }
 
 
-    public static boolean validateDatesAndTime(LocalDateTime fromDate, LocalDateTime toDate) throws ValidationException {
+    public static boolean validateDatesAndTime(LocalDateTime fromDate, LocalDateTime toDate,HttpServletRequest request) throws ValidationException {
         LocalDateTime now = LocalDateTime.now();
         if (fromDate.isEqual(now) || fromDate.isAfter(now) && (toDate.isAfter(now) && toDate.isAfter(fromDate))) {
             return true;
         }
         logger.warn("Attempt to enter incorrect date and time");
-        throw new ValidationException("Please enter the date and the time properly");
+        request.setAttribute("err",10);
+        request.setAttribute("errMSG","Please enter date and time properly!");
+         throw new ValidationException("/WEB-INF/view/user/bookCar.jsp");
     }
-    public static boolean validatePassport(String passport) throws ValidationException{
+
+    public static boolean validatePassport(String passport,HttpServletRequest request) throws ValidationException{
         Pattern pattern = Pattern.compile(REGEX_PASSPORT);
         Matcher pass = pattern.matcher(passport);
         if (pass.matches()){
             logger.info("Passport validation passed");
         }
         logger.info("Passport validation was failed");
-        throw new ValidationException("Invalid Passport Credentials");
+        request.setAttribute("err",12);
+        request.setAttribute("errMSG","Please enter passport data properly!");
+        throw new ValidationException("/WEB-INF/view/user/bookCar.jsp");
     }
 }

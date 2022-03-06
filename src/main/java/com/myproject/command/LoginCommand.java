@@ -3,6 +3,7 @@ package com.myproject.command;
 import com.myproject.command.util.*;
 import com.myproject.dao.entity.User;
 import com.myproject.exception.*;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
 import com.myproject.validation.ValidateInput;
@@ -27,45 +28,56 @@ public class LoginCommand implements Command {
         char[]password = request.getParameter("password").toCharArray();
 
         if (validateInput.validateUserIsBlocked(login,request)){
-            throw new ValidationException("BY SOME REASON YOU WERE BLOCKED. PLEASE CONTACT OUR MANAGER!");
+            logger.warn("Blocked user tried to log in");
+            setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.BLOCKED_USER,1,request);
+             route.setPathOfThePage(ConstantPage.LOG_IN_PAGE);
+            route.setRoute(Route.RouteType.REDIRECT);
+           throw new ValidationException("");
+
         }
 
         logger.info("USER LOGIN  == " + login);
-         //todo inform the cause on WEBpage if login or password incorrect
 
         if (CommandUtil.userIsLogged(request)) {
             String userRole = CommandUtil.getUserRoleFromPage(request);
             route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(userRole));
             logger.info("user is logged");
         }else{
-            userService = new UserServiceImpl();
-            //todo redirect to error page if user is blocked
-            validateInput.validateLogin(login,request);
+            userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
+            validateInput.validateLogin(login,request,response);
             validateInput.validatePassword(password,request);
 
-            System.out.println(userService.getClass().getName());
-            String role;
-            try {
+             String role;
 
-                role = userService.logInValidation(login,password);
-                if (role != null){
-                    user = userService.getUserByLoginAndPass(login,password);
-                }
+            try {
+                role = userService.logInValidation(login,password,request);
             } catch (ServiceException e) {
-               throw new CommandException(e.getMessage());
+                throw new CommandException(ConstantPage.LOG_IN_PAGE);
             }
+
+            if (role != null){
+                try {
+                    user = userService.getUserByLoginAndPass(login,password);
+                } catch (ServiceException e) {
+                    throw new CommandException(e.getMessage());
+                }
+            }else {
+                setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.INVALID_PASS,3,request);
+                throw new ValidationException(ConstantPage.LOG_IN_PAGE);
+            }
+
 
 
             CommandUtil.setRoleForUser(request,role,login);
             route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(role));
             request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
             try {
-                request.getSession().setAttribute("userBalance",userService.getBalance(login));
-                request.getSession().setAttribute("userIdByLogin",user.getUserId());
-                request.getSession().setAttribute("userLogin",user.getLogin());
+                request.getSession().setAttribute(GeneralConstant.Util.USER_BALANCE,userService.getBalance(login));
+                request.getSession().setAttribute(GeneralConstant.Util.USER_ID_BY_LOGIN,user.getUserId());
+                request.getSession().setAttribute(GeneralConstant.Util.USER_LOGIN,user.getLogin());
             } catch (ServiceException e) {
                 logger.error("USER CANT LOGIN SOMETHING WENT WRONG");
-                throw new CommandException(e.getMessage());
+                  throw new CommandException(ConstantPage.LOG_IN_PAGE);
             }
             logger.info("user NOT logged!");
 
@@ -74,8 +86,7 @@ public class LoginCommand implements Command {
         route.setRoute(Route.RouteType.REDIRECT);
 
         loggedUsers.add(login);
-        request.getSession().getServletContext().setAttribute("loggedUsers", loggedUsers);
-        System.out.println("\n USER LOGIN " + login + "\n" + loggedUsers+"'\n");
-        return route;
+        request.getSession().getServletContext().setAttribute(GeneralConstant.Util.LOGGED_USERS, loggedUsers);
+         return route;
     }
 }

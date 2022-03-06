@@ -1,11 +1,13 @@
 package com.myproject.service;
 
+ import com.myproject.dao.entity.Car;
  import com.myproject.dao.entity.Order;
  import com.myproject.exception.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+ import java.util.Optional;
 
 public interface CarOrderService {
     boolean bookTheCar(HttpServletRequest request, HttpServletResponse response)throws ServiceException;

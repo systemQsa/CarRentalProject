@@ -2,10 +2,12 @@ package com.myproject.dao.impl;
 
 
 import com.myproject.dao.OrderDao;
+import com.myproject.dao.connection.ConnectManager;
 import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.Order;
 import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import java.sql.*;
@@ -14,10 +16,24 @@ import java.util.concurrent.atomic.AtomicReference;
 public class OrderDaoImpl implements OrderDao {
     private Connection connection = null;
     private static final Logger logger = LogManager.getLogger(OrderDaoImpl.class);
+    private ConnectManager connectManager;
+
+    public OrderDaoImpl(){
+        connectManager = ConnectionPool.getInstance();
+    }
+
+    @Override
+    public void setConnection(ConnectManager connectManager)  {
+        this.connectManager = connectManager;
+    }
+
+    public OrderDaoImpl(Connection connection){
+        this.connection = connection;
+    }
 
     @Override
     public boolean setApprovedOrderByManager(String managerLogin, String feedback, String approved, long orderId) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         boolean response = false;
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_APPROVED_ORDER_BY_MANAGER)) {
             statement.setString(1, feedback);
@@ -31,14 +47,14 @@ public class OrderDaoImpl implements OrderDao {
             logger.warn("Cant approve the order by manager");
             throw new DaoException("SOME PROBLEM CANT APPROVE THE ORDER");
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         return response;
     }
 
     @Override
     public Order processTheBooking(Order order, String login, int carId,boolean processPayment) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         boolean result = false;
         ResultSet resultSet;
         ResultSet resultSet2;
@@ -118,13 +134,15 @@ public class OrderDaoImpl implements OrderDao {
             }
             logger.fatal("SOME PROBLEM CANT PROCESS THE USER PAYMENT");
             throw new DaoException("CANT PROCESS THE PAYMENT IN OrderDaoImpl class", e);
+        }finally {
+            connectManager.closeConnection(connection);
         }
         return order;
     }
 
     @Override
     public double getDriverRentPrice(int id) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         ResultSet resultSet;
         double rentalPrice = 0;
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_DRIVER_RENT_PRICE)) {
@@ -137,7 +155,7 @@ public class OrderDaoImpl implements OrderDao {
             logger.error("CANT GET RENTAL DRIVER PRICE");
             throw new DaoException("CANT GET RENTAL DRIVER PRICE", e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         return rentalPrice;
     }

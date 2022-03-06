@@ -20,8 +20,11 @@ public class Route {
     }
 
     public void setPathOfThePage(String pathOfThePage) {
-        this.pathOfThePage = pathOfThePage;
-    }
+        if (this.pathOfThePage == null){
+            this.pathOfThePage = pathOfThePage;
+        }
+     }
+
     public enum RouteType{
         REDIRECT,FORWARD
     }

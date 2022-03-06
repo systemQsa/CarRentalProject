@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.HashSet;
 
 
-@WebServlet("/helloServlet")
+@WebServlet(name = "helloServlet",urlPatterns = "/helloServlet")
 public class HelloServlet extends HttpServlet {
     private static final Logger logger = LogManager.getLogger(HelloServlet.class);
 
@@ -29,7 +29,7 @@ public class HelloServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             processTheRequest(request, response);
         } catch (ServletException | IOException | ControllerException e) {
@@ -40,7 +40,7 @@ public class HelloServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         try {
             processTheRequest(req, resp);
         } catch (ServletException | IOException | ControllerException e) {
@@ -55,33 +55,41 @@ public class HelloServlet extends HttpServlet {
     }
 
     private void processTheRequest(HttpServletRequest request, HttpServletResponse response) throws ControllerException, IOException, ServletException {
+
+        System.out.println("==============servlet===================" + request.getParameter("action"));
         String action = request.getParameter(GeneralConstant.ACTION);
         logger.info("Action " + action + "  " + request.getParameter("action"));
         logger.info("Role " + request.getSession().getAttribute("login"));
 
+        if (request.getParameter("search") != null){
+            action = "search";
+        }
+
          String str = request.getContextPath();
-        Command command = PageAction.getCommand(action);
+        Command command;
+        if (action != null) {
+            command = PageAction.getCommand(action);
 
-        assert command != null;
-        Route route;
-        try {
-            route = command.execute(request, response);
-        } catch (CommandException | ValidationException e) {
-            logger.warn("CONTROLLER EXCEPTION");
-            throw new ControllerException(e.getMessage());
+             Route route;
+            try {
+                route = command.execute(request, response);
+            } catch (CommandException | ValidationException e) {
+                logger.warn("CONTROLLER EXCEPTION");
+                System.out.println("MSG\n" + e.getMessage());
+                request.getRequestDispatcher(e.getMessage()).forward(request,response);
+                throw new ControllerException(e.getMessage());
+            }
+            String path = route.getPathOfThePage();
+             if (route.getRoute().equals(Route.RouteType.FORWARD)) {
+                System.gc();
+                request.getRequestDispatcher(route.getPathOfThePage()).forward(request, response);
+            } else if (path.contains(GeneralConstant.REDIRECT)) {
+                System.gc();
+                response.sendRedirect(path.replaceAll(GeneralConstant.REDIRECT, GeneralConstant.CAR));
+            } else {
+                System.gc();
+                response.sendRedirect(str + path);
+            }
         }
-        String path = route.getPathOfThePage();
-        System.out.println("PATH " + path);
-        if (route.getRoute().equals(Route.RouteType.FORWARD)) {
-            System.gc();
-            request.getRequestDispatcher(route.getPathOfThePage()).forward(request, response);
-        } else if (path.contains(GeneralConstant.REDIRECT)) {
-            System.gc();
-            response.sendRedirect(path.replaceAll(GeneralConstant.REDIRECT, GeneralConstant.CAR));
-        } else {
-            System.gc();
-            response.sendRedirect(str + path);
-        }
-
     }
 }

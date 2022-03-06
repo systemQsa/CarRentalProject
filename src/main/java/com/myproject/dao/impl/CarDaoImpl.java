@@ -1,6 +1,7 @@
 package com.myproject.dao.impl;
 
 import com.myproject.dao.CarDao;
+import com.myproject.dao.connection.ConnectManager;
 import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.Car;
 import com.myproject.dao.query.QuerySQL;
@@ -15,15 +16,51 @@ import java.util.List;
 public class CarDaoImpl implements CarDao {
     private  Connection connection = null;
     private static final Logger logger = LogManager.getLogger(CarDaoImpl.class);
+    private ConnectManager connectManager;
+
+    public CarDaoImpl(){
+        connectManager = ConnectionPool.getInstance();
+    }
 
     @Override
-    public List<Car> findAll() throws DaoException {
+    public void setConnection(ConnectManager connectManager)  {
+        this.connectManager = connectManager;
+    }
+
+    @Override
+    public Car getCatByName(String name) throws DaoException {
+        connection = connectManager.getConnection();
+        ResultSet resultSet;
+        Car.CarBuilder car = new Car.CarBuilder();
+        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.SEARCH_CAR_BY_NAME)){
+            statement.setString(1,name);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()){
+                car.setCarId(resultSet.getInt("id_car"))
+                        .setName(resultSet.getString("name"))
+                        .setCarClass(resultSet.getString("carClass"))
+                        .setBrand(resultSet.getString("brand"))
+                        .setRentalPrice(resultSet.getDouble("rent_price"));
+            }
+
+        }catch (SQLException e){
+            throw new DaoException("Cant find Car by given name");
+        }finally {
+            connectManager.closeConnection(connection);
+        }
+        return car.build();
+    }
+
+    @Override
+    public List<Car> findAll(int currPage) throws DaoException {
         List<Car> carList = new ArrayList<>();
-        try{
-            connection = ConnectionPool.getInstance().getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(QuerySQL.GET_ALL_CARS);
-            //todo refactor duplicates
+        int itemsPerPage = 2;
+        System.out.println("\n\ncurr Page " + currPage);
+        connection = connectManager.getConnection();
+        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ALL_CARS)){
+            statement.setInt(1,(currPage));
+            statement.setInt(2,itemsPerPage);
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 Car.CarBuilder carBuilder = new Car.CarBuilder();
                 carBuilder.setCarId(resultSet.getInt("id_car"))
@@ -38,7 +75,7 @@ public class CarDaoImpl implements CarDao {
             logger.error("CANT GET ALL CARS FROM DB");
            throw new DaoException("CANT GET ALL CARS",e);
         }finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("ALL CARS WAS FOUND IN DB SUCCESSFULLY");
         return carList;
@@ -46,7 +83,7 @@ public class CarDaoImpl implements CarDao {
 
     @Override
     public Car findById(int carId) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         Car.CarBuilder carBuilder = new Car.CarBuilder();
         ResultSet resultSet;
          try(PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ONE_CAR_BY_ID)){
@@ -64,7 +101,7 @@ public class CarDaoImpl implements CarDao {
             logger.error("CANT FIND CAR BY GIVEN ID " + carId);
             throw new DaoException("CANT FIND CAR BY GIVEN ID",e);
         }finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("CAR WAS FOUND IN DB BY GIVEN ID "+ carId + " SUCCESSFULLY");
         return carBuilder.build();
@@ -73,7 +110,7 @@ public class CarDaoImpl implements CarDao {
     @Override
     public boolean deleteById(int carId) throws DaoException {
         boolean success = false;
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         try(PreparedStatement statement = connection.prepareStatement(QuerySQL.DELETE_CAR)){
             statement.setInt(1,carId);
             if (statement.executeUpdate() > 0){
@@ -83,7 +120,7 @@ public class CarDaoImpl implements CarDao {
             logger.error("CANT DELETE CAR BY GIVEN ID " + carId);
             throw new DaoException("CANT DELETE CAR",e);
         }finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("THE CAR DELETED SUCCESSFULLY");
         return success;
@@ -92,7 +129,7 @@ public class CarDaoImpl implements CarDao {
     @Override
     public boolean update(Car car) throws DaoException{
         boolean response = false;
-         connection = ConnectionPool.getInstance().getConnection();
+         connection = connectManager.getConnection();
          try(PreparedStatement statement = connection.prepareStatement(QuerySQL.UPDATE_CAR)){
               statement.setString(1, car.getName());
               statement.setString(2, car.getCarClass());
@@ -107,7 +144,7 @@ public class CarDaoImpl implements CarDao {
              logger.error("CANT UPDATE CAR SOME PROBLEM OCCUR");
              throw new DaoException("CANT UPDATE CAR ",e);
          }finally {
-             ConnectionPool.closeConnection(connection);
+             connectManager.closeConnection(connection);
          }
         logger.info("THE CAR UPDATED SUCCESSFULLY");
         return response;
@@ -117,7 +154,7 @@ public class CarDaoImpl implements CarDao {
     public Car addRecordToTable(Car car) throws DaoException {
          ResultSet resultSet;
          Car.CarBuilder carBuilder = new Car.CarBuilder();
-         connection = ConnectionPool.getInstance().getConnection();
+         connection = connectManager.getConnection();
          try(PreparedStatement statement = connection.prepareStatement(QuerySQL.ADD_CAR,Statement.RETURN_GENERATED_KEYS)){
             statement.setString(1,car.getName());
             statement.setString(2, car.getCarClass());
@@ -140,7 +177,7 @@ public class CarDaoImpl implements CarDao {
              logger.error("CANT ADD A NEW CAR TO DB");
             throw new DaoException("CANT ADD A NEW CAR TO DATA",e);
          }finally {
-             ConnectionPool.closeConnection(connection);
+             connectManager.closeConnection(connection);
          }
          logger.info("A NEW CAR ADDED TO DB SUCCESS");
         return carBuilder.build();
@@ -148,7 +185,7 @@ public class CarDaoImpl implements CarDao {
 
     @Override
     public List<Car> getSortedCars(String neededQuery) throws DaoException{
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         ResultSet resultSet;
         List<Car>carList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(neededQuery)){
@@ -167,7 +204,7 @@ public class CarDaoImpl implements CarDao {
             logger.error("CANT SORT CARS BY GIVEN QUERY OR SOME OTHER PROBLEM HAPPENED");
             throw new DaoException("CANT  SORTED CARS BY GIVEN QUERY",e);
         }finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("CARS WERE SORTED SUCCESSFULLY");
         return carList;
@@ -175,7 +212,7 @@ public class CarDaoImpl implements CarDao {
 
     @Override   //todo check if this method needed
     public List<Car> getSortedCarsByCarClass() throws DaoException{
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         ResultSet resultSet;
         List<Car> carList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ALL_CARS_SORT_BY_CAR_CLASS)){
@@ -192,7 +229,7 @@ public class CarDaoImpl implements CarDao {
         }catch (SQLException e){
             throw new DaoException("CANT GET ALL SORTED CARS BY CAR CLASS",e);
         }finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         return carList;
     }

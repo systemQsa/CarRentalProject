@@ -8,6 +8,7 @@ import com.myproject.dao.entity.Order;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
 import com.myproject.service.impl.CarOrderServiceImpl;
 import org.apache.log4j.LogManager;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AcceptOrderCommand implements Command {
-    private final CarOrderService carOrderService = new CarOrderServiceImpl();
+    private final CarOrderService carOrderService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
     private static final Logger logger = LogManager.getLogger(AcceptOrderCommand.class);
 
     @Override

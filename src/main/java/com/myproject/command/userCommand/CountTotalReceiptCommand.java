@@ -37,8 +37,8 @@ public class CountTotalReceiptCommand implements Command {
         String withDriver = request.getParameter("flexRadioDefault");
         String userBalance = request.getParameter("userBalance");
 
-        // System.out.println("\nCount receipt " + request.getParameter("userLoginReq") + " \n");
-        ValidateInput.validatePassport(userPassport);
+        System.out.println("\nCount receipt " + request.getParameter("userLoginReq") + " \n");
+        //ValidateInput.validatePassport(userPassport,request);
          BigDecimal totalPrice;
         if (request.getParameter("fromDate") != null && request.getParameter("toDate") != null) {
 
@@ -47,7 +47,7 @@ public class CountTotalReceiptCommand implements Command {
                 LocalDateTime dateTime1 = LocalDateTime.parse(fromDate, formatter);
                 LocalDateTime dateTime2 = LocalDateTime.parse(toDate, formatter);
 
-                if (ValidateInput.validateDatesAndTime(dateTime1, dateTime2)) {
+                if (ValidateInput.validateDatesAndTime(dateTime1, dateTime2,request)) {
                     orderDurationInHours = calculateHoursFromGivenDates(dateTime1, dateTime2);
                 }
 
@@ -55,7 +55,8 @@ public class CountTotalReceiptCommand implements Command {
                     totalPrice = carOrderService.countReceipt(orderDurationInHours,
                             Double.parseDouble(carRentPrice), Boolean.parseBoolean(withDriver));
                 } else {
-                    throw new CommandException("Please enter date and time properly!!");
+                    setInformMessageIfErrorOccur("Please enter date and time properly!",10,request);
+                    throw new CommandException("/WEB-NF/view/user/bookCar.jsp");
                 }
                 if (Boolean.parseBoolean(withDriver)) {
                     request.getSession().getServletContext().setAttribute("withDriver", "Y");
@@ -72,10 +73,11 @@ public class CountTotalReceiptCommand implements Command {
                 if (BigDecimal.valueOf(Double.parseDouble(userBalance)).compareTo(totalPrice) > 0) {
                     request.getSession().setAttribute("resultIfBalanceOk", "You have enough balance for booking!");
                 } else {
-                    request.getSession().setAttribute("resultIfBalanceOk", null);
+                 request.getSession().setAttribute("resultIfBalanceOk", null);
                 }
             } catch (ServiceException e) {
-                throw new CommandException("SOME PROBLEM CANT COUNT TOTAL ORDER PRICE", e);
+                setInformMessageIfErrorOccur("You don`t have enough charge for booking. Top up your balance and try again!",11,request);
+                throw new CommandException("");
             }
         }
         route.setPathOfThePage(ConstantPage.CONFIRM_RECEIPT_PAGE);

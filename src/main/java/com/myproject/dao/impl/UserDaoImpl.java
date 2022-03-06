@@ -1,6 +1,8 @@
 package com.myproject.dao.impl;
 
 import com.myproject.command.util.GeneralConstant;
+import com.myproject.dao.UserDao;
+import com.myproject.dao.connection.ConnectManager;
 import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.User;
 import com.myproject.dao.entity.UserRole;
@@ -14,15 +16,33 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao implements com.myproject.dao.UserDao<User> {
+public class UserDaoImpl implements UserDao<User> {
     private Connection connection = null;
     private final Encryption encryption = new Encryption();
-    private static final Logger logger = LogManager.getLogger(UserDao.class);
+    private static final Logger logger = LogManager.getLogger(UserDaoImpl.class);
+    private ConnectManager connectManager = null;
+
+    public UserDaoImpl(){
+        connectManager = ConnectionPool.getInstance();
+    }
+
+    public UserDaoImpl(Connection connection){
+        this.connection = connection;
+    }
+
+    public UserDaoImpl(ConnectManager connect){
+        this.connectManager = connect;
+    }
+
+    @Override
+    public void setConnection(ConnectManager connectManager) {
+        this.connectManager = connectManager;
+    }
 
     @Override
     public List<User> findAll() throws DaoException {
         List<User> listUsers = new ArrayList<>();
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(QuerySQL.GET_ALL_USERS);
@@ -43,15 +63,38 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             logger.error("THERE IS NO USERS IN DATABASE");
             throw new DaoException("CANT FIND ALL USERS", e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("USERS IN DB WERE FOUND SUCCESSFULLY");
         return listUsers;
     }
 
     @Override
-    public User findById(int userId) {
-        return null;
+    public User findByLogin(String login) throws DaoException{
+        connection = connectManager.getConnection();
+        ResultSet resultSet;
+        User.UserBuilder user = new User.UserBuilder();
+        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.SEARCH_USER_BY_LOGIN)){
+           statement.setString(1,login);
+           resultSet = statement.executeQuery();
+           if (resultSet.next()){
+               user.setUserId(resultSet.getLong("id_user"))
+                       .setFirstName(resultSet.getString("name"))
+                       .setLastName(resultSet.getString("surname"))
+                       .setLogin(resultSet.getString("login"))
+                       .setRegisterDate(resultSet.getTimestamp("register_date"))
+                       .setIsBanned(resultSet.getString("banned"))
+                       .setPhone(resultSet.getString("phone"))
+                       .setRole(resultSet.getInt("role_id"));
+
+           }
+        }catch (SQLException e){
+            throw new DaoException("Cant find user by given" + login + " login!");
+        }finally {
+            connectManager.closeConnection(connection);
+        }
+        System.out.println(user.build());
+        return user.build();
     }
 
     @Override
@@ -64,27 +107,30 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         return false;
     }
 
+    @Override
     public User getUserByLogin(String login) throws DaoException {
         User.UserBuilder user = new User.UserBuilder();
         ResultSet resultSet;
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_USER_BY_LOGIN)) {
             statement.setString(1, login);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 user.setUserId(resultSet.getInt("id_user"))
                         .setFirstName(resultSet.getString("name"))
-                        .setLogin(login)
+                        .setLogin(resultSet.getString("login"))
                         .setIsBanned(resultSet.getString("banned"))
                         .setHashPass(resultSet.getString("password"))
                         .setRole(resultSet.getInt("role_id"));
+            }else {
+                throw new SQLException("NO SUCH USER IN DB");
             }
 
         } catch (SQLException e) {
             logger.error("CANT FIND USER WITH SUCH CREDENTIALS!");
-            throw new DaoException("NO SUCH USER IN DB", e);
+            throw new DaoException(e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("USER WAS SUCCESSFULLY FOUND IN DB");
         return user.build();
@@ -95,7 +141,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         ResultSet resultSet;
         System.out.println("Add RECORD TO TABLE" + newUser.getPhone());
         User.UserBuilder userBuilder = new User.UserBuilder();
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.ADD_NEW_USER, Statement.RETURN_GENERATED_KEYS)) {
             int index = 1;
             statement.setString(1, newUser.getName());
@@ -113,7 +159,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             logger.error("SOMETHING WENT WRONG CANT ADD NEW USER!");
             throw new DaoException("Can`t add a new user", e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("NEW USER WERE REGISTERED SUCCESSFULLY");
         return userBuilder.build();
@@ -121,7 +167,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
 
     @Override
     public boolean topUpBalance(double balance, String login) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         boolean response = false;
         double resultBalance = 0;
         ResultSet resultSet;
@@ -156,7 +202,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             logger.fatal("IMPOSSIBLE TO TOP UP THE BALANCE");
             throw new DaoException("CANT TOP UP USER BALANCE ", e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("USER TOP UP BALANCE SUCCESSFULLY " + response);
         return response;
@@ -164,7 +210,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
 
     @Override
     public double getBalance(String login) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         ResultSet resultSet;
         double resultBalance = 0;
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SEE_USER_BALANCE)) {
@@ -185,7 +231,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             }
             throw new DaoException("SOMETHING WENT WRONG CANT FIND USER BALANCE", e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("USER GOT ITS BALANCE SUCCESSFULLY");
         return resultBalance;
@@ -193,7 +239,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
 
     @Override
     public boolean setUserRole(String login, UserRole userRole) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         boolean resultIsSuccessful = false;
         try(PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_USER_ROLE)){
             statement.setInt(1,userRole.getId());
@@ -205,7 +251,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             logger.error("SOME PROBLEM SET ROLE FOR USER FAILED");
             throw new DaoException("CANT SET ROLE FROM USER",e);
         }finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("ROLE FOR USER " + login + " WERE CHANGED SUCCESSFULLY");
         return resultIsSuccessful;
@@ -213,7 +259,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
 
     @Override
     public boolean blockUnblockUser(String login, String status) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         boolean response = false;
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.BAN_AND_UNBAN_USER)) {
             statement.setString(1, status);
@@ -226,7 +272,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             logger.error("CANT BLOCK OR UNBLOCK USER");
             throw new DaoException("SOME PROBLEMS OCCUR DUE TO BLOCKING USER", e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("USER WERE BLOCKED/UNBLOCKED SUCCESSFULLY");
         return response;
@@ -234,7 +280,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
 
     @Override
     public String getUserStatus(String login) throws DaoException {
-        connection = ConnectionPool.getInstance().getConnection();
+        connection = connectManager.getConnection();
         ResultSet resultSet;
         String statusCheck = GeneralConstant.EMPTY_STRING;
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.CHECK_USER_STATUS)) {
@@ -248,7 +294,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
             throw new DaoException("CANT GET USER STATUS", e);
 
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         logger.info("USER GOT ITS STATUS SUCCESSFULLY");
         return statusCheck;
@@ -259,7 +305,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         String realPass;
         int id = 0;
         System.out.println("USER DAO    " + login + "  " + password1);
-        connection = ConnectionPool.getInstance().getConnection();
+        // connection = ConnectionPool.getInstance().getConnection();
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_USER_ID_ACCORDING_TO_INPUT)) {
             System.out.println("execute");
             statement.setString(1, login);
@@ -280,7 +326,7 @@ public class UserDao implements com.myproject.dao.UserDao<User> {
         } catch (SQLException e) {
             throw new DaoException("There is no user with such credentials in DB", e);
         } finally {
-            ConnectionPool.closeConnection(connection);
+            connectManager.closeConnection(connection);
         }
         return id;
     }
