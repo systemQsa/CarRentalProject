@@ -36,11 +36,21 @@ public class CountTotalReceiptCommand implements Command {
         String toDate = request.getParameter("toDate");
         String withDriver = request.getParameter("flexRadioDefault");
         String userBalance = request.getParameter("userBalance");
+        String userLogin = request.getParameter("userLogin");
 
-        System.out.println("\nCount receipt " + request.getParameter("userLoginReq") + " \n");
-        //ValidateInput.validatePassport(userPassport,request);
+        System.out.println("\nCount receipt!!!!  "
+        + "passport " +userPassport + " fromDate" + fromDate + " toDAte" + toDate
+         + "carPrice " + carRentPrice + " userBalance "+ userBalance + "userLogin " + userLogin);
+
+       ValidateInput.validatePassport(userPassport,request);
+
+       if (fromDate.isEmpty() || toDate.isEmpty()){
+           setInformMessageIfErrorOccur("Please enter correct date and time",14,request);
+           throw new CommandException("/WEB-INF/view/user/bookCar.jsp");
+       }
+
          BigDecimal totalPrice;
-        if (request.getParameter("fromDate") != null && request.getParameter("toDate") != null) {
+//        if (request.getParameter("fromDate") != null && request.getParameter("toDate") != null) {
 
             try {
 
@@ -48,38 +58,48 @@ public class CountTotalReceiptCommand implements Command {
                 LocalDateTime dateTime2 = LocalDateTime.parse(toDate, formatter);
 
                 if (ValidateInput.validateDatesAndTime(dateTime1, dateTime2,request)) {
+
                     orderDurationInHours = calculateHoursFromGivenDates(dateTime1, dateTime2);
                 }
 
                 if ((orderDurationInHours > 0) && Double.parseDouble(carRentPrice) > 0) {
+
                     totalPrice = carOrderService.countReceipt(orderDurationInHours,
                             Double.parseDouble(carRentPrice), Boolean.parseBoolean(withDriver));
                 } else {
                     setInformMessageIfErrorOccur("Please enter date and time properly!",10,request);
-                    throw new CommandException("/WEB-NF/view/user/bookCar.jsp");
+                    throw new CommandException("/WEB-INF/view/user/bookCar.jsp");
                 }
                 if (Boolean.parseBoolean(withDriver)) {
+
                     request.getSession().getServletContext().setAttribute("withDriver", "Y");
                 } else {
+
                     request.getSession().getServletContext().setAttribute("withDriver", "N");
                 }
                 request.getSession().getServletContext().setAttribute("userLogin",request.getParameter("userLoginReq") );
-                 request.getSession().getServletContext().setAttribute("rentPriceReq",carRentPrice);
+                request.getSession().getServletContext().setAttribute("rentPriceReq",carRentPrice);
                 request.getSession().getServletContext().setAttribute("passport", userPassport);
                 request.getSession().getServletContext().setAttribute("fromDate", fromDate);
                 request.getSession().getServletContext().setAttribute("toDate", toDate);
                 request.getSession().getServletContext().setAttribute("totalPrice", String.format("%.2f", totalPrice));
 
                 if (BigDecimal.valueOf(Double.parseDouble(userBalance)).compareTo(totalPrice) > 0) {
+
                     request.getSession().setAttribute("resultIfBalanceOk", "You have enough balance for booking!");
+
                 } else {
+
                  request.getSession().setAttribute("resultIfBalanceOk", null);
+
                 }
             } catch (ServiceException e) {
+
                 setInformMessageIfErrorOccur("You don`t have enough charge for booking. Top up your balance and try again!",11,request);
-                throw new CommandException("");
+                 throw new CommandException("/WEB-INF/view/user/bookCar.jsp");
             }
-        }
+//        }
+
         route.setPathOfThePage(ConstantPage.CONFIRM_RECEIPT_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);
         return route;

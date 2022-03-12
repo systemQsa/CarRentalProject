@@ -1,10 +1,3 @@
-// $(document).ready(function(){
-//     $( "#datepickerFrom" ).datepicker();
-// });
-//
-// $(document).ready(function(){
-//     $( "#datepickerTo" ).datepicker();
-// });
 
 $(function () {
     $('#datetimepicker1').datetimepicker({
@@ -16,4 +9,5 @@ $(function () {
         format:'YYYY-MM-DD HH:mm:ss'
     });
 });
+
 

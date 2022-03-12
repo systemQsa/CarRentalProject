@@ -11,12 +11,14 @@ import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CarDaoImpl implements CarDao {
     private  Connection connection = null;
     private static final Logger logger = LogManager.getLogger(CarDaoImpl.class);
     private ConnectManager connectManager;
+
 
     public CarDaoImpl(){
         connectManager = ConnectionPool.getInstance();
@@ -27,8 +29,9 @@ public class CarDaoImpl implements CarDao {
         this.connectManager = connectManager;
     }
 
+
     @Override
-    public Car getCatByName(String name) throws DaoException {
+    public Car getCarByName(String name) throws DaoException {
         connection = connectManager.getConnection();
         ResultSet resultSet;
         Car.CarBuilder car = new Car.CarBuilder();
@@ -52,13 +55,23 @@ public class CarDaoImpl implements CarDao {
     }
 
     @Override
-    public List<Car> findAll(int currPage) throws DaoException {
+    public HashMap<List<Car>,Integer> findAll(int currPage) throws DaoException {
         List<Car> carList = new ArrayList<>();
-        int itemsPerPage = 2;
+        HashMap<List<Car>,Integer> map = new HashMap<>();
+        ResultSet resultOfRecords;
+        int records = 0;
+        int itemsPerPage = 5;
+        int start = currPage * itemsPerPage - itemsPerPage;
         System.out.println("\n\ncurr Page " + currPage);
         connection = connectManager.getConnection();
         try(PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ALL_CARS)){
-            statement.setInt(1,(currPage));
+            PreparedStatement statement2 = connection.prepareStatement(QuerySQL.GET_CARS_TOTAL_RECORDS);
+            connection.setAutoCommit(false);
+            resultOfRecords = statement2.executeQuery();
+            if (resultOfRecords.next()){
+                 records = resultOfRecords.getInt("records");
+            }
+            statement.setInt(1,start);
             statement.setInt(2,itemsPerPage);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
@@ -70,6 +83,7 @@ public class CarDaoImpl implements CarDao {
                         .setRentalPrice(resultSet.getDouble("rent_price"));
                       carList.add(carBuilder.build());
             }
+            connection.commit();
 
         }catch (SQLException e){
             logger.error("CANT GET ALL CARS FROM DB");
@@ -77,8 +91,9 @@ public class CarDaoImpl implements CarDao {
         }finally {
             connectManager.closeConnection(connection);
         }
+        map.put(carList,records);
         logger.info("ALL CARS WAS FOUND IN DB SUCCESSFULLY");
-        return carList;
+        return map;
     }
 
     @Override
@@ -184,11 +199,15 @@ public class CarDaoImpl implements CarDao {
     }
 
     @Override
-    public List<Car> getSortedCars(String neededQuery) throws DaoException{
+    public List<Car> getSortedCars(String neededQuery,int currPage) throws DaoException{
         connection = connectManager.getConnection();
         ResultSet resultSet;
+        int start = currPage * 5 - 5;
         List<Car>carList = new ArrayList<>();
         try(PreparedStatement statement = connection.prepareStatement(neededQuery)){
+            //todo pagination finish properly
+            statement.setInt(1,start);
+            statement.setInt(2,5);
             resultSet = statement.executeQuery();
            while (resultSet.next()){
                Car.CarBuilder car = new Car.CarBuilder();

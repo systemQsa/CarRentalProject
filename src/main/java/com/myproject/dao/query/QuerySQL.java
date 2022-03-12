@@ -6,10 +6,11 @@ public final class QuerySQL {
     public static final String ADD_NEW_USER = "INSERT INTO users(name,surname,login,password,phone) VALUES(?,?,?,?,?)";
     public static final String GET_ALL_USERS = "SELECT id_user,name,surname,login,phone,banned,register_date,role_id FROM users ORDER BY id_user DESC";
     public static final String GET_ALL_CARS = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY id_car DESC LIMIT ?,?";
-    public static final String GET_ALL_CARS_SORT_BY_NAME = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY name";
-    public static final String GET_ALL_CARS_SORT_BY_CAR_CLASS = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY carClass";
-    public static final String GET_ALL_CARS_SORT_BY_RENT_PRICE = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY rent_price";
-    public static final String GET_ALL_CARS_SORT_BY_BRAND = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY brand";
+    public static final String GET_CARS_TOTAL_RECORDS  = "SELECT COUNT(id_car) as records FROM cars";
+    public static final String GET_ALL_CARS_SORT_BY_NAME = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY name LIMIT ?,?";
+    public static final String GET_ALL_CARS_SORT_BY_CAR_CLASS = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY carClass LIMIT ?,?";
+    public static final String GET_ALL_CARS_SORT_BY_RENT_PRICE = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY rent_price LIMIT ?,?";
+    public static final String GET_ALL_CARS_SORT_BY_BRAND = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY brand LIMIT ?,?";
     public static final String DELETE_CAR = "DELETE FROM cars WHERE id_car=?";
     public static final String GET_USER_BY_LOGIN = "SELECT id_user,name,login,password,banned,role_id FROM users WHERE login=?";
     public static final String ADD_CAR = "INSERT INTO cars(name,carClass,brand,rent_price,photo) VALUES (?,?,?,?,?)";

@@ -44,7 +44,7 @@ public class ValidateInput {
             request.setAttribute("err",2);
             request.setAttribute("errMSG", "incorrect login");
             logger.error("VALIDATION LOGIN WAS FAILED");
-            throw new ValidationException("Invalid Login");
+            throw new ValidationException("/login.jsp");
         }
      }
 
@@ -54,7 +54,7 @@ public class ValidateInput {
             logger.error("VALIDATION PASSWORD WAS FAILED");
             request.setAttribute("errMSG","Invalid password");
             request.setAttribute("err",3);
-            throw new ValidationException("Invalid password!");
+            throw new ValidationException("/login.jsp");
         }
     }
 
@@ -97,6 +97,7 @@ public class ValidateInput {
 
     public static boolean validateDatesAndTime(LocalDateTime fromDate, LocalDateTime toDate,HttpServletRequest request) throws ValidationException {
         LocalDateTime now = LocalDateTime.now();
+
         if (fromDate.isEqual(now) || fromDate.isAfter(now) && (toDate.isAfter(now) && toDate.isAfter(fromDate))) {
             return true;
         }
@@ -109,12 +110,14 @@ public class ValidateInput {
     public static boolean validatePassport(String passport,HttpServletRequest request) throws ValidationException{
         Pattern pattern = Pattern.compile(REGEX_PASSPORT);
         Matcher pass = pattern.matcher(passport);
-        if (pass.matches()){
-            logger.info("Passport validation passed");
+        if (!pass.matches()){
+            logger.info("Passport validation was failed");
+            request.setAttribute("err", 12);
+            request.setAttribute("errMSG", "Please enter passport data properly!");
+            throw new ValidationException("/WEB-INF/view/user/bookCar.jsp");
         }
-        logger.info("Passport validation was failed");
-        request.setAttribute("err",12);
-        request.setAttribute("errMSG","Please enter passport data properly!");
-        throw new ValidationException("/WEB-INF/view/user/bookCar.jsp");
+         logger.info("Passport validation passed");
+        return true;
+
     }
 }

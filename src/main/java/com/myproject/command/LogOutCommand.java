@@ -40,11 +40,11 @@ public class LogOutCommand implements Command {
             route.setRoute(Route.RouteType.REDIRECT);
             return route;
         }
-        System.out.println("LOGGED USERS LOG OUT!");
-        logger.info("USER LOGGED OUT");
-        request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
-        route.setPathOfThePage(ConstantPage.HOME_PAGE);
-        route.setRoute(Route.RouteType.REDIRECT);
+       // System.out.println("LOGGED USERS LOG OUT!");
+       // logger.info("USER LOGGED OUT");
+       // request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
+       // route.setPathOfThePage(ConstantPage.HOME_PAGE);
+       // route.setRoute(Route.RouteType.REDIRECT);
         return route;
     }
 }

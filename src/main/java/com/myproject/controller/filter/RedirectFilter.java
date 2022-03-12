@@ -39,14 +39,14 @@ public class RedirectFilter implements Filter {
 
         if (userRole != null && (Objects.equals(userRole, "admin") || Objects.equals(userRole, "user")
                 || Objects.equals(userRole, "manager")) && (request.getRequestURI().contains("/login.jsp")
-                || request.getRequestURI().contains("/register.jsp"))) {
+                || request.getRequestURI().contains("/register.jsp") || request.getRequestURI().contains("/index.jsp"))) {
             if (loggedUsers != null) {
                 loggedUsers.remove(userName);
             }
             request.getSession().setAttribute(GeneralConstant.ROLE, null);
             request.getSession().setAttribute(GeneralConstant.USER_NAME, null);
-            System.out.println("Stop================= " + userRole);
-            System.out.println(loggedUsers);
+           // System.out.println("Stop================= " + userRole);
+           // System.out.println(loggedUsers);
             response.sendRedirect("/car");
         }
 
@@ -88,15 +88,15 @@ public class RedirectFilter implements Filter {
             return;
         }
 
-        System.out.println(request.getContextPath() + " context path");
-        System.out.println(request.getRequestURI() + " request URI");
-        System.out.println(request.getServletPath() + " servlet path");
-        System.out.println("Action " + request.getParameter("action"));
+//        System.out.println(request.getContextPath() + " context path");
+//        System.out.println(request.getRequestURI() + " request URI");
+//        System.out.println(request.getServletPath() + " servlet path");
+//        System.out.println("Action " + request.getParameter("action"));
 
         if (Objects.equals(request.getParameter("action"), "pagination")) {
             try {
                 Route route = new PaginationCommand().execute(request, response);
-                System.out.println("\n\\path back " + route.getPathOfThePage());
+               // System.out.println("\n\\path back " + route.getPathOfThePage());
                 request.getRequestDispatcher(route.getPathOfThePage()).forward(request, response);
                 return;
             } catch (CommandException | ValidationException e) {

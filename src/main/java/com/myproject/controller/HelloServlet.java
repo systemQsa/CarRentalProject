@@ -58,9 +58,7 @@ public class HelloServlet extends HttpServlet {
 
         System.out.println("==============servlet===================" + request.getParameter("action"));
         String action = request.getParameter(GeneralConstant.ACTION);
-        logger.info("Action " + action + "  " + request.getParameter("action"));
         logger.info("Role " + request.getSession().getAttribute("login"));
-
         if (request.getParameter("search") != null){
             action = "search";
         }
@@ -75,7 +73,6 @@ public class HelloServlet extends HttpServlet {
                 route = command.execute(request, response);
             } catch (CommandException | ValidationException e) {
                 logger.warn("CONTROLLER EXCEPTION");
-                System.out.println("MSG\n" + e.getMessage());
                 request.getRequestDispatcher(e.getMessage()).forward(request,response);
                 throw new ControllerException(e.getMessage());
             }

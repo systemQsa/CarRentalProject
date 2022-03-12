@@ -8,8 +8,7 @@ import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
-import com.myproject.service.impl.CarServiceImpl;
-import org.apache.log4j.LogManager;
+ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +21,7 @@ public class AddCarCommand implements Command {
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
          Route route = new Route();
          carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+
         try {
             Car car =  carService.addCar(request);
             route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);

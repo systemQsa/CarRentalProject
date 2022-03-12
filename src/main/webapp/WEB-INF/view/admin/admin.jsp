@@ -8,100 +8,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
-    <%--        <link rel="stylesheet" href="${pageContext.request.contentType}/css/index2.css">--%>
-    <link rel="stylesheet" type="text/css" href="<c:url value='/css/index2.css'/>">
+            <link rel="stylesheet" href="${pageContext.request.contentType}/css/index2.css">
+<%--    <link rel="stylesheet" type="text/css" href="<c:url value='/css/index2.css'/>">--%>
 </head>
 <body>
-<div class="header-blue">
-    <nav class="navbar navbar-default navigation-clean-search">
-        <div class="container">
-            <div class="navbar-header"><a class="navbar-brand navbar-link" href="#">${sessionScope.language['label.WELCOME']}
-                Admin</a>
-                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span
-                        class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
-                        class="icon-bar"></span><span class="icon-bar"></span></button>
-            </div>
-            <div class="collapse navbar-collapse" id="navcol-1">
-                <ul class="nav navbar-nav">
-                    <li><a href="${pageContext.request.contextPath}/index.jsp">
-                        <p>${sessionScope.language['header.Home']}</p>
-                    </a></li>
+<%--<div class="header-blue">--%>
+<%--    <nav class="navbar navbar-default navigation-clean-search">--%>
+<%--        <div class="container">--%>
+<%--            <div class="navbar-header"><a class="navbar-brand navbar-link" href="#">${sessionScope.language['label.WELCOME']}--%>
+<%--                Admin</a>--%>
+<%--                <button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navcol-1"><span--%>
+<%--                        class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span--%>
+<%--                        class="icon-bar"></span><span class="icon-bar"></span></button>--%>
+<%--            </div>--%>
+<%--            <div class="collapse navbar-collapse" id="navcol-1">--%>
+<%--                <ul class="nav navbar-nav">--%>
 
-                     <li>
-                        <a>
+<%--&lt;%&ndash;                    <li>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        <a>&ndash;%&gt;--%>
 
-                            <p>
-                            <form method="get" action="${pageContext.request.contextPath}/helloServlet">
-                                <input type="hidden" name="action" value="findAllUsers">
-                                <button type="submit" class="buttonToLink">${sessionScope.language['All_users']}</button>
-                            </form>
-                            <%--                                   <form method="get" action="${pageContext.request.session.servletContext.contextPath}/view/admin/admin.jsp/helloServlet">--%>
-                            <%--                                 <input type="hidden" name="action" value="findAllUsers">--%>
-                            <%--                                        <button type="submit" class="buttonToLink">All users</button>--%>
-                            <%--                                </form>--%>
+<%--&lt;%&ndash;                            <p>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            <form method="get" action="${pageContext.request.contextPath}/helloServlet">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <input type="hidden" name="action" value="findAllUsers">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <button type="submit" class="buttonToLink">${sessionScope.language['All_users']}</button>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </form>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            &lt;%&ndash;                                   <form method="get" action="${pageContext.request.session.servletContext.contextPath}/view/admin/admin.jsp/helloServlet">&ndash;%&gt;&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            &lt;%&ndash;                                 <input type="hidden" name="action" value="findAllUsers">&ndash;%&gt;&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            &lt;%&ndash;                                        <button type="submit" class="buttonToLink">All users</button>&ndash;%&gt;&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            &lt;%&ndash;                                </form>&ndash;%&gt;&ndash;%&gt;--%>
 
 
-                            <%--                                    <a class="nav-link" href="${pageContext.request.contextPath}/view/admin/admin.jsp/helloServlet?action=findAllUsers">All users</a>--%>
-                            </p>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <p>
-                            <form method="get" action="${pageContext.request.contextPath}/helloServlet">
-                                <input type="hidden" name="action" value="findAllCars">
-                                <button type="submit" class="buttonToLink">${sessionScope.language['All_cars']}</button>
-                            </form>
-                            </p>
-                        </a>
-                    </li>
-                    <li>
-
-                        <a href="${pageContext.request.contextPath}/view/admin/addNewCar.jsp">
-                            <p>${sessionScope.language['Add_car']}</p></a>
-
-                    </li>
+<%--&lt;%&ndash;                            &lt;%&ndash;                                    <a class="nav-link" href="${pageContext.request.contextPath}/view/admin/admin.jsp/helloServlet?action=findAllUsers">All users</a>&ndash;%&gt;&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </p>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        </a>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                    </li>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                    <li>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        <a>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            <p>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            <form method="get" action="${pageContext.request.contextPath}/helloServlet">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <input type="hidden" name="action" value="findAllCars">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                                <button type="submit" class="buttonToLink">${sessionScope.language['All_cars']}</button>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </form>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            </p>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        </a>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                    </li>&ndash;%&gt;--%>
 <%--                    <li>--%>
-<%--                        <form method="get" action="admin.jsp/helloServlet">--%>
-<%--                            <input type="hidden" name="action" value="findAllUsers">--%>
-<%--                            <button type="submit">Users</button>--%>
-<%--                        </form>--%>
-<%--                     </li>--%>
 
-                    <li><a href="?action=findAllUsers">${sessionScope.language['All_users']}</a></li>
-                    <li>
-                        <a href="?action=findAllCars">${sessionScope.language['All_cars']}</a>
-                    </li>
+<%--                        <a href="${pageContext.request.contextPath}/view/admin/addNewCar.jsp">--%>
+<%--                            <p>${sessionScope.language['Add_car']}</p></a>--%>
 
-                             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                        <li role="presentation"><a href="?lang=en">ENG</a></li>
+<%--                    </li>--%>
+<%--&lt;%&ndash;                    <li>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        <form method="get" action="admin.jsp/helloServlet">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            <input type="hidden" name="action" value="findAllUsers">&ndash;%&gt;--%>
+<%--&lt;%&ndash;                            <button type="submit">Users</button>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                        </form>&ndash;%&gt;--%>
+<%--&lt;%&ndash;                     </li>&ndash;%&gt;--%>
 
-                                         <li role="presentation"><a href="?lang=uk">UKR</a></li>
-                                 </ul>
-                            </li>
+<%--                    <li><a href="?action=findAllUsers">${sessionScope.language['All_users']}</a></li>--%>
+<%--                    <li>--%>
+<%--                        <a href="?action=findAllCars">${sessionScope.language['All_cars']}</a>--%>
+<%--                    </li>--%>
 
+<%--                             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>--%>
+<%--                                <ul class="dropdown-menu" role="menu">--%>
+<%--                                        <li role="presentation"><a href="?lang=en">ENG</a></li>--%>
+
+<%--                                         <li role="presentation"><a href="?lang=uk">UKR</a></li>--%>
+<%--                                 </ul>--%>
+<%--                            </li>--%>
+
+<%--                </ul>--%>
+<%--                <form class="navbar-form navbar-left" target="_self">--%>
+<%--&lt;%&ndash;                    <input type="hidden" name="action" value="search">&ndash;%&gt;--%>
+<%--                    <div class="form-group">--%>
+<%--                        <label class="control-label" for="search-field"><i--%>
+<%--                                class="glyphicon glyphicon-search"></i></label>--%>
+<%--                        <input class="form-control search-field" type="search" name="search" id="search-field">--%>
+<%--                    </div>--%>
+<%--                </form>--%>
+<%--                <div class="text-right">--%>
+<%--                    <form method="post" action="${pageContext.request.contextPath}/helloServlet">--%>
+<%--                        <input type="hidden" name="action" value="logout">--%>
+<%--                        <button type="submit" class="btn btn-info">${sessionScope.language['label.Logout']}</button>--%>
+<%--                    </form>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--    </nav>--%>
+<%--</div>--%>
+<%--</div>--%>
+ <p>${pageContext.session.servletContext.getAttribute("userName")}</p>
+
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">${sessionScope.language['label.WELCOME']}</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="?action=findAllUsers">${sessionScope.language['All_users']}</a></li>
+            <li><a href="?action=findAllCars">${sessionScope.language['All_cars']}</a></li>
+            <li><a href="${pageContext.request.contextPath}/view/admin/addNewCar.jsp">${sessionScope.language['Add_car']}</a></li>
+            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li role="presentation"><a href="?lang=en">ENG</a></li>
+                    <li role="presentation"><a href="?lang=uk">UKR</a></li>
                 </ul>
-                <form class="navbar-form navbar-left" target="_self">
-<%--                    <input type="hidden" name="action" value="search">--%>
-                    <div class="form-group">
-                        <label class="control-label" for="search-field"><i
-                                class="glyphicon glyphicon-search"></i></label>
-                        <input class="form-control search-field" type="search" name="search" id="search-field">
-                    </div>
-                </form>
-                <div class="text-right">
-                    <form method="post" action="${pageContext.request.contextPath}/helloServlet">
-                        <input type="hidden" name="action" value="logout">
-                        <button type="submit" class="btn btn-info">${sessionScope.language['label.Logout']}</button>
-                    </form>
+            </li>
+        </ul>
+
+        <form class="navbar-form navbar-left">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" name="search">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-    </nav>
-</div>
-</div>
- <p>${pageContext.session.servletContext.getAttribute("userName")}</p>
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+            <form method="post" action="${pageContext.request.contextPath}/helloServlet">
+                <input type="hidden" name="action" value="logout">
+                <button type="submit" class="btn btn-info btn-sm">${sessionScope.language['label.Logout']}</button>
+            </form>
+        </ul>
+    </div>
+</nav>
+
+
+
+
+
+
 
 
 <c:if test="${not empty requestScope.allUsers}">
@@ -167,6 +208,8 @@
 
 </c:if>
 
+
+
 <c:if test="${not empty requestScope.allCars}">
     <table class="table table-hover">
         <thead>
@@ -201,20 +244,27 @@
         <a href="${pageContext.request.contextPath}/view/admin/admin.jsp">${sessionScope.language['Go_back']}</a>
     </table>
 </c:if>
-<div class="text-center">
-    <form method="get">
-        <input type="hidden" name="action" value="pagination">
+<c:if test="${not empty requestScope.allCars}">
+    <div class="text-center">
+        <input  type="hidden" name="action" value="pagination">
         <ul class="pagination justify-content-center">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link"
-                                     href="${pageContext.request.contentType}/car/helloServlet?action=pagination&page=1">1</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            <li class="page-item"><c:if test="${requestScope.currentPage != 1}">
+                <td><a class="page-link"
+                       href="?action=pagination&required=viewCars&page=${requestScope.currentPage - 1}">${sessionScope.language['Previous']}</a>
+                </td>
+            </c:if></li>
+            <li class="page-item"><a class="page-link" href="?action=findAllCars&page=1">1</a></li>
+            <li class="page-item"><a class="page-link" href="?action=findAllCars&page=2">2</a></li>
+            <li class="page-item"><a class="page-link" href="?action=findAllCars&page=3">3</a></li>
+            <li class="page-item">
+                <c:if test="${requestScope.currentPage lt requestScope.amountOfRecords.get()}">
+                    <td><a class="page-link"
+                           href="?action=pagination&required=viewCars&page=${requestScope.currentPage + 1}">${sessionScope.language['Next']}</a>
+                    </td>
+                </c:if></li>
         </ul>
-    </form>
-</div>
+    </div>
+</c:if>
 
 <c:choose>
     <c:when test="${requestScope.searchedUser.userId == 0}">

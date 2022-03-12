@@ -26,7 +26,6 @@ public class ConnectionPool implements ConnectManager{
                 }
             }
         }
-        logger.info("CONNECTION INSTANCE GET SUCCESS");
         return localInstance;
     }
 

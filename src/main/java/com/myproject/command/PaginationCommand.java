@@ -17,13 +17,13 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class PaginationCommand implements Command{
     private final OrderViewService orderViewService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarViewService();
     private final CarService<Car> carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
     private static final Logger logger = LogManager.getLogger(PaginationCommand.class);
+    private int noOfPages;
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
@@ -40,13 +40,21 @@ public class PaginationCommand implements Command{
         Optional<List<OrderViewForUserRequest>> requiredList;
         List<OrderViewForUserRequest> listOfRequiredItems;
         List<Car> listCars;
-        Optional<List<Car>>  allCars;
+        Optional<HashMap<List<Car>, Integer>>  allCars;
         try {
             allCars = carService.getAllCars(currentPage);
             if (allCars.isPresent()){
-                listCars = allCars.get();
+
                 request.setAttribute("currentPage",currentPage);
-                request.setAttribute(GeneralConstant.Util.ALL_CARS,listCars);
+                allCars.ifPresent(cars -> request.setAttribute("allCars", new ArrayList<>(cars.keySet()).get(0)));
+                allCars.ifPresent(val -> request.setAttribute("amountOfRecords", val.values().stream().findFirst()));
+                HashMap<List<Car>, Integer> map = allCars.get();
+                Collection<Integer> values = map.values();
+                noOfPages = (values.stream().findFirst().orElse(5))/5;
+                if (noOfPages % 5 > 0){
+                    noOfPages++;
+                }
+                request.setAttribute("noOfPages",noOfPages);
             }
         } catch (ServiceException e) {
             throw new CommandException(e.getMessage());

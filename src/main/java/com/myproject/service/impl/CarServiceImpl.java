@@ -13,6 +13,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +55,7 @@ public class CarServiceImpl implements CarService<Car> {
     }
 
     @Override
-    public Optional<List<Car>> getAllCars(int currentPage) throws ServiceException{
+    public Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage) throws ServiceException{
         try {
             return Optional.of(carDAO.findAll(currentPage));
         } catch (DaoException e) {
@@ -77,7 +78,7 @@ public class CarServiceImpl implements CarService<Car> {
     }
 
     @Override
-    public Optional<List<Car>> getSortedCars(String sortOrderCommand)throws ServiceException {
+    public Optional<List<Car>> getSortedCars(String sortOrderCommand,int currPage)throws ServiceException {
         String neededQuery;
         List<Car> carList;
         switch (sortOrderCommand){
@@ -88,7 +89,7 @@ public class CarServiceImpl implements CarService<Car> {
             default:neededQuery = QuerySQL.GET_ALL_CARS;
         }
         try {
-           carList = carDAO.getSortedCars(neededQuery);
+           carList = carDAO.getSortedCars(neededQuery,currPage);
         } catch (DaoException e) {
             logger.warn("CANT GET ALL NEEDED CARS FOR SELECTED ORDER IN CarServiceImpl class");
            throw new ServiceException("CANT GET ALL NEEDED CARS FOR SELECTED ORDER",e);
@@ -99,7 +100,7 @@ public class CarServiceImpl implements CarService<Car> {
     @Override
     public Optional<Car> getCar(String name) throws ServiceException {
         try{
-             return Optional.of(carDAO.getCatByName(name));
+             return Optional.of(carDAO.getCarByName(name));
         }catch (DaoException e){
             throw new ServiceException(e.getMessage());
         }

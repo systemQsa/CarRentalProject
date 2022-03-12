@@ -13,8 +13,9 @@ import org.apache.log4j.LogManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.apache.log4j.Logger;
 
 public class FindAllCarsCommand implements Command{
@@ -24,14 +25,24 @@ public class FindAllCarsCommand implements Command{
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         Route route = new Route();
+        String page = request.getParameter("page");
+        int currPage;
+        if (page != null){
+            currPage = Integer.parseInt(page);
+        }else {
+            currPage = 1;
+        }
 
         try {
-            int currPage = 0;
-            Optional<List<Car>> allCars = carService.getAllCars(currPage);
+            Optional<HashMap<List<Car>,Integer>> allCars = carService.getAllCars(currPage);
             if (allCars.isPresent()){
                 request.getSession().setAttribute(GeneralConstant.Util.ALL_USERS,null);
-                List<Car> carList = allCars.get();
-                request.setAttribute(GeneralConstant.Util.ALL_CARS,carList);
+                HashMap<List<Car>,Integer> carList = allCars.get();
+                Set<List<Car>> lists = carList.keySet();
+
+                request.setAttribute(GeneralConstant.Util.ALL_CARS, new ArrayList<>(carList.keySet()).get(0));
+                request.setAttribute("amountOfRecords",carList.values().stream().findFirst());
+                request.setAttribute("currentPage",currPage);
                 request.getSession().getServletContext().setAttribute(GeneralConstant.Util.ALL_CARS,allCars.get());
                 route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
                 route.setRoute(Route.RouteType.FORWARD);

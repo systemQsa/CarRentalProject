@@ -3,15 +3,19 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title>${sessionScope.langi=uage['Confirm_order']}</title>
+    <title>${sessionScope.language['Confirm_order']}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/css/bootstrap.min.css" integrity="sha512-T584yQ/tdRR5QwOpfvDfVQUidzfgc2339Lc8uBDtcp/wYu80d7jwBgAxbyMh0a9YM9F8N3tdErpFI8iaGx6x5g==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.min.js" integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-<h1>CONFIRM RECEIPT</h1>
-<h2> CAR ID ${sessionScope.carIdReq}</h2>
+<%--<h1>CONFIRM RECEIPT</h1>--%>
+<%--<h2> CAR ID ${sessionScope.carIdReq}</h2>--%>
 
-<p>${sessionScope.userLogin}</p>
+<%--<p>${sessionScope.userLogin}</p>--%>
 
-<jsp:include page="${pageContext.request.contentType}/WEB-INF/view/include/header.jsp"/>
+<%--<jsp:include page="${pageContext.request.contentType}/WEB-INF/view/include/header.jsp"/>--%>
+<jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
 
 <%--<h1>CONFIRM RECEIPT</h1>--%>
 <%--<h2> CAR ID ${sessionScope.carIdReq}</h2>--%>
@@ -22,7 +26,6 @@
 <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
     <div class="bg-light p-5 border shadow">
         <%--                <h3>${pageContext.request.locale}</h3>--%>
-        <!-- Login Form -->
         <form method="post" action="${pageContext.request.contextPath}/helloServlet">
 
             <input type="hidden" name="carId" value="${sessionScope.carIdReq}">
@@ -30,9 +33,9 @@
             <input type="hidden" name="userBalance" value="${sessionScope.userBalance}">
             <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
 
-            <%--            todo display center text--%>
+
             <div>
-                <h4 class="text-center">${sessionScope.language['Confirm_order']}</h4>
+                <h4 class="text-center">${sessionScope.language['Confirm_the_booking']}</h4>
                 <div class="mb-6 row">
                     <div class="col-md-4">${sessionScope.language['Name']}</div>
                     <div class="col-md-8">${sessionScope.carNameReq}</div>
@@ -83,7 +86,12 @@
 
             <c:choose>
                 <c:when test="${not empty sessionScope.resultIfBalanceOk}">
-                    <p>${sessionScope.language['Confirm_the_booking']}?</p>
+                    <div class="alert alert-success alert-dismissible fade show">
+                            ${sessionScope.language['Confirm_the_booking']}?
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     <input type="hidden" name="action" value="confirmBooking">
                     <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Confirm']}</button>
                 </c:when>
@@ -91,9 +99,13 @@
                     <p>${requestScope.errMSG}</p>
                 </c:when>
                 <c:otherwise>
-                    <p>${sessionScope.language['You_don`t_have_enough_money_for_booking']}! ${sessionScope.language['Please_pop_up_your_balance_and_try_again']}!</p>
-                    <button type="button" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Confirm']}</button>
-                </c:otherwise>
+                     <div class="alert alert-warning alert-dismissible fade show">
+                            ${sessionScope.language['You_don`t_have_enough_money_for_booking']}! ${sessionScope.language['Please_pop_up_your_balance_and_try_again']}!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                  </c:otherwise>
             </c:choose>
         </form>
         <form method="post" action="${pageContext.request.contextPath}/helloServlet">

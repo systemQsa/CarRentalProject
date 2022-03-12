@@ -26,12 +26,30 @@ public class SortCarsByWantedOrderCommand implements Command {
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         String wantedOrder = request.getParameter("order");
-        System.out.println("WANTED ORDER " + wantedOrder);
+        String pageId = request.getParameter("page");
+        String role = (String) request.getSession().getAttribute("role");
+        int currPage;
+        if (pageId != null){
+            currPage = Integer.parseInt(pageId);
+        }else {
+            currPage = 1;
+        }
+        System.out.println("WANTED ORDER " + wantedOrder + " " + pageId);
+
+
+
         Route route = new Route();
         try {
-            Optional<List<Car>> sortedCars = carService.getSortedCars(wantedOrder);
-            sortedCars.ifPresent(cars -> request.setAttribute("allCars", cars));
+            request.setAttribute("order",wantedOrder);
+            request.setAttribute("currentPage",currPage);
+            Optional<List<Car>> sortedCars = carService.getSortedCars(wantedOrder,currPage);
+            sortedCars.ifPresent(cars -> request.setAttribute("sortedCars", cars));
+            wantedOrder = null;
+            if (role == null){
+                route.setPathOfThePage(ConstantPage.HOME_PAGE);
+            }
             route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_USER);
+
 
         } catch (ServiceException e) {
             logger.warn("SOME PROBLEM OCCUR CANT SORT CAR FRO USER IN SortCarsByWantedOrderCommand class");
