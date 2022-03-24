@@ -9,10 +9,11 @@
 <body>
 
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
+<jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
 <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
     <div class="bg-light p-5 border shadow">
         <h4 class="text-center">${sessionScope.language['add_new_car']}</h4>
-        <form  method="post"  enctype="multipart/form-data" action="${pageContext.request.contextPath}/helloServlet">
+        <form  method="post"  action="${pageContext.request.contextPath}/helloServlet">
             <input type="hidden" name="action" value="addCar">
             <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
                 <label class="form-label" for="carName">${sessionScope.language['Name']}</label>

@@ -8,7 +8,7 @@ import com.myproject.exception.CommandException;
 import com.myproject.exception.ServiceException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
- import org.apache.log4j.LogManager;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,17 +17,26 @@ import javax.servlet.http.HttpServletResponse;
 public class AddCarCommand implements Command {
     private CarService<Car> carService;
     private static final Logger logger = LogManager.getLogger(AddCarCommand.class);
+
+    public AddCarCommand() {
+        carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+    }
+
+    public AddCarCommand(CarService<Car> carService) {
+        this.carService = carService;
+    }
+
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
-         Route route = new Route();
-         carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+        Route route = new Route();
 
         try {
-            Car car =  carService.addCar(request);
+            Car car = carService.addCar(request);
             route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
         } catch (ServiceException e) {
             logger.error("CANT ADD NEW CAR IN AddCarCommand SOME PROBLEM");
-            throw new CommandException("CANT ADD NEW CAR IN COMMAND",e);
+            setInformMessageIfErrorOccur(e.getMessage(), 17, request);
+            throw new CommandException(ConstantPage.ADD_CAR_PAGE);
         }
         route.setRoute(Route.RouteType.REDIRECT);
         return route;

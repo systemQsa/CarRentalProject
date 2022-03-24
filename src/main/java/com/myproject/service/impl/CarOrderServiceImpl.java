@@ -1,5 +1,6 @@
 package com.myproject.service.impl;
 
+import com.myproject.dao.DriverDao;
 import com.myproject.dao.OrderDao;
 import com.myproject.dao.entity.Order;
 import com.myproject.dao.impl.OrderDaoImpl;
@@ -23,18 +24,18 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 public class CarOrderServiceImpl implements CarOrderService {
-    private final OrderDao orderDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getOrderDao();
+    private final OrderDao orderDao;
+    private DriverDao driverDao;
     private static final Logger logger = LogManager.getLogger(CarOrderServiceImpl.class);
     private final Lock lock = new ReentrantLock();
 
-    @Override
-    public boolean confirmTheBooking() {
-        return false;
+    public CarOrderServiceImpl(){
+        orderDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getOrderDao();
+        driverDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getDriverDao();
     }
-
-    @Override
-    public boolean setUserOrderRelation(long orderId, long userId) throws ServiceException {
-        return false;
+    //todo change to DriverDao
+    public CarOrderServiceImpl(OrderDao orderDao){
+        this.orderDao = orderDao;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class CarOrderServiceImpl implements CarOrderService {
         }
         if (isWithDriver) {
             try {
-                optionWithDriverCoast = orderDao.getDriverRentPrice(idPriceDriverByDefault);
+                optionWithDriverCoast = (diffHours * driverDao.getDriverPrice());
                 optionWithDriverCoast += (diffHours * carRentPrice);
 
             } catch (DaoException e) {
@@ -60,6 +61,15 @@ public class CarOrderServiceImpl implements CarOrderService {
     }
 
     @Override
+    public boolean checkOrderPresenceInDb(Order order) throws ServiceException {
+        try {
+            orderDao.checkIfSuchOrderExistsInDb(order);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+        return false;
+    }
+    @Override
     public boolean updateOrderByManager(String managerLogin, long orderId, String approved, String feedback) throws ServiceException {
         boolean isApproved;
         try {
@@ -71,38 +81,39 @@ public class CarOrderServiceImpl implements CarOrderService {
     }
 
     @Override
-    public Order setOrder(String passport, String fromDate, String toDate,
-                          String withDriver, double receipt, long userId, String userLogin, int carId, boolean processPayment) throws ServiceException {
-        Order.OrderBuilder order = new Order.OrderBuilder();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Order orderResult;
-        Date parseFromDate = null;
-        Date parseToDate = null;
-        try {
-            parseFromDate = dateFormat.parse(fromDate);
-            parseToDate = dateFormat.parse(toDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Timestamp fromDateTime = new Timestamp(parseFromDate.getTime());
-        Timestamp toDateTime = new Timestamp(parseToDate.getTime());
-
-        order.setPassport(passport)
-                .setFromDate(fromDate)
-                .setToDate(toDate)
-                .setWithDriver(withDriver)
-                .setReceipt(receipt)
-                .setUserId(userId)
-                .setDateFrom(fromDateTime)
-                .setDateTo(toDateTime);
+    public Order setOrder(Order order, boolean processPayment) throws ServiceException {
+//        Order.OrderBuilder order = new Order.OrderBuilder();
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+       Order orderResult;
+//        Date parseFromDate = null;
+//        Date parseToDate = null;
+//        try {
+//            parseFromDate = dateFormat.parse(fromDate);
+//            parseToDate = dateFormat.parse(toDate);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Timestamp fromDateTime = new Timestamp(parseFromDate.getTime());
+//        Timestamp toDateTime = new Timestamp(parseToDate.getTime());
+//
+//        order.setPassport(passport)
+//                .setFromDate(fromDate)
+//                .setToDate(toDate)
+//                .setWithDriver(withDriver)
+//                .setReceipt(receipt)
+//                .setUserId(userId)
+//                .setDateFrom(fromDateTime)
+//                .setDateTo(toDateTime);
         try {
             lock.lock();
-            orderResult = orderDao.processTheBooking(order.build(), userLogin, carId, processPayment);
-            lock.unlock();
+            orderResult = orderDao.processTheBooking(order, processPayment);
+
         } catch (DaoException e) {
             logger.fatal("SOME PROBLEM CANT PROCESS THE USER PAYMENT");
             throw new ServiceException(e);
+        }finally {
+            lock.unlock();
         }
         return orderResult;
     }

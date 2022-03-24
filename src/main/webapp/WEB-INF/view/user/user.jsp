@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title>USER</title>
+    <title>${sessionScope.language['User_Page']}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">--%>
     <%--    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>--%>
@@ -102,9 +102,9 @@
 <%--    </div>--%>
 <%--</nav>--%>
 
-
-
-
+<div class="bg-success text-center">
+<h5>${sessionScope.language['Paying_your_attention_you_can_book_car_from_9_to_19']}!</h5>
+</div>
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -112,13 +112,13 @@
         </div>
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="?action=pagination&required=viewMyOrders&page=1">${sessionScope.language['my_orders']}</a></li>
+                <li><a href="?action=pagination&required=viewMyOrders&page=1&noOfRecords=5">${sessionScope.language['my_orders']}</a></li>
                 <li><a href="#">Page 2</a></li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                                         href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li role="presentation"><a href="?lang=en">ENG</a></li>
-                        <li role="presentation"><a href="?lang=uk">UKR</a></li>
+                        <li role="presentation"><a href="?lang=en">${sessionScope.language['header.lang.eng']}</a></li>
+                        <li role="presentation"><a href="?lang=uk">${sessionScope.language['header.lang.ukr']}</a></li>
                     </ul>
                 </li>
                 <jsp:include page="/WEB-INF/view/include/sorter.jsp"/>
@@ -142,7 +142,7 @@
 
             <form class="navbar-form navbar-left">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" name="search">
+                    <input type="text" class="form-control" placeholder="${sessionScope.language['Search']}" name="search">
                     <div class="input-group-btn">
                         <button class="btn btn-default" type="submit">
                             <i class="glyphicon glyphicon-search"></i>
@@ -166,5 +166,6 @@
 </nav>
 
 <jsp:include page="/WEB-INF/view/allCars.jsp"/>
+
  </body>
 </html>

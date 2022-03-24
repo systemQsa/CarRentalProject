@@ -38,5 +38,19 @@ public final class QuerySQL {
             "JOIN cars c ON c.id_car = oc.car_id WHERE user_id=(SELECT id_user FROM users WHERE login=?) order by order_id desc ";
     public static final String SEARCH_USER_BY_LOGIN = "SELECT id_user,name,surname,login,register_date,banned,phone,role_id FROM users WHERE login=?";
     public static final String SEARCH_CAR_BY_NAME = "SELECT id_car,name,carClass,brand,rent_price FROM cars WHERE name=?";
+    public static final String UPDATE_PASS = "UPDATE users SET password=? WHERE login=?";
+    public static final String CHECK_IF_CAR_ALREADY_PRESENT_IN_DB = "SELECT name,carClass,brand,rent_price FROM cars WHERE name=? AND carClass=? AND brand=? AND rent_price=?";
+    public static final String CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER = "SELECT count(user_id) as record " +
+            "FROM orders JOIN orders_cars ON id_order=order_id " +
+            "WHERE passport=? " +
+            "AND from_date=? " +
+            "AND to_date=? " +
+            "AND with_driver=? " +
+            "AND receipt=? " +
+            "AND user_id=? " +
+            "AND car_id=?;";
+
+    public static final String UPDATE_DRIVER_PRICE = "UPDATE driver_price SET price=? WHERE id=1";
+    public static final String GET_DRIVER_PRICE = "SELECT price FROM driver_price WHERE id=1";
 }
 

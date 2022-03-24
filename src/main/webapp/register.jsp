@@ -142,5 +142,6 @@
         </div>
     </div>
 </div>
+<a href="${pageContext.request.contextPath}/index.jsp">${sessionScope.language['Go_back']}</a>
 </body>
 </html>

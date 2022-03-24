@@ -14,13 +14,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class ViewOrderServiceImpl implements OrderViewService {
-    private final OrderViewDao orderViewDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getOrderViewDao();
+    private OrderViewDao orderViewDao;
     private static final Logger logger = LogManager.getLogger(ViewOrderServiceImpl.class);
+
+    public ViewOrderServiceImpl(){
+        orderViewDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getOrderViewDao();
+    }
+
+    public ViewOrderServiceImpl(OrderViewDao orderViewDao){
+        this.orderViewDao = orderViewDao;
+    }
     @Override
-    public Optional<List<OrderViewForUserRequest>> getAllUserPersonalOrders(String login,int startPage) throws ServiceException {
+    public Optional<List<OrderViewForUserRequest>> getAllUserPersonalOrders(String login,int startPage,int noOfRecords) throws ServiceException {
         List<OrderViewForUserRequest> allUserOrdersPersonal;
         try {
-           allUserOrdersPersonal =  orderViewDao.getOrdersForUser(login,startPage);
+           allUserOrdersPersonal =  orderViewDao.getOrdersForUser(login,startPage,noOfRecords);
         } catch (DaoException e) {
             logger.warn("something went wrong ViewOrderServiceImpl failed");
             throw new ServiceException(e.getMessage());
@@ -30,15 +38,16 @@ public class ViewOrderServiceImpl implements OrderViewService {
     }
 
     @Override
-    public Optional<List<OrderViewForUserRequest>> getOrders(String approved,int startPage) throws ServiceException {
+    public Optional<List<OrderViewForUserRequest>> getOrders(String approved,int startPage,int noOfRecords) throws ServiceException {
          List<OrderViewForUserRequest> res = null;
         try {
             if (approved.equals("approved")) {
-               res =  orderViewDao.getOrdersForManager("yes",startPage);
+               res =  orderViewDao.getOrdersForManager("yes",startPage,noOfRecords);
+                System.out.println("res  "+res);
             } else if (approved.equals("declined")) {
-               res =  orderViewDao.getOrdersForManager("no",startPage);
+               res =  orderViewDao.getOrdersForManager("no",startPage,noOfRecords);
             }
-        }catch (DaoException e){
+        }catch (DaoException | NullPointerException e){
             logger.warn("getOrders() in ViewOrderServiceImpl Failed");
             throw new ServiceException(e.getMessage());
         }

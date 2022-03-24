@@ -13,14 +13,14 @@ public interface CarService<Car> {
 
     boolean deleteCar(int carId) throws ServiceException;
 
-    Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage) throws ServiceException;
+    Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage,int noOfRecords) throws ServiceException;
 
     Car getOneCar(int carId) throws ServiceException;
 
     boolean updateCar(Car car) throws ServiceException;
 
-    Optional<List<Car>> getSortedCars(String sortOrder,int currPage) throws ServiceException;
+    Optional<List<Car>> getSortedCars(String sortOrder,int currPage,int noOfRecords) throws ServiceException;
 
-    Optional<Car> getCar(String name) throws ServiceException;
+    Optional<List<Car>> getCar(String name) throws ServiceException;
 
 }

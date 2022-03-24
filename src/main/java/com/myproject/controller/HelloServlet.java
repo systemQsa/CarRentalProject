@@ -59,6 +59,7 @@ public class HelloServlet extends HttpServlet {
         System.out.println("==============servlet===================" + request.getParameter("action"));
         String action = request.getParameter(GeneralConstant.ACTION);
         logger.info("Role " + request.getSession().getAttribute("login"));
+        logger.info("Action " + request.getParameter("action"));
         if (request.getParameter("search") != null){
             action = "search";
         }

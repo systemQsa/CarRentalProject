@@ -1,8 +1,10 @@
 package com.myproject.service.impl;
 
 import com.myproject.dao.CarDao;
+import com.myproject.dao.UserDao;
 import com.myproject.dao.connection.ConnectManager;
 import com.myproject.dao.entity.Car;
+import com.myproject.dao.entity.User;
 import com.myproject.dao.impl.CarDaoImpl;
 import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
@@ -18,10 +20,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class CarServiceImpl implements CarService<Car> {
-    private final CarDao carDAO = new AbstractFactoryImpl().getFactory().getDaoFactory().getCarDao();
+    private  CarDao carDAO;
     private static final Logger logger = LogManager.getLogger(CarServiceImpl.class);
 
-    public CarServiceImpl(){}
+    public CarServiceImpl(){
+        carDAO = new AbstractFactoryImpl().getFactory().getDaoFactory().getCarDao();
+    }
+
+    public CarServiceImpl(CarDao carDao){
+        this.carDAO = carDao;
+    }
 
     @Override
     public Car addCar(HttpServletRequest request) throws ServiceException{
@@ -37,7 +45,7 @@ public class CarServiceImpl implements CarService<Car> {
                             .build());
         } catch (DaoException e) {
             logger.warn(" CANT ADD A NEW CAR IN CarServiceImpl class");
-            throw new ServiceException("CANT ADD NEW CAR IN SERVICE",e);
+            throw new ServiceException(e);
         }
         return car;
     }
@@ -55,9 +63,9 @@ public class CarServiceImpl implements CarService<Car> {
     }
 
     @Override
-    public Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage) throws ServiceException{
+    public Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage,int noOfRecords) throws ServiceException{
         try {
-            return Optional.of(carDAO.findAll(currentPage));
+            return Optional.of(carDAO.findAll(currentPage,noOfRecords));
         } catch (DaoException e) {
             logger.warn("CANT GET ALL CARS IN CarServiceImpl class");
             throw new ServiceException("CANT GET CARS IN SERVICE",e);
@@ -78,7 +86,7 @@ public class CarServiceImpl implements CarService<Car> {
     }
 
     @Override
-    public Optional<List<Car>> getSortedCars(String sortOrderCommand,int currPage)throws ServiceException {
+    public Optional<List<Car>> getSortedCars(String sortOrderCommand,int currPage,int noOfRecords)throws ServiceException {
         String neededQuery;
         List<Car> carList;
         switch (sortOrderCommand){
@@ -89,7 +97,7 @@ public class CarServiceImpl implements CarService<Car> {
             default:neededQuery = QuerySQL.GET_ALL_CARS;
         }
         try {
-           carList = carDAO.getSortedCars(neededQuery,currPage);
+           carList = carDAO.getSortedCars(neededQuery,currPage,noOfRecords);
         } catch (DaoException e) {
             logger.warn("CANT GET ALL NEEDED CARS FOR SELECTED ORDER IN CarServiceImpl class");
            throw new ServiceException("CANT GET ALL NEEDED CARS FOR SELECTED ORDER",e);
@@ -98,9 +106,9 @@ public class CarServiceImpl implements CarService<Car> {
     }
 
     @Override
-    public Optional<Car> getCar(String name) throws ServiceException {
+    public Optional<List<Car>>getCar(String name) throws ServiceException {
         try{
-             return Optional.of(carDAO.getCarByName(name));
+             return Optional.of(carDAO.searchCarsByName(name));
         }catch (DaoException e){
             throw new ServiceException(e.getMessage());
         }

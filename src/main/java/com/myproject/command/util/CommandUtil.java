@@ -25,12 +25,12 @@ public class CommandUtil {
         logger.info("setRoleForUser() method wordks");
     }
 
-    public static boolean userIsLogged(HttpServletRequest request) {
+    public  boolean userIsLogged(HttpServletRequest request) {
         //todo get all logged users!
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
         ServletContext context = request.getServletContext();
-        String userName = (String) context.getAttribute("userName");
-        //todo  create structure to store logged users / check if  user is logged!!!
+        String userName = (String) request.getSession().getAttribute(GeneralConstant.USER_NAME);
+        System.out.println("userName  commandUtil " + userName);
         if (loggedUsers.contains(userName)
                 && (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.ADMIN)
                 || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.USER)

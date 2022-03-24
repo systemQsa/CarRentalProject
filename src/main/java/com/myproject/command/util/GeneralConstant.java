@@ -34,12 +34,14 @@ public final class GeneralConstant {
     public static final String EXPIRES = "Expires";
     public static final String RESOURCES = "resources";
 
-    public static final class Util{
+    public static final class Util {
+        public static final String KEY = "123";
         public static final String LOGGED_USERS = "loggedUsers";
         public static final String USER_BALANCE = "userBalance";
         public static final String USER_ID_BY_LOGIN = "userIdByLogin";
         public static final String USER_LOGIN = "userLogin";
         public static final String ALL_USERS = "allUsers";
+        public static final String USER_NAME = "userName";
         public static final String ALL_CARS = "allCars";
         public static final String CURRENT_PAGE = "currentPage";
         public static final String VIEW_USER_PERSONAL_ORDERS = "viewMyOrders";
@@ -51,15 +53,34 @@ public final class GeneralConstant {
         public static final String AMOUNT_OF_RECORDS = "amountOfRecords";
         public static final String VIEW_CARS_PAGINATION = "viewCars";
         public static final String VIEW_SUCH_ORDERS = "";
+        public static final String RES_IF_BALANCE_OK = "resultIfBalanceOk";
+        public static final String SET_MANAGER ="setManager";
+        public static final String UNSET_MANAGER = "unsetManager";
+        public static final String ACCEPT_USER_ORDER = "acceptUserOrder";
+
     }
 
-    public static final class ErrorMSG{
-         public static final String INVALID_PASS = "Invalid password";
-         public static final String BLOCKED_USER = "By some reason you were blocked. Please contact our manager for more details!";
-         public static final String INVALID_NAME_SURNAME = "Invalid name/surname";
-         public static final String INVALID_USERNAME_LOGIN = "Invalid userName/login";
-         public static final String INVALID_PHONE = "Invalid phone";
-         public static final String NOT_UNIQUE_LOGIN = "I can`t register you! Your login has to be unique.Try again!";
+    public static final class ErrorMSG {
+        public static final String ERR = "err";
+        public static final String ERR_MSG = "errMSG";
+        public static final String INVALID_PASS = "Invalid password";
+        public static final String BLOCKED_USER = "By some reason you were blocked. Please contact our manager for more details!";
+        public static final String INVALID_NAME_SURNAME = "Invalid name/surname";
+        public static final String INVALID_USERNAME_LOGIN = "Invalid userName/login";
+        public static final String INVALID_PHONE = "Invalid phone";
+        public static final String NOT_UNIQUE_LOGIN = "I can`t register you! Your login has to be unique.Try again!";
+        public static final String ENTER_CORRECT_DATE_TIME = "Please enter correct date and time!";
+        public static final String NOT_ENOUGH_BALANCE = "You don`t have enough charge for booking. Top up your balance and try again!";
+        public static final String NOT_REGISTERED = "You are not registered yet!";
+
+    }
+
+    public static final class CarConstants{
+        public static final String CAR_ID = "carId";
+        public static final String CAR_NAME = "carName";
+        public static final String CAR_CLASS = "carClass";
+        public static final String CAR_BRAND = "brand";
+        public static final String CAR_RENTAL_PRICE = "rentalPrice";
 
     }
 }

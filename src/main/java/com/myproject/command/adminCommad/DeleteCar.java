@@ -17,8 +17,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DeleteCar implements Command {
-    private final CarService<Car> carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+    private final CarService<Car> carService;
     private static final Logger logger = LogManager.getLogger(DeleteCar.class);
+
+    public DeleteCar(){
+        carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+    }
+
+    public DeleteCar(CarService<Car> carService){
+        this.carService = carService;
+    }
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         int carId = Integer.parseInt(request.getParameter("carId"));

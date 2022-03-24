@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>${sessionScope.language['Book_Car']}</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -87,7 +87,7 @@
          <span class="d-block p-2">
                 <div class='col-md-5'>
                     <div class="form-group">
-                        <label class="control-label">From Date</label>
+                        <label class="control-label">${sessionScope.language['From_date']}</label>
                         <div class='input-group date' id='datetimepicker1'>
                             <input type='text' class="form-control" name="fromDate"/>
                             <span class="input-group-addon">
@@ -100,7 +100,7 @@
 
                 <div class='col-md-5'>
                     <div class="form-group">
-                        <label class="control-label">To date</label>
+                        <label class="control-label">${sessionScope.language['To_date']}</label>
                         <div class='input-group date' id='datetimepicker2'>
                             <input type='text' class="form-control" name="toDate"/>
                             <span class="input-group-addon">

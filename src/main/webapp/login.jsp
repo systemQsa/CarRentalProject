@@ -39,14 +39,17 @@
 
             </div>
             <div class="mb-4 form-check w-100">
-                <a href="#" class="float-end">Forgot password?</a>
-            </div>
+                <p class="text-center">
+                    <a href="${pageContext.request.contextPath}/forgotPass.jsp" class="float-end">${sessionScope.language['forgot_password']}?</a>
+                 </p>
+             </div>
             <button type="submit" class="btn btn-primary w-100 my-3 shadow" >${sessionScope.language['label.Login']}</button>
-            <p class="text-center m-0">Not yet account,<a href="${pageContext.request.contextPath}/register.jsp">${sessionScope.language['label.register']}</a></p>
+            <p class="text-center m-0">${sessionScope.language['not_have_account_yet']},<a href="${pageContext.request.contextPath}/register.jsp">${sessionScope.language['label.register']}</a></p>
         </form>
     </div>
 </div>
 
+<a href="${pageContext.request.contextPath}/index.jsp">${sessionScope.language['Go_back']}</a>
 
 </body>
 </html>

@@ -25,7 +25,9 @@ public class FindAllCarsCommand implements Command{
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         Route route = new Route();
+        System.out.println("Get all Cars!!");
         String page = request.getParameter("page");
+        int noOfRecords = Integer.parseInt(request.getParameter("noOfRecords"));
         int currPage;
         if (page != null){
             currPage = Integer.parseInt(page);
@@ -34,15 +36,16 @@ public class FindAllCarsCommand implements Command{
         }
 
         try {
-            Optional<HashMap<List<Car>,Integer>> allCars = carService.getAllCars(currPage);
+            Optional<HashMap<List<Car>,Integer>> allCars = carService.getAllCars(currPage,noOfRecords);
             if (allCars.isPresent()){
                 request.getSession().setAttribute(GeneralConstant.Util.ALL_USERS,null);
                 HashMap<List<Car>,Integer> carList = allCars.get();
                 Set<List<Car>> lists = carList.keySet();
-
+                System.out.println("LiST " + lists);
                 request.setAttribute(GeneralConstant.Util.ALL_CARS, new ArrayList<>(carList.keySet()).get(0));
-                request.setAttribute("amountOfRecords",carList.values().stream().findFirst());
+                request.setAttribute("amountOfRecords",carList.values().stream().findFirst().orElse(5));
                 request.setAttribute("currentPage",currPage);
+                request.setAttribute("noOfRecords",noOfRecords);
                 request.getSession().getServletContext().setAttribute(GeneralConstant.Util.ALL_CARS,allCars.get());
                 route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
                 route.setRoute(Route.RouteType.FORWARD);

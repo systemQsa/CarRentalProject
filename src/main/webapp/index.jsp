@@ -4,11 +4,14 @@
 <%@taglib prefix="out" uri="mytag" %>
 <!DOCTYPE html>
 <html>
-<head>
+<link>
     <meta charset="utf-8">
-    <title>Rental Car</title>
+    <title>${sessionScope.language['label.Rental_Car']}</title>
      <%--    <link rel="stylesheet" href="css/index2.css">--%>
-<%--    <style><%@include file="css/index2.css"%></style>--%>
+<%--    <style><%@include file="css/index.css"%></style>--%>
+<%--  <link rel="stylesheet" href="<c:url value="${pageContext.request.contextPath}/css/index.css"/>">--%>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css" type="text/css">
+
 </head>
 <body>
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
@@ -81,8 +84,8 @@
             <li><a href="#">Page 2</a></li>
             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
-                     <li role="presentation"><a href="?lang=en">ENG</a></li>
-                    <li role="presentation"><a href="?lang=uk">UKR</a></li>
+                     <li role="presentation"><a href="?lang=en">${sessionScope.language['header.lang.eng']}</a></li>
+                    <li role="presentation"><a href="?lang=uk">${sessionScope.language['header.lang.ukr']}</a></li>
                 </ul>
             </li>
         <jsp:include page="/WEB-INF/view/include/sorter.jsp"/>
@@ -90,7 +93,7 @@
 
         <form class="navbar-form navbar-left">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" name="search">
+                <input type="text" class="form-control" placeholder="${sessionScope.language['Search']}" name="search">
                 <div class="input-group-btn">
                     <button class="btn btn-default" type="submit">
                         <i class="glyphicon glyphicon-search"></i>
@@ -105,9 +108,42 @@
     </div>
 </nav>
 
+
+
+
 <jsp:include page="/WEB-INF/view/allCars.jsp"/>
 <a href="${pageContext.request.contextPath}/index2.jsp"></a>
 <out:text/>
+
+
+
+
+<%--<div class="container bootstrap snippets bootdey">--%>
+<%--    <div class="btn-demo" id="btn-color-targets">--%>
+<%--        <a href="#modalColor" data-target-color="blue" data-toggle="modal" class="btn btn-default ">Blue</a>--%>
+<%--        <a href="#modalColor" data-target-color="lightblue" data-toggle="modal" class="btn btn-default ">Light Blue</a>--%>
+<%--        <a href="#modalColor" data-target-color="cyan" data-toggle="modal" class="btn btn-default ">Cyan</a>--%>
+<%--        <a href="#modalColor" data-target-color="bluegray" data-toggle="modal" class="btn btn-default ">Blue Gray</a>--%>
+<%--&lt;%&ndash;        <a href="#modalColor" data-target-color="green" data-toggle="modal" class="btn btn-default ">Green</a>&ndash;%&gt;--%>
+<%--        <a href="#modalColor" data-target-color="lightgreen" data-toggle="modal" class="btn btn-default ">Light Green</a>--%>
+<%--        <a href="#modalColor" data-target-color="red" data-toggle="modal" class="btn btn-default ">Red</a>--%>
+<%--        <a href="#modalColor" data-target-color="amber" data-toggle="modal" class="btn btn-default ">Amber</a>--%>
+<%--        <a href="#modalColor" data-target-color="orange" data-toggle="modal" class="btn btn-default ">Orange</a>--%>
+<%--        <a href="#modalColor" data-target-color="bluegray" data-toggle="modal" class="btn btn-default ">Blue Gray</a>--%>
+<%--        <a href="#modalColor" data-target-color="teal" data-toggle="modal" class="btn btn-default ">Teal</a>--%>
+<%--    </div>--%>
+<%--</div>--%>
+
+<%--<script>--%>
+<%--    $(document).ready(function(){--%>
+<%--        $('body').on('click', '#btn-color-targets > .btn', function(){--%>
+<%--            var color = $(this).data('target-color');--%>
+<%--            $('#modalColor').attr('data-modal-color', color);--%>
+<%--        });--%>
+<%--    });--%>
+<%--</script>--%>
+
+
 
 </body>
 </html>

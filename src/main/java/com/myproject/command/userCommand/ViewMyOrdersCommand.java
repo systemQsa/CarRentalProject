@@ -28,7 +28,7 @@ public class ViewMyOrdersCommand implements Command {
         List<OrderViewForUserRequest> listOfOrders;
         try {
             //todo check if ok to put 0 in method for required result!!!!
-            resultOfMyPersonalOrders = orderViewService.getAllUserPersonalOrders(login,0);
+            resultOfMyPersonalOrders = orderViewService.getAllUserPersonalOrders(login,0,5);
             if (resultOfMyPersonalOrders.isPresent()){
                 listOfOrders = resultOfMyPersonalOrders.get();
                 request.getSession().setAttribute("myPersonalOrders",listOfOrders);

@@ -1,5 +1,6 @@
 package com.myproject.service.impl;
 
+import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.GeneralConstant;
 import com.myproject.dao.UserDao;
 import com.myproject.dao.connection.ConnectManager;
@@ -27,12 +28,29 @@ import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
-    private final UserDao<User> userDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getUserDao();
+    private final UserDao<User> userDao;
 
     public UserServiceImpl(){
+        userDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getUserDao();
     }
 
-     @Override
+    public UserServiceImpl(UserDao<User> userDao){
+        this.userDao = userDao;
+    }
+
+    @Override
+    public boolean resetPassword(String login, char[] password) throws ServiceException {
+        boolean response;
+        try {
+            String encryptedPass =  EncryptUtil.encrypt(String.valueOf(password).getBytes(StandardCharsets.UTF_8), GeneralConstant.Util.KEY);
+            response = userDao.updatePassword(login,encryptedPass);
+        } catch (Exception e) {
+            throw new ServiceException(e);
+        }
+        return response;
+    }
+
+    @Override
     public Optional<User> getUser(String login) throws ServiceException {
 
         try {
@@ -44,12 +62,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByLoginAndPass(String login, char[] password) throws ServiceException {
+        System.out.println("getUserByLoginAndPass service "  + login);
+        System.out.println(userDao);
         User user;
         try {
+            System.out.println("=========1======");
             user = userDao.getUserByLogin(login);
+            System.out.println("=========2======");
         } catch (DaoException e) {
             logger.error("SOME PROBLEM CANT GET USER FROM DB");
-            throw new ServiceException("/login.jsp");
+            throw new ServiceException(ConstantPage.LOG_IN_PAGE);
         }
         return user;
     }
@@ -61,17 +83,16 @@ public class UserServiceImpl implements UserService {
         try {
             user = getUserByLoginAndPass(login, password);
         } catch (ServiceException e) {
-            request.setAttribute("err", 2);
-            request.setAttribute("errMSG", "You are not registered yet");
+            request.setAttribute(GeneralConstant.ErrorMSG.ERR, 2);
+            request.setAttribute(GeneralConstant.ErrorMSG.ERR_MSG, GeneralConstant.ErrorMSG.NOT_REGISTERED);
             throw new ValidationException(e.getMessage());
         }
 
         boolean decrypt;
         try {
-            decrypt = EncryptUtil.decryptPass(user.getPassword(), "123", password);
+            decrypt = EncryptUtil.decryptPass(user.getPassword(), GeneralConstant.Util.KEY, password);
             if (decrypt) {
                 userId = user.getRole();
-                System.out.println("PASSWORD MATCHES!!");
             }
         } catch (Exception e) {
             throw new ValidationException(e.getMessage());
@@ -93,7 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public double getBalance(String login) throws ServiceException {
-        double userBalance = 0;
+        double userBalance;
         try {
             userBalance = userDao.getBalance(login);
         } catch (DaoException e) {
@@ -104,16 +125,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean setUserRole(String login, char[] password) {
-        return false;
-    }
-
-    @Override
     public User registerNewUser(String name, String surname, String login, char[] password, String phoneNumber) throws ServiceException {
-        System.out.println("service " + phoneNumber);
-        System.out.println("REGISTER NEW USER!");
         try {
-            String encrypt = EncryptUtil.encrypt(String.valueOf(password).getBytes(StandardCharsets.UTF_8), "123");
+            String encrypt = EncryptUtil.encrypt(String.valueOf(password).getBytes(StandardCharsets.UTF_8), GeneralConstant.Util.KEY);
             User.UserBuilder user = new User.UserBuilder();
             user.setFirstName(name)
                     .setLastName(surname)
@@ -125,11 +139,6 @@ public class UserServiceImpl implements UserService {
             logger.warn("CANT REGISTER A NEW USER IN UserServiceImpl class");
             throw new ServiceException("SERVICE EXCEPTION", e);
         }
-    }
-
-    @Override
-    public User deleteUser(User user) {
-        return null;
     }
 
     @Override

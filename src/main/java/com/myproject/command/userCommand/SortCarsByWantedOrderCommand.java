@@ -28,11 +28,15 @@ public class SortCarsByWantedOrderCommand implements Command {
         String wantedOrder = request.getParameter("order");
         String pageId = request.getParameter("page");
         String role = (String) request.getSession().getAttribute("role");
+        String  records = request.getParameter("noOfRecords");
         int currPage;
-        if (pageId != null){
+        int noOfRecords;
+        if (pageId != null && records != null){
             currPage = Integer.parseInt(pageId);
+            noOfRecords = Integer.parseInt(records);
         }else {
             currPage = 1;
+            noOfRecords = 5;
         }
         System.out.println("WANTED ORDER " + wantedOrder + " " + pageId);
 
@@ -42,7 +46,8 @@ public class SortCarsByWantedOrderCommand implements Command {
         try {
             request.setAttribute("order",wantedOrder);
             request.setAttribute("currentPage",currPage);
-            Optional<List<Car>> sortedCars = carService.getSortedCars(wantedOrder,currPage);
+            request.setAttribute("noOfRecords",noOfRecords);
+            Optional<List<Car>> sortedCars = carService.getSortedCars(wantedOrder,currPage,noOfRecords);
             sortedCars.ifPresent(cars -> request.setAttribute("sortedCars", cars));
             wantedOrder = null;
             if (role == null){

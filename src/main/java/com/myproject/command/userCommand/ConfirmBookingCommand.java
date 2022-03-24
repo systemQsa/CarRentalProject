@@ -23,6 +23,7 @@ public class ConfirmBookingCommand implements Command {
     private final CarOrderService carOrderService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
     private static final Logger logger = LogManager.getLogger(ConfirmBookingCommand.class);
 
+
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();

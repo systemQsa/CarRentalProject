@@ -8,15 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface CarDao {
-    HashMap<List<Car>,Integer> findAll(int currPage) throws DaoException;
+
+    HashMap<List<Car>, Integer> findAll(int currPage,int noOfRecords) throws DaoException;
+
     void setConnection(ConnectManager connectManager) throws DaoException;
+
     Car findById(int id) throws DaoException;
+
     boolean deleteById(int id) throws DaoException;
+
     boolean update(Car car) throws DaoException;
+
     Car addRecordToTable(Car car) throws DaoException;
-    List<Car> getSortedCars(String neededQuery,int currPage) throws DaoException;
-    List<Car> getSortedCarsByCarClass() throws DaoException;
-    List<Car> getSortedCarsByRentPrice() throws DaoException;
-    List<Car> getSortedCarsByBrand() throws DaoException;
-    Car getCarByName(String name) throws DaoException;
+
+    List<Car> getSortedCars(String neededQuery, int currPage,int noOfRecords) throws DaoException;
+
+    List<Car> searchCarsByName(String name) throws DaoException;
 }

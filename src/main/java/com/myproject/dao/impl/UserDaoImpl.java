@@ -8,7 +8,6 @@ import com.myproject.dao.entity.User;
 import com.myproject.dao.entity.UserRole;
 import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
-import com.myproject.util.Encryption;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -18,19 +17,18 @@ import java.util.List;
 
 public class UserDaoImpl implements UserDao<User> {
     private Connection connection = null;
-    private final Encryption encryption = new Encryption();
     private static final Logger logger = LogManager.getLogger(UserDaoImpl.class);
     private ConnectManager connectManager = null;
 
-    public UserDaoImpl(){
+    public UserDaoImpl() {
         connectManager = ConnectionPool.getInstance();
     }
 
-    public UserDaoImpl(Connection connection){
+    public UserDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
-    public UserDaoImpl(ConnectManager connect){
+    public UserDaoImpl(ConnectManager connect) {
         this.connectManager = connect;
     }
 
@@ -70,41 +68,50 @@ public class UserDaoImpl implements UserDao<User> {
     }
 
     @Override
-    public User findByLogin(String login) throws DaoException{
+    public boolean updatePassword(String login, String pass) throws DaoException {
+        connection = connectManager.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.UPDATE_PASS)) {
+            statement.setString(1, pass);
+            statement.setString(2, login);
+            if (statement.executeUpdate() > 0) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            logger.warn("Some problem cant update user password");
+            throw new DaoException(e);
+        } finally {
+            connectManager.closeConnection(connection);
+        }
+        return false;
+    }
+
+    @Override
+    public User findByLogin(String login) throws DaoException {
         connection = connectManager.getConnection();
         ResultSet resultSet;
         User.UserBuilder user = new User.UserBuilder();
-        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.SEARCH_USER_BY_LOGIN)){
-           statement.setString(1,login);
-           resultSet = statement.executeQuery();
-           if (resultSet.next()){
-               user.setUserId(resultSet.getLong("id_user"))
-                       .setFirstName(resultSet.getString("name"))
-                       .setLastName(resultSet.getString("surname"))
-                       .setLogin(resultSet.getString("login"))
-                       .setRegisterDate(resultSet.getTimestamp("register_date"))
-                       .setIsBanned(resultSet.getString("banned"))
-                       .setPhone(resultSet.getString("phone"))
-                       .setRole(resultSet.getInt("role_id"));
+        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SEARCH_USER_BY_LOGIN)) {
+            statement.setString(1, login);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                user.setUserId(resultSet.getLong("id_user"))
+                        .setFirstName(resultSet.getString("name"))
+                        .setLastName(resultSet.getString("surname"))
+                        .setLogin(resultSet.getString("login"))
+                        .setRegisterDate(resultSet.getTimestamp("register_date"))
+                        .setIsBanned(resultSet.getString("banned"))
+                        .setPhone(resultSet.getString("phone"))
+                        .setRole(resultSet.getInt("role_id"));
 
-           }
-        }catch (SQLException e){
+            }
+        } catch (SQLException e) {
             throw new DaoException("Cant find user by given" + login + " login!");
-        }finally {
+        } finally {
             connectManager.closeConnection(connection);
         }
         System.out.println(user.build());
         return user.build();
-    }
-
-    @Override
-    public boolean deleteById(int userId) {
-        return false;
-    }
-
-    @Override
-    public boolean update(User user) {
-        return false;
     }
 
     @Override
@@ -122,7 +129,7 @@ public class UserDaoImpl implements UserDao<User> {
                         .setIsBanned(resultSet.getString("banned"))
                         .setHashPass(resultSet.getString("password"))
                         .setRole(resultSet.getInt("role_id"));
-            }else {
+            } else {
                 throw new SQLException("NO SUCH USER IN DB");
             }
 
@@ -153,6 +160,7 @@ public class UserDaoImpl implements UserDao<User> {
                 resultSet = statement.getGeneratedKeys();
                 if (resultSet.next()) {
                     int id = resultSet.getInt(1);
+
                 }
             }
         } catch (SQLException e) {
@@ -162,7 +170,7 @@ public class UserDaoImpl implements UserDao<User> {
             connectManager.closeConnection(connection);
         }
         logger.info("NEW USER WERE REGISTERED SUCCESSFULLY");
-        return userBuilder.build();
+        return newUser;
     }
 
     @Override
@@ -215,7 +223,7 @@ public class UserDaoImpl implements UserDao<User> {
         double resultBalance = 0;
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SEE_USER_BALANCE)) {
             connection.setAutoCommit(false);
-            connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             statement.setString(1, login);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -241,16 +249,16 @@ public class UserDaoImpl implements UserDao<User> {
     public boolean setUserRole(String login, UserRole userRole) throws DaoException {
         connection = connectManager.getConnection();
         boolean resultIsSuccessful = false;
-        try(PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_USER_ROLE)){
-            statement.setInt(1,userRole.getId());
-            statement.setString(2,login);
-            if (statement.executeUpdate() > 0){
+        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_USER_ROLE)) {
+            statement.setInt(1, userRole.getId());
+            statement.setString(2, login);
+            if (statement.executeUpdate() > 0) {
                 resultIsSuccessful = true;
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("SOME PROBLEM SET ROLE FOR USER FAILED");
-            throw new DaoException("CANT SET ROLE FROM USER",e);
-        }finally {
+            throw new DaoException("CANT SET ROLE FROM USER", e);
+        } finally {
             connectManager.closeConnection(connection);
         }
         logger.info("ROLE FOR USER " + login + " WERE CHANGED SUCCESSFULLY");
@@ -261,6 +269,7 @@ public class UserDaoImpl implements UserDao<User> {
     public boolean blockUnblockUser(String login, String status) throws DaoException {
         connection = connectManager.getConnection();
         boolean response = false;
+
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.BAN_AND_UNBAN_USER)) {
             statement.setString(1, status);
             statement.setString(2, login);
@@ -280,6 +289,7 @@ public class UserDaoImpl implements UserDao<User> {
 
     @Override
     public String getUserStatus(String login) throws DaoException {
+        System.out.println("gt user status DB " + connectManager.getClass());
         connection = connectManager.getConnection();
         ResultSet resultSet;
         String statusCheck = GeneralConstant.EMPTY_STRING;
@@ -300,34 +310,34 @@ public class UserDaoImpl implements UserDao<User> {
         return statusCheck;
     }
 
-    public int getUserRoleAccordingToInput(String login, String password1) throws DaoException {
-        ResultSet resultSet;
-        String realPass;
-        int id = 0;
-        System.out.println("USER DAO    " + login + "  " + password1);
-        // connection = ConnectionPool.getInstance().getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_USER_ID_ACCORDING_TO_INPUT)) {
-            System.out.println("execute");
-            statement.setString(1, login);
-            // statement.setString(2, password);
-            resultSet = statement.executeQuery();
-            System.out.println("execute2");
-            if (resultSet.next()) {
-                id = resultSet.getInt("role_id");
-                realPass = resultSet.getString("password");
-                System.out.println("realPass " + realPass);
-                //   byte[] byteArrayFromHexStr = Encryption.getByteArrayFromHexStr(realPass);
-                //   System.out.println("match "+Arrays.toString(byteArrayFromHexStr));
-                System.out.println("IDENTICAL " + encryption.matchPasswords(password1.getBytes(), realPass.getBytes()));
-
-            }
-            System.out.println("id " + id);
-
-        } catch (SQLException e) {
-            throw new DaoException("There is no user with such credentials in DB", e);
-        } finally {
-            connectManager.closeConnection(connection);
-        }
-        return id;
-    }
+//    public int getUserRoleAccordingToInput(String login, String password1) throws DaoException {
+//        ResultSet resultSet;
+//        String realPass;
+//        int id = 0;
+//        System.out.println("USER DAO    " + login + "  " + password1);
+//        // connection = ConnectionPool.getInstance().getConnection();
+//        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_USER_ID_ACCORDING_TO_INPUT)) {
+//            System.out.println("execute");
+//            statement.setString(1, login);
+//            // statement.setString(2, password);
+//            resultSet = statement.executeQuery();
+//            System.out.println("execute2");
+//            if (resultSet.next()) {
+//                id = resultSet.getInt("role_id");
+//                realPass = resultSet.getString("password");
+//                System.out.println("realPass " + realPass);
+//                //   byte[] byteArrayFromHexStr = Encryption.getByteArrayFromHexStr(realPass);
+//                //   System.out.println("match "+Arrays.toString(byteArrayFromHexStr));
+//                System.out.println("IDENTICAL " + encryption.matchPasswords(password1.getBytes(), realPass.getBytes()));
+//
+//            }
+//            System.out.println("id " + id);
+//
+//        } catch (SQLException e) {
+//            throw new DaoException("There is no user with such credentials in DB", e);
+//        } finally {
+//            connectManager.closeConnection(connection);
+//        }
+//        return id;
+//    }
 }

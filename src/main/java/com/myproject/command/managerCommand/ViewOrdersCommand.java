@@ -27,11 +27,11 @@ public class ViewOrdersCommand implements Command {
         String viewSuchOrders = request.getParameter("viewSuchOrders");
         Optional<List<OrderViewForUserRequest>> resultForRequest;
         int startPage = Integer.parseInt(request.getParameter("page"));
-
+        int noOfRecords = Integer.parseInt(request.getParameter("noOfRecords"));
         try {
 
             if (viewSuchOrders.equals("approved")){
-                resultForRequest =  orderViewService.getOrders(viewSuchOrders,startPage);
+                resultForRequest =  orderViewService.getOrders(viewSuchOrders,startPage,noOfRecords);
                 if (resultForRequest.isPresent()){
                     List<OrderViewForUserRequest> approvedOrders = resultForRequest.get();
                     System.out.println("\n\norders" + approvedOrders);
@@ -41,7 +41,7 @@ public class ViewOrdersCommand implements Command {
             }
 
             if (viewSuchOrders.equals("declined")){
-                resultForRequest =  orderViewService.getOrders(viewSuchOrders,startPage);
+                resultForRequest =  orderViewService.getOrders(viewSuchOrders,startPage,noOfRecords);
                 if (resultForRequest.isPresent()){
                     List<OrderViewForUserRequest> declinedOrders = resultForRequest.get();
                     request.getSession().setAttribute("listOrders",declinedOrders);

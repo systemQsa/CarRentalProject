@@ -2,6 +2,9 @@ passport='AB2345'
 Order{orderId=0, userId=2, carId=5, passport='AB2345', withDriver='N', fromDate='2022-02-22 13:00:00',
 toDate='2022-02-22 17:00:00', receipt=200.0, dateFrom=null, dateTo=null, userLogin='user@gmail.com'}
 
+
+com.myproject.exception.DaoException: Car already exists in DataBase
+
 admin_234S@gmail.com
 123d@mail.ru
 sasha1@gmail.com

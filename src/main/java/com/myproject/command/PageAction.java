@@ -34,7 +34,10 @@ public enum PageAction {
     VIEW_USER_ORDERS("viewOrders",new ViewOrdersCommand()),
     VIEW_USER_ORDERS_PERSONAL("myOrders",new ViewMyOrdersCommand()),
     PAGINATION("pagination",new PaginationCommand()),
-    SEARCH("search",new SearchCommand());
+    SEARCH("search",new SearchCommand()),
+    FORGOT_PASS("forgotPass",new ForgotPasswordCommand()),
+    ACTIVATE_NEW_PASS("activateNewPassword",new ActivateNewPass()),
+    UPDATE_DRIVER_PRICE("updateDriverPrice",new UpdateDriverPriceCommand());
 
 
     private final String action;

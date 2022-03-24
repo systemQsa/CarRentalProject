@@ -9,6 +9,7 @@ import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
+import com.myproject.validation.Validate;
 import com.myproject.validation.ValidateInput;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -18,8 +19,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RegisterCommand implements Command {
     private static final Logger logger = LogManager.getLogger(RegisterCommand.class);
-    final ValidateInput validateInput = new ValidateInput();
-    private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
+    private final Validate validateInput;
+    private final UserService userService;
+
+    public RegisterCommand(){
+        userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
+        validateInput = new ValidateInput();
+    }
+
+    public RegisterCommand(UserService userService){
+        this.userService = userService;
+        validateInput = new ValidateInput(userService);
+    }
 
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
@@ -32,28 +43,28 @@ public class RegisterCommand implements Command {
         Route route = new Route();
 
          try {
-            validateInput.validateInputNameSurname(name, surname, request);
+            validateInput.nameSurnameValidate(name, surname);
         } catch (ValidationException e) {
-            setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.INVALID_NAME_SURNAME, 4, request);
+            setInformMessageIfErrorOccur("err.name_surname", 4, request);
               throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
 
         try {
-            validateInput.validateLogin(login, request, response);
+            validateInput.loginValidate(login);
         } catch (ValidationException e) {
-            setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.INVALID_USERNAME_LOGIN, 5, request);
+            setInformMessageIfErrorOccur("err.login", 5, request);
              throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
         try {
-            validateInput.validatePassword(password, request);
+            validateInput.passwordValidate(password);
         } catch (ValidationException e) {
-            setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.INVALID_PASS, 6, request);
+            setInformMessageIfErrorOccur("err.password", 6, request);
              throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
         try {
-            validateInput.validatePhoneNumber(phoneNumber, request);
+            validateInput.phoneValidate(phoneNumber);
         } catch (ValidationException e) {
-            setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.INVALID_PHONE, 7, request);
+            setInformMessageIfErrorOccur("err.phone", 7, request);
             throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
 
@@ -61,7 +72,7 @@ public class RegisterCommand implements Command {
             userService.registerNewUser(name, surname, login, password, phoneNumber);
         } catch (ServiceException e) {
             logger.error("CANT REGISTER USER");
-            setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.NOT_UNIQUE_LOGIN, 8, request);
+            setInformMessageIfErrorOccur("err.not_unique_login", 8, request);
             throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
 

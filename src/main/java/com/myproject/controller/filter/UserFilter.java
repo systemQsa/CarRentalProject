@@ -6,7 +6,9 @@ import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.GeneralConstant;
 import com.myproject.dao.entity.Car;
 import com.myproject.exception.ServiceException;
+import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
+import com.myproject.service.DriverService;
 import com.myproject.service.impl.CarServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -20,8 +22,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(UserFilter.class);
-
-    private CarService<Car> carService = new CarServiceImpl();
+    private final DriverService driverService = new AbstractFactoryImpl().getFactory()
+            .getServiceFactory().getDriverService();
+    private final CarService<Car> carService = new AbstractFactoryImpl().getFactory()
+            .getServiceFactory().getCarService();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -108,9 +112,14 @@ public class UserFilter implements Filter {
         if (request.getRequestURI().contains(GeneralConstant.ADMIN)
                 && request.getSession().getAttribute(GeneralConstant.ROLE).equals("admin")
                 && (request.getSession().getAttribute(GeneralConstant.ROLE) != null)) {
-            // System.out.println("LOGGED USERS  FILTER 3" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-            // System.out.println("userName Context 3 "+ request.getSession().getServletContext().getAttribute("userName"));
-            // System.out.println("userName ADMIN "+request.getSession().getAttribute("userName"));
+            try {
+                double driverRentalPrice = driverService.getDriverRentalPrice();
+                request.getSession().setAttribute("driverRentalPrice",driverRentalPrice);
+            } catch (ServiceException e) {
+                request.setAttribute("errMSG","Cant get Driver Price");
+                request.setAttribute("err",23);
+            }
+
             request.getRequestDispatcher(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN).forward(request, response);
             filterChain.doFilter(request, response);
             return;
@@ -129,21 +138,23 @@ public class UserFilter implements Filter {
 
                 try {
                     int noOfPages;
-                     Optional<HashMap<List<Car>, Integer>> allCars = carService.getAllCars(1);
+                    Optional<HashMap<List<Car>, Integer>> allCars = carService.getAllCars(1, 5);
                     HashMap<List<Car>, Integer> res = allCars.get();
                     allCars.ifPresent(cars -> request.setAttribute("allCars", new ArrayList<>(cars.keySet()).get(0)));
-                    allCars.ifPresent(val -> request.setAttribute("amountOfRecords", val.values().stream().findFirst()));
-                    allCars.ifPresent(v-> request.getSession().setAttribute("records",v.values().stream().findFirst()));
-                     request.setAttribute("currentPage", 1);
+                    allCars.ifPresent(val -> request.setAttribute("amountOfRecordsTotal", val.values().stream().findFirst().orElse(5)));
+                    allCars.ifPresent(v -> request.getSession().setAttribute("records", v.values().stream().findFirst()));
+                    request.setAttribute("currentPage", 1);
+                    request.setAttribute("noOfRecords", 5);
                     Collection<Integer> values = res.values();
-                    noOfPages = (values.stream().findFirst().orElse(5))/5;
-                    if (noOfPages % 5 > 0){
+                    noOfPages = (values.stream().findFirst().orElse(5)) / 5;
+                    if (noOfPages % 5 > 0) {
                         noOfPages++;
                     }
-                    request.setAttribute("noOfPages",noOfPages);
-                    request.getSession().setAttribute("totalPages",noOfPages);
+                    request.setAttribute("noOfPages", noOfPages);
+                    request.getSession().setAttribute("totalPages", noOfPages);
                 } catch (ServiceException e) {
-                    e.printStackTrace();
+                    request.setAttribute("errMSG","Cant get all cars");
+                    request.setAttribute("err",24);
                 }
             }
             if (request.getRequestURI().contains(GeneralConstant.USER)) {

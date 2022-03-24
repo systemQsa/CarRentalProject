@@ -17,8 +17,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TopUpBalanceCommand implements Command {
-    private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
+    private final UserService userService;
     private static final Logger logger = LogManager.getLogger(TopUpBalanceCommand.class);
+
+    public TopUpBalanceCommand(){
+        userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
+    }
+
+    public TopUpBalanceCommand(UserService userService){
+        this.userService = userService;
+    }
 
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {

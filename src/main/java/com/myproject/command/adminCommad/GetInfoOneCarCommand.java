@@ -26,7 +26,6 @@ public class GetInfoOneCarCommand implements Command {
         Route route = new Route();
         try {
             Car car = carService.getOneCar(Integer.parseInt(request.getParameter("carId")));
-            System.out.println("carService CAR NAME " + car.getName());
             HttpSession session = request.getSession();
             session.setAttribute("carId",car.getCarId());
             session.setAttribute("carName", car.getName());

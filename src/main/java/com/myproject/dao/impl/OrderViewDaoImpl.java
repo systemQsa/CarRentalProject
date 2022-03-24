@@ -27,6 +27,10 @@ public class OrderViewDaoImpl implements OrderViewDao {
         connectManager = ConnectionPool.getInstance();
     }
 
+    public OrderViewDaoImpl(ConnectManager connect){
+        this.connectManager = connect;
+    }
+
     @Override
     public void setConnection(ConnectManager connectManager) {
         this.connectManager = connectManager;
@@ -34,11 +38,11 @@ public class OrderViewDaoImpl implements OrderViewDao {
 
 
     @Override
-    public List<OrderViewForUserRequest> getOrdersForUser(String login, int startPage) throws DaoException {
+    public List<OrderViewForUserRequest> getOrdersForUser(String login, int startPage,int noOfRecords) throws DaoException {
         connection =connectManager.getConnection();
         ResultSet resultSet;
         ResultSet totalTableRecords;
-        int itemsPerPage = 2;
+        int start = startPage * noOfRecords - noOfRecords;
         int temp = 0;
         List<OrderViewForUserRequest> list = new ArrayList<>();
         System.out.println("\nLogin " + login + " page# " + startPage);
@@ -53,8 +57,8 @@ public class OrderViewDaoImpl implements OrderViewDao {
                 temp = totalTableRecords.getInt("records");
             }
             statement.setString(1, login);
-            statement.setInt(2, (startPage - 1));
-            statement.setInt(3, itemsPerPage);
+            statement.setInt(2, start);
+            statement.setInt(3, noOfRecords);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 OrderViewForUserRequest.OrderViewBuilder orderViewBuilder = new OrderViewForUserRequest.OrderViewBuilder();
@@ -94,10 +98,13 @@ public class OrderViewDaoImpl implements OrderViewDao {
     }
 
     @Override
-    public List<OrderViewForUserRequest> getOrdersForManager(String approved, int startPage) throws DaoException {
+    public List<OrderViewForUserRequest> getOrdersForManager(String approved, int startPage,int noOfRecords) throws DaoException {
+        System.out.println(
+                "get orders for manager in db"
+        );
         connection = connectManager.getConnection();
-        int itemsPerPage = 2;
         int temp = 0;
+        int start = startPage * noOfRecords - noOfRecords;
         ResultSet totalRecords;
         ResultSet resultSet;
         List<OrderViewForUserRequest> list = new ArrayList<>();
@@ -105,17 +112,19 @@ public class OrderViewDaoImpl implements OrderViewDao {
             PreparedStatement statement2 = connection.prepareStatement("SELECT COUNT(user_id) as records," + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER);
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            System.out.println("START\n " + approved);
+            System.out.println("START approved\n " + approved);
             statement2.setString(1, approved);
             totalRecords = statement2.executeQuery();
+            System.out.println("=========");
             if (totalRecords.next()) {
                 temp = totalRecords.getInt("records");
+                System.out.println("records " + temp);
             }
             System.out.println("TEMP " + temp);
 
             statement.setString(1, approved);
-            statement.setInt(2, (startPage - 1));
-            statement.setInt(3, itemsPerPage);
+            statement.setInt(2, start);
+            statement.setInt(3, noOfRecords);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
 

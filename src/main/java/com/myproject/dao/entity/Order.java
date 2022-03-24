@@ -135,16 +135,16 @@ public class Order implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return getOrderId() == order.getOrderId() && getUserId() == order.getUserId()
-                && Double.compare(order.getReceipt(), getReceipt()) == 0 && Objects.equals(getPassport(),
-                order.getPassport()) && Objects.equals(getWithDriver(), order.getWithDriver())
-                && Objects.equals(getFromDate(), order.getFromDate()) && Objects.equals(getToDate(), order.getToDate());
+        return getUserId() == order.getUserId() && getCarId() == order.getCarId()
+                && Double.compare(order.getReceipt(), getReceipt()) == 0 && Objects.equals(getPassport(), order.getPassport())
+                && Objects.equals(getWithDriver(), order.getWithDriver()) && Objects.equals(getFromDate(), order.getFromDate())
+                && Objects.equals(getToDate(), order.getToDate()) && Objects.equals(getUserLogin(), order.getUserLogin());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrderId(), getUserId(), getPassport(),
-                getWithDriver(), getFromDate(), getToDate(), getReceipt());
+        return Objects.hash(getUserId(), getCarId(), getPassport(), getWithDriver(), getFromDate(),
+                getToDate(), getReceipt(), getUserLogin());
     }
 
     @Override

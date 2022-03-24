@@ -3,14 +3,8 @@ package com.myproject.factory.impl;
 
 import com.myproject.dao.entity.Car;
 import com.myproject.factory.ServiceFactory;
-import com.myproject.service.CarOrderService;
-import com.myproject.service.CarService;
-import com.myproject.service.OrderViewService;
-import com.myproject.service.UserService;
-import com.myproject.service.impl.CarOrderServiceImpl;
-import com.myproject.service.impl.CarServiceImpl;
-import com.myproject.service.impl.UserServiceImpl;
-import com.myproject.service.impl.ViewOrderServiceImpl;
+import com.myproject.service.*;
+import com.myproject.service.impl.*;
 
 public class ServiceFactoryImpl implements ServiceFactory {
 
@@ -32,5 +26,10 @@ public class ServiceFactoryImpl implements ServiceFactory {
     @Override
     public UserService getUserService() {
         return new UserServiceImpl();
+    }
+
+    @Override
+    public DriverService getDriverService() {
+        return new DriverServiceImpl();
     }
 }

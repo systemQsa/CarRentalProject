@@ -2,6 +2,7 @@ package com.myproject.command.adminCommad;
 
 import com.myproject.command.Command;
 import com.myproject.command.util.ConstantPage;
+import com.myproject.command.util.GeneralConstant;
 import com.myproject.command.util.Route;
 import com.myproject.dao.entity.UserRole;
 import com.myproject.exception.CommandException;
@@ -25,10 +26,10 @@ public class SetRoleForUserCommand implements Command {
         String userLogin = request.getParameter("userLogin");
         Route route = new Route();
         try {
-            if (action.equals("setManager")) {
+            if (action.equals(GeneralConstant.Util.SET_MANAGER)) {
                 userService.updateUserStatus(userLogin, UserRole.MANAGER);
                 route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
-            } else if (action.equals("unsetManager")) {
+            } else if (action.equals(GeneralConstant.Util.UNSET_MANAGER)) {
                 route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
                 userService.updateUserStatus(userLogin,UserRole.USER);
             }

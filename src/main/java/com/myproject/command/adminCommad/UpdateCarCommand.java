@@ -2,6 +2,7 @@ package com.myproject.command.adminCommad;
 
 import com.myproject.command.Command;
 import com.myproject.command.util.ConstantPage;
+import com.myproject.command.util.GeneralConstant;
 import com.myproject.command.util.Route;
 import com.myproject.dao.entity.Car;
 import com.myproject.exception.CommandException;
@@ -27,11 +28,11 @@ public class UpdateCarCommand implements Command {
 
          try {
             carService.updateCar(
-                    updatedCar.setCarId(Integer.parseInt(request.getParameter("carId")))
-                            .setName(request.getParameter("carName"))
-                            .setCarClass(request.getParameter("carClass"))
-                            .setBrand(request.getParameter("brand"))
-                            .setRentalPrice(Double.parseDouble(request.getParameter("rentalPrice")))
+                    updatedCar.setCarId(Integer.parseInt(request.getParameter(GeneralConstant.CarConstants.CAR_ID)))
+                            .setName(request.getParameter(GeneralConstant.CarConstants.CAR_NAME))
+                            .setCarClass(request.getParameter(GeneralConstant.CarConstants.CAR_CLASS))
+                            .setBrand(request.getParameter(GeneralConstant.CarConstants.CAR_BRAND))
+                            .setRentalPrice(Double.parseDouble(request.getParameter(GeneralConstant.CarConstants.CAR_RENTAL_PRICE)))
                             .setPhoto(request.getParameter("carPhoto")).build()
             );
             route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);

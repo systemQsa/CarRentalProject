@@ -25,7 +25,6 @@ public class BlockUserCommand implements Command {
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         String userLogin = request.getParameter("userLogin");
-        System.out.println("COMMAND " + request.getParameter("action"));
         try {
             boolean isSuccess = userService.blockUser(userLogin);
             //todo else go to error page if cant block user

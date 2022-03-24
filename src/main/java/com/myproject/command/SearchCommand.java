@@ -15,6 +15,7 @@ import com.myproject.service.impl.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,16 +30,17 @@ public class SearchCommand implements  Command{
 
         System.out.println("\n search " + request.getRequestURL() + " " + request.getRequestURI());
         User searchUser;
-        Car searchCar;
+        List<Car> searchCars;
         Optional<User> user;
-        Optional<Car> car;
+        Optional<List<Car>> car;
         try {
             if (role == null){
                 car = carService.getCar(search);
                 if (car.isPresent()){
-                    searchCar = car.get();
-                    System.out.println("serach "  + searchCar);
-                    request.setAttribute("searchedCar",searchCar);
+                    searchCars = car.get();
+                    System.out.println("serach "  + searchCars);
+                    request.setAttribute("searchCommand","searchingCar");
+                    request.setAttribute("searchedCars",searchCars);
                     route.setPathOfThePage("/index.jsp");
                 }
 
@@ -48,15 +50,17 @@ public class SearchCommand implements  Command{
                 if (user.isPresent()){
                     searchUser = user.get();
                     System.out.println("serach "  + searchUser);
+                    request.setAttribute("searchCommand","searchingUser");
                     request.setAttribute("searchedUser",searchUser);
                     route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
                 }
             }else {
                      car = carService.getCar(search);
                      if (car.isPresent()) {
-                        searchCar = car.get();
-                        System.out.println("serach "  + searchCar);
-                        request.setAttribute("searchedCar", searchCar);
+                        searchCars = car.get();
+                        System.out.println("serach "  + searchCars);
+                         request.setAttribute("searchCommand","searchingCar");
+                        request.setAttribute("searchedCars", searchCars);
                         if (Objects.equals(request.getSession().getAttribute("role"),"admin")){
                           route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
                         } else if (Objects.equals(request.getSession().getAttribute("role"),"user")){

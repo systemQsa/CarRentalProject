@@ -3,6 +3,7 @@ package com.myproject.dao.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 public class User implements Comparable<User>, Serializable {

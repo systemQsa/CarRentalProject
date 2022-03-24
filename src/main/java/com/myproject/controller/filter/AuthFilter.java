@@ -18,7 +18,7 @@ public class AuthFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
        userAllowedUrls = Arrays.asList("/view/user/user.jsp","/view/user/bookCar.jsp","/view/user/confirmReceipt.jsp",
                                        "/view/user/viewMyOrders.jsp","/helloServlet","/login.jsp","/js/date.js");
-       generalUrls = Arrays.asList("/car/","/login.jsp","/index.jsp","/register.jsp","/helloServlet");
+       generalUrls = Arrays.asList("/car/","/login.jsp","/index.jsp","/register.jsp","/helloServlet","/forgotPass.jsp","/newPass.jsp");
        adminAllowedUrls = Arrays.asList("/view/admin/admin.jsp","/view/admin/addNewCar.jsp","/view/admin/updateCar.jsp","/helloServlet");
        managerAllowedUrls = Arrays.asList("/view/manager/manager.jsp","/view/manager/allOrdersToAccept.jsp",
                                           "/view/manager/viewAllApprovedOrders.jsp","/helloServlet");

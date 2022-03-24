@@ -6,6 +6,7 @@ import com.myproject.exception.*;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
+import com.myproject.validation.Validate;
 import com.myproject.validation.ValidateInput;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -16,9 +17,20 @@ import java.util.HashSet;
 
 public class LoginCommand implements Command {
     private static final Logger logger = LogManager.getLogger(LoginCommand.class);
-    private UserService userService;
-    private final ValidateInput validateInput = new ValidateInput();
+    private final UserService userService;
+    private final Validate validateInput;
     private User user;
+    private final CommandUtil commandUtil = new CommandUtil();
+
+    public LoginCommand(){
+        userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
+        validateInput = new ValidateInput();
+    }
+
+    public LoginCommand(UserService userService){
+        this.userService = userService;
+        validateInput = new ValidateInput(userService);
+    }
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
@@ -27,9 +39,10 @@ public class LoginCommand implements Command {
         String login = request.getParameter(GeneralConstant.LOGIN);
         char[]password = request.getParameter("password").toCharArray();
 
-        if (validateInput.validateUserIsBlocked(login,request)){
+
+         if (validateInput.userIsBlockedValidate(login)){
             logger.warn("Blocked user tried to log in");
-            setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.BLOCKED_USER,1,request);
+            setInformMessageIfErrorOccur("err.blocked_user",1,request);
              route.setPathOfThePage(ConstantPage.LOG_IN_PAGE);
             route.setRoute(Route.RouteType.REDIRECT);
            throw new ValidationException("");
@@ -38,31 +51,44 @@ public class LoginCommand implements Command {
 
         logger.info("USER LOGIN  == " + login);
 
-        if (CommandUtil.userIsLogged(request)) {
+        if (commandUtil.userIsLogged(request)) {
             String userRole = CommandUtil.getUserRoleFromPage(request);
             route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(userRole));
             logger.info("user is logged");
         }else{
-            userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
-            validateInput.validateLogin(login,request,response);
-            validateInput.validatePassword(password,request);
+
+            try{
+                validateInput.loginValidate(login);
+            }catch (ValidationException e){
+                setInformMessageIfErrorOccur("err.login",2,request);
+                throw new CommandException(ConstantPage.LOG_IN_PAGE);
+            }
+
+
+            try{
+                validateInput.passwordValidate(password);
+            }catch (ValidationException e){
+                setInformMessageIfErrorOccur("err.password",3,request);
+                throw new CommandException(ConstantPage.LOG_IN_PAGE);
+            }
+
 
              String role;
 
             try {
-                role = userService.logInValidation(login,password,request);
-            } catch (ServiceException e) {
+                 role = userService.logInValidation(login,password,request);
+             } catch (ServiceException e) {
                 throw new CommandException(ConstantPage.LOG_IN_PAGE);
             }
 
             if (role != null){
                 try {
-                    user = userService.getUserByLoginAndPass(login,password);
-                } catch (ServiceException e) {
+                     user = userService.getUserByLoginAndPass(login,password);
+                 } catch (ServiceException e) {
                     throw new CommandException(e.getMessage());
                 }
             }else {
-                setInformMessageIfErrorOccur(GeneralConstant.ErrorMSG.INVALID_PASS,3,request);
+                setInformMessageIfErrorOccur("err.password",3,request);
                 throw new ValidationException(ConstantPage.LOG_IN_PAGE);
             }
 
@@ -87,6 +113,6 @@ public class LoginCommand implements Command {
 
         loggedUsers.add(login);
         request.getSession().getServletContext().setAttribute(GeneralConstant.Util.LOGGED_USERS, loggedUsers);
-         return route;
+          return route;
     }
 }

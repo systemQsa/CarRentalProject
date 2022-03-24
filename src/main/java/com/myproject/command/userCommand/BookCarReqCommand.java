@@ -8,7 +8,6 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
-import com.myproject.service.impl.CarOrderServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -26,6 +25,8 @@ public class BookCarReqCommand implements Command {
         Route route = new Route();
         boolean isSuccessfullyBooked;
         HttpSession session = request.getSession();
+
+        System.out.println("book the car action works!!!");
         try {
             isSuccessfullyBooked = carBookingService.bookTheCar(request, response);
             if (isSuccessfullyBooked) {

@@ -5,6 +5,7 @@ public final class ConstantPage {
     public static final String HOME_PAGE = "/index.jsp";
     public static final String LOG_IN_PAGE = "/login.jsp";
     public static final String REGISTER_PAGE = "/register.jsp";
+    public static final String ERROR_PAGE = "/error.jsp";
     public static final String ADMIN_HOME_PAGE = "redirect:/view/admin/admin.jsp";
     public static final String USER_HOME_PAGE = "redirect:/view/user/user.jsp";
     public static final String USER_CREATE_BOOKING_PAGE = "redirect:/view/user/bookCar.jsp";
@@ -24,4 +25,7 @@ public final class ConstantPage {
     public static final String VIEW_ALL_APPROVED_ORDERS = "/WEB-INF/view/manager/viewAllApprovedOrders.jsp";
     public static final String VIEW_ALL_DECLINED_ORDERS = "/WEB-INF/view/manager/viewAllDeclinedOrders.jsp";
     public static final String VIEW_MY_ORDERS= "/WEB-INF/view/user/viewMyOrders.jsp";
+    public static final String BOOK_CAR_PAGE = "/WEB-INF/view/user/bookCar.jsp";
+    public static final String FORGOT_PASS_PAGE = "/forgotPass.jsp";
+    public static final String UPDATE_PASS_PAGE = "/newPass.jsp";
 }

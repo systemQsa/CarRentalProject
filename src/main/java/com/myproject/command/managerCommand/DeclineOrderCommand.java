@@ -3,6 +3,7 @@ package com.myproject.command.managerCommand;
 import com.myproject.command.Command;
 import com.myproject.command.OrderStorage;
 import com.myproject.command.util.ConstantPage;
+import com.myproject.command.util.GeneralConstant;
 import com.myproject.command.util.Route;
 import com.myproject.dao.entity.Order;
 import com.myproject.exception.CommandException;
@@ -22,6 +23,7 @@ public class DeclineOrderCommand implements Command {
     private final CarOrderService carOrderService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
     private static final Logger logger = LogManager.getLogger(DeclineOrderCommand.class);
 
+
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
@@ -29,30 +31,26 @@ public class DeclineOrderCommand implements Command {
         boolean declineOrderResult;
         Order resultOrder = parseIncomeOrder(order);
 
-        System.out.println("\n" + request.getSession().getAttribute("userName") + "  ===    User NAME " +
-                "order id " + resultOrder.getOrderId() + " " + request.getParameter("approved") +
-                " " + request.getParameter("feedback") + "\n");
+//        System.out.println("\n" + request.getSession().getAttribute("userName") + "  ===    User NAME " +
+//                "order id " + resultOrder.getOrderId() + " " + request.getParameter("approved") +
+//                " " + request.getParameter("feedback") + "\n");
 
         try {
-            Order declinedOrder = carOrderService.setOrder(resultOrder.getPassport(),
-                    resultOrder.getFromDate(), resultOrder.getToDate(), resultOrder.getWithDriver(),
-                    resultOrder.getReceipt(), resultOrder.getUserId(), resultOrder.getUserLogin(),
-                    resultOrder.getCarId(), false);
+            Order declinedOrder = carOrderService.setOrder(resultOrder, false);
 
             if (declinedOrder != null) {
 
                 declineOrderResult = carOrderService.updateOrderByManager(
-                        (String) request.getSession().getAttribute("userName"),
-                        declinedOrder.getOrderId(), request.getParameter("approved"),
+                        (String) request.getSession().getAttribute(GeneralConstant.Util.USER_NAME),
+                        declinedOrder.getOrderId(), request.getParameter(GeneralConstant.Util.APPROVED),
                         request.getParameter("feedback")
                 );
 
                 if (declineOrderResult) {
                     List<Order> orders = OrderStorage.getOrders();
-                    System.out.println("======= " + orders.contains(resultOrder));
 
-                    orders.remove(resultOrder);
-                    System.out.println("\n OrDER  Declined" + resultOrder + " \n");
+                    boolean remove = orders.remove(resultOrder);
+                    System.out.println("\n OrDER  Declined" + resultOrder + " \n"+remove);
 
                     request.getSession().getServletContext().setAttribute("orderList", orders);
                 }
