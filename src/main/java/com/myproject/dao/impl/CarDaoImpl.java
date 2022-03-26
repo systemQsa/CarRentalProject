@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The CarDaoImpl class represents class to work with Car entity and provides all necessary methods for work
+ */
 public class CarDaoImpl implements CarDao {
     private Connection connection = null;
     private static final Logger logger = LogManager.getLogger(CarDaoImpl.class);
@@ -38,6 +41,12 @@ public class CarDaoImpl implements CarDao {
     }
 
 
+    /**
+     * The method search car(s) by given name
+     * @param name - gets the desired car name
+     * @return all founded cars
+     * @throws DaoException in case cannot get all cars
+     */
     @Override
     public List<Car> searchCarsByName(String name) throws DaoException {
         connection = connectManager.getConnection();
@@ -48,6 +57,7 @@ public class CarDaoImpl implements CarDao {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Car.CarBuilder car = new Car.CarBuilder();
+                logger.info("connection successfully got process the searching the car");
                 car.setCarId(resultSet.getInt("id_car"))
                         .setName(resultSet.getString("name"))
                         .setCarClass(resultSet.getString("carClass"))
@@ -64,6 +74,13 @@ public class CarDaoImpl implements CarDao {
         return cars;
     }
 
+    /**
+     * The method get all the cars from DB and amount of them
+     * @param currPage - gets the current web page
+     * @param noOfRecords - gets desired amount of records
+     * @return all cars that was found in DB
+     * @throws DaoException in case cannot get all cars
+     */
     @Override
     public HashMap<List<Car>, Integer> findAll(int currPage,int noOfRecords) throws DaoException {
         List<Car> carList = new ArrayList<>();
@@ -71,7 +88,6 @@ public class CarDaoImpl implements CarDao {
         ResultSet resultOfRecords;
         int records = 0;
         int start = currPage * noOfRecords - noOfRecords;
-        System.out.println("\n\ncurr Page " + currPage);
         connection = connectManager.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ALL_CARS)) {
             PreparedStatement statement2 = connection.prepareStatement(QuerySQL.GET_CARS_TOTAL_RECORDS);
@@ -85,6 +101,7 @@ public class CarDaoImpl implements CarDao {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Car.CarBuilder carBuilder = new Car.CarBuilder();
+                logger.info("connected to the db getting all the cars");
                 carBuilder.setCarId(resultSet.getInt("id_car"))
                         .setName(resultSet.getString("name"))
                         .setCarClass(resultSet.getString("carClass"))
@@ -105,6 +122,12 @@ public class CarDaoImpl implements CarDao {
         return map;
     }
 
+    /**
+     * The method searches the car by given id
+     * @param carId -gets car id
+     * @return founded car
+     * @throws DaoException in case cannot find the car by given id
+     */
     @Override
     public Car findById(int carId) throws DaoException {
         connection = connectManager.getConnection();
@@ -131,6 +154,12 @@ public class CarDaoImpl implements CarDao {
         return carBuilder.build();
     }
 
+    /**
+     * The method deleted the car by given id
+     * @param carId - gets car id
+     * @return if the car was deleted returns true
+     * @throws DaoException in case the car cannot be deleted
+     */
     @Override
     public boolean deleteById(int carId) throws DaoException {
         boolean success = false;
@@ -150,6 +179,12 @@ public class CarDaoImpl implements CarDao {
         return success;
     }
 
+    /**
+     * The method updates given car
+     * @param car - gets car with some updates
+     * @return id car was updated returns true
+     * @throws DaoException in case cannot update the given car
+     */
     @Override
     public boolean update(Car car) throws DaoException {
         boolean response = false;
@@ -174,9 +209,14 @@ public class CarDaoImpl implements CarDao {
         return response;
     }
 
+    /**
+     * The method adds a new car to the table and checks if such car already exists in DB
+     * @param car _ gets a new car
+     * @return the added car
+     * @throws DaoException in case car was not added to the table in DB
+     */
     @Override
     public Car addRecordToTable(Car car) throws DaoException {
-        System.out.println("\nAdd car DaO");
         ResultSet resultSet;
         ResultSet suchCarInDB;
         Car.CarBuilder carBuilder = new Car.CarBuilder();
@@ -236,6 +276,14 @@ public class CarDaoImpl implements CarDao {
         return carBuilder.build();
     }
 
+    /**
+     * The method sorts cars by desired order
+     * @param neededQuery - gets desired query that will be sort cars by desired order
+     * @param currPage - gets current page  from web page
+     * @param noOfRecords - gets desired amount of records
+     * @return all founded sorted cars
+     * @throws DaoException in case cannot sort or find cars
+     */
     @Override
     public List<Car> getSortedCars(String neededQuery, int currPage,int noOfRecords) throws DaoException {
         connection = connectManager.getConnection();
@@ -267,6 +315,7 @@ public class CarDaoImpl implements CarDao {
         return carList;
     }
 
+    //todo delete method
     public List<Car> getSortedCarsByCarClass() throws DaoException {
         connection = connectManager.getConnection();
         ResultSet resultSet;

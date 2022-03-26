@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <html>
@@ -10,10 +10,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
 <body>
-<p>User login</p>
-<p>${sessionScope.userLogin}</p>
-
-<div class="form-gap"></div>
+<%--<p>${sessionScope.userLogin}</p>--%>
+<%--<div class="form-gap"></div>--%>
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
@@ -23,8 +21,7 @@
                         <h3><i class="fa fa-lock fa-4x"></i></h3>
                         <h2 class="text-center">${sessionScope.language['enter_new_password']}</h2>
                         <div class="panel-body">
-
-                            <form id="register-form" role="form" autocomplete="off" class="form" method="post" action="helloServlet">
+                             <form id="register-form" role="form" autocomplete="off" class="form" method="post" action="helloServlet">
                                 <input type="hidden" name="action" value="activateNewPassword">
                                 <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
                                 <div class="form-group">
@@ -49,6 +46,7 @@
         </div>
     </div>
 </div>
+
 <a href="${pageContext.request.contextPath}/forgotPass.jsp">${sessionScope.language['Go_back']}</a>
 </body>
 </html>

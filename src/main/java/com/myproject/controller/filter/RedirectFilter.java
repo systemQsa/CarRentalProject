@@ -42,12 +42,15 @@ public class RedirectFilter implements Filter {
                 || request.getRequestURI().contains("/register.jsp") || request.getRequestURI().contains("/index.jsp"))) {
             if (loggedUsers != null) {
                 loggedUsers.remove(userName);
+
+                System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
             }
             request.getSession().setAttribute(GeneralConstant.ROLE, null);
             request.getSession().setAttribute(GeneralConstant.USER_NAME, null);
            // System.out.println("Stop================= " + userRole);
            // System.out.println(loggedUsers);
             response.sendRedirect("/car");
+            return;
         }
 
 //        if ( loggedUsers != null && loggedUsers.contains(userRole) && request.getServletPath().contains("/car/")) {

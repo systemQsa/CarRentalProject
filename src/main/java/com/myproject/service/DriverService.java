@@ -4,6 +4,6 @@ import com.myproject.exception.ServiceException;
 
 public interface DriverService {
 
-    boolean changeDriverPrice(int newPrice) throws ServiceException;
+    boolean changeDriverPrice(double newPrice) throws ServiceException;
     double getDriverRentalPrice() throws ServiceException;
 }

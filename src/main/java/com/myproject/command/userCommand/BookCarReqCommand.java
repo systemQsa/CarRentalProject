@@ -15,7 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
+/**
+ * The BookCarReqCommand class implements the Command interface.
+ * Represents class that process the booking process
+ * gets all required data about the order
+ * redirect to the page where user pick dates and time
+ * enters passport data and pick option(with/without) driver
+ * after the system counts the total receipt price
+ * user can confirm or decline the request
+ */
 public class BookCarReqCommand implements Command {
     private static final Logger logger = LogManager.getLogger(BookCarReqCommand.class);
     private final CarOrderService carBookingService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
@@ -26,22 +34,18 @@ public class BookCarReqCommand implements Command {
         boolean isSuccessfullyBooked;
         HttpSession session = request.getSession();
 
-        System.out.println("book the car action works!!!");
         try {
             isSuccessfullyBooked = carBookingService.bookTheCar(request, response);
             if (isSuccessfullyBooked) {
                 String carId = request.getParameter("carId");
                 String rentPrice = request.getParameter("rentPrice");
-                // Object userLogin = request.getSession().getServletContext().getAttribute("userName");
                 session.setAttribute("carIdReq", request.getParameter("carId"));
                 session.setAttribute("carNameReq", request.getParameter("carName"));
                 session.setAttribute("carClassReq", request.getParameter("carClass"));
                 session.setAttribute("carBrandReq", request.getParameter("carBrand"));
                 session.setAttribute("rentPriceReq", request.getParameter("rentPrice"));
                 session.setAttribute("userLogin", request.getParameter("userLogin"));
-                //request.setAttribute("userLogin",userLogin);
 
-                System.out.println("\nBOOK THE CAR " + request.getParameter("userLogin") + "\n");
                 session.setAttribute("userLoginReq", request.getParameter("userLogin"));
 
                 route.setPathOfThePage(ConstantPage.USER_CREATE_BOOKING_PAGE);

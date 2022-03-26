@@ -11,13 +11,20 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
-import com.myproject.service.impl.CarOrderServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+
+/**
+ * The DeclineOrderCommand class implements the Command interface.
+ * Represents class that process the order booking.
+ * The manager decides if the order will be approved or not.
+ * In case some problems occur during the process the manager will be informed therefore the booking will be canceled
+ * the user will be informed that the order were canceled
+ */
 
 public class DeclineOrderCommand implements Command {
     private final CarOrderService carOrderService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
@@ -30,10 +37,6 @@ public class DeclineOrderCommand implements Command {
         String order = request.getParameter("declineUserOrder");
         boolean declineOrderResult;
         Order resultOrder = parseIncomeOrder(order);
-
-//        System.out.println("\n" + request.getSession().getAttribute("userName") + "  ===    User NAME " +
-//                "order id " + resultOrder.getOrderId() + " " + request.getParameter("approved") +
-//                " " + request.getParameter("feedback") + "\n");
 
         try {
             Order declinedOrder = carOrderService.setOrder(resultOrder, false);
@@ -49,8 +52,7 @@ public class DeclineOrderCommand implements Command {
                 if (declineOrderResult) {
                     List<Order> orders = OrderStorage.getOrders();
 
-                    boolean remove = orders.remove(resultOrder);
-                    System.out.println("\n OrDER  Declined" + resultOrder + " \n"+remove);
+                    orders.remove(resultOrder);
 
                     request.getSession().getServletContext().setAttribute("orderList", orders);
                 }

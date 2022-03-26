@@ -5,12 +5,16 @@ import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.Route;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ValidationException;
-import com.myproject.validation.ValidateInput;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+/**
+ * The CancelCarBookingCommand class  implements the Command interface.
+ * Represents the class that process the cancelling of the booking
+ */
 
 public class CancelCarBookingCommand implements Command {
     private static final Logger logger = LogManager.getLogger(CancelCarBookingCommand.class);

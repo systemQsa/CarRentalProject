@@ -26,6 +26,10 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The UserServiceImpl class represents class which provides methods which are related to work with user
+ */
+
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
     private final UserDao<User> userDao;
@@ -38,37 +42,59 @@ public class UserServiceImpl implements UserService {
         this.userDao = userDao;
     }
 
+    /**
+     * The method change old user password to new one
+     * @param login - gets user login
+     * @param password - gets new user password
+     * @return if the password was successfully changed in DataBase
+     * @throws ServiceException in case if can`t reset the password for given user
+     */
     @Override
     public boolean resetPassword(String login, char[] password) throws ServiceException {
         boolean response;
         try {
-            String encryptedPass =  EncryptUtil.encrypt(String.valueOf(password).getBytes(StandardCharsets.UTF_8), GeneralConstant.Util.KEY);
+            String encryptedPass =  EncryptUtil.encrypt(String.valueOf(password)
+                    .getBytes(StandardCharsets.UTF_8), GeneralConstant.Util.KEY);
             response = userDao.updatePassword(login,encryptedPass);
         } catch (Exception e) {
+            logger.warn("Impossible to reset the password in UserServiceImpl Class due to some problem occur");
             throw new ServiceException(e);
         }
         return response;
     }
 
+    /**
+     * The method gets all user info by given login
+     * @param login - gets user login
+     * @return found user
+     * @throws ServiceException in case can`t get user by given login
+     */
     @Override
     public Optional<User> getUser(String login) throws ServiceException {
 
         try {
             return Optional.of(userDao.findByLogin(login));
         } catch (DaoException e) {
+            logger.warn("Cant get user in UserServiceImpl class by given login " + login);
             throw new ServiceException(e.getMessage());
         }
     }
 
+
+    /**
+     * The method finds all user info according to given data
+     * @param login - gets user login
+     * @param password - gets user password
+     * @return found user
+     * @throws ServiceException in case if impossible to get such user by given credentials
+     */
     @Override
     public User getUserByLoginAndPass(String login, char[] password) throws ServiceException {
         System.out.println("getUserByLoginAndPass service "  + login);
         System.out.println(userDao);
         User user;
         try {
-            System.out.println("=========1======");
             user = userDao.getUserByLogin(login);
-            System.out.println("=========2======");
         } catch (DaoException e) {
             logger.error("SOME PROBLEM CANT GET USER FROM DB");
             throw new ServiceException(ConstantPage.LOG_IN_PAGE);
@@ -76,6 +102,15 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * Gets the user role depending on given login and password
+     * before getting the user decrypt the password to check if all data are valid
+     * @param login - gets user login
+     * @param password - gets user password
+     * @param request - gets the HttpRequest in case in problem occur put inform message to request
+     * @return user role
+     * @throws ValidationException in case if problem occur and can`t get user by given credentials
+     */
     @Override
     public String logInValidation(String login, char[] password, HttpServletRequest request) throws ValidationException {
         int userId = 0;
@@ -85,6 +120,7 @@ public class UserServiceImpl implements UserService {
         } catch (ServiceException e) {
             request.setAttribute(GeneralConstant.ErrorMSG.ERR, 2);
             request.setAttribute(GeneralConstant.ErrorMSG.ERR_MSG, GeneralConstant.ErrorMSG.NOT_REGISTERED);
+            logger.warn("Can`t get user by given credentials in UserServiceImpl class");
             throw new ValidationException(e.getMessage());
         }
 
@@ -95,6 +131,7 @@ public class UserServiceImpl implements UserService {
                 userId = user.getRole();
             }
         } catch (Exception e) {
+            logger.warn("Impossible to decrypt given password in UserServiceImpl class");
             throw new ValidationException(e.getMessage());
         }
 
@@ -102,6 +139,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * The methods find all users
+     * @return all found users
+     * @throws ServiceException in case if can`t find all users in DataBase
+     */
     @Override
     public Optional<List<User>> getAllUsers() throws ServiceException {
         try {
@@ -112,6 +154,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * The method find user balance depends on login data
+     * @param login - gets user login
+     * @return user balance on card
+     * @throws ServiceException in case if problem occur and impossible to get user balance
+     */
     @Override
     public double getBalance(String login) throws ServiceException {
         double userBalance;
@@ -124,10 +172,23 @@ public class UserServiceImpl implements UserService {
         return userBalance;
     }
 
+    /**
+     * The method register new user
+     * @param name - gets name
+     * @param surname - gets user surname
+     * @param login - gets user login
+     * @param password - gets user password
+     * @param phoneNumber - gets user phone number
+     * @return all user credentials
+     * @throws ServiceException in case if can`t register a new user
+     */
     @Override
-    public User registerNewUser(String name, String surname, String login, char[] password, String phoneNumber) throws ServiceException {
+    public User registerNewUser(String name, String surname, String login,
+                                char[] password, String phoneNumber) throws ServiceException {
+
         try {
-            String encrypt = EncryptUtil.encrypt(String.valueOf(password).getBytes(StandardCharsets.UTF_8), GeneralConstant.Util.KEY);
+            String encrypt = EncryptUtil.encrypt(String.valueOf(password)
+                    .getBytes(StandardCharsets.UTF_8), GeneralConstant.Util.KEY);
             User.UserBuilder user = new User.UserBuilder();
             user.setFirstName(name)
                     .setLastName(surname)
@@ -141,6 +202,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * The method top up the user balance
+     * @param balance - gets amount
+     * @param login - gets user login
+     * @return in case if replenishment went well
+     * @throws ServiceException in case if by some reason impossible to top up user balance
+     */
     @Override
     public boolean updateUserBalance(double balance, String login) throws ServiceException {
         boolean response;
@@ -153,6 +221,12 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    /**
+     * The method gets user status
+     * @param login- gets user login
+     * @return user status
+     * @throws ServiceException in case if can`t get user status
+     */
     @Override
     public String checkUserStatus(String login) throws ServiceException {
         String status;
@@ -165,6 +239,12 @@ public class UserServiceImpl implements UserService {
         return status;
     }
 
+    /**
+     * The method unblocks the given user
+     * @param login - gets user login
+     * @return if user was successfully unblocked returns true
+     * @throws ServiceException in case if impossible to unblock the user
+     */
     @Override
     public boolean unblockUser(String login) throws ServiceException {
         boolean response;
@@ -177,6 +257,12 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    /**
+     * The method blocks given user
+     * @param login - gets user login
+     * @return if user was successfully blocked returns true
+     * @throws ServiceException in case if impossible to block given user
+     */
     @Override
     public boolean blockUser(String login) throws ServiceException {
         boolean isSuccess;
@@ -189,6 +275,13 @@ public class UserServiceImpl implements UserService {
         return isSuccess;
     }
 
+    /**
+     * The method change user role depend on from the desired role
+     * @param login - gets user login
+     * @param userRole - gets new user role
+     * @return if updating was successful returns true
+     * @throws ServiceException in case if impossible to update user status
+     */
     @Override
     public boolean updateUserStatus(String login, UserRole userRole) throws ServiceException {
         boolean statusChanged = false;
@@ -208,6 +301,7 @@ public class UserServiceImpl implements UserService {
         return statusChanged;
     }
 
+    //todo get rid of this method
     @Override
     public UserService getInstance() {
         return null;

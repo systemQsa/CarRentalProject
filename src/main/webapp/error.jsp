@@ -1,6 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isErrorPage="true" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" isErrorPage="true" %>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>Error Page</title>
@@ -10,30 +9,16 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/index.css">
 </head>
 <body>
+ <%-- <div class="container">--%>
+<%--    <div class="col-6 offset-md-3">--%>
+<%--        <img src="http://lamcdn.net/lookatme.ru/post_image-image/sIaRmaFSMfrw8QJIBAa8mA-small.png" alt="404" />--%>
+<%--    </div>--%>
+<%--</div>--%>
 
-<%--<c:if test="${ not empty pageContext.exception.message}">--%>
-<%--    <h2>${pageContext.exception.message}</h2>--%>
-
-<%--</c:if>--%>
-<%--<c:if test="${ not empty pageContext.exception.localizedMessage}">--%>
-<%--    <h3>${pageContext.exception.localizedMessage}</h3>--%>
-<%--</c:if>--%>
-
-<%--<c:if test="${ not empty pageContext.exception.stackTrace}">--%>
-<%--    <h3>${pageContext.exception.stackTrace}</h3>--%>
-<%--</c:if>--%>
-
-<%--<c:out value="${pageContext.request.requestURL}"/>--%>
-
-<%--<img  class="text-center" alt="error page" src="<c:url value="png/404.png" />" style="width: 60%; height: 70%;"/>--%>
-
-
- <div class="container">
-    <div class="col-6 offset-md-3">
-        <img src="http://lamcdn.net/lookatme.ru/post_image-image/sIaRmaFSMfrw8QJIBAa8mA-small.png" alt="404" />
+    <div class="container">
+        <div class="col-3 offset-md-1">
+            <img src="https://c1.wallpaperflare.com/preview/251/931/705/not-found-404-error-file-not-found-404-file-not-found.jpg" alt="404" />
+        </div>
     </div>
-</div>
-
-
-</body>
+ </body>
 </html>

@@ -9,7 +9,6 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
-import com.myproject.service.impl.CarServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -17,6 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * The GetInfoOneCarCommand class implements the Command interface.
+ * Before updating the car this class gets all the info about current car
+ * and redirects to a new page to make changes
+ * about the current car
+ */
 public class GetInfoOneCarCommand implements Command {
     private final CarService<Car> carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
     private static final Logger logger = LogManager.getLogger(GetInfoOneCarCommand.class);

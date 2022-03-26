@@ -1,8 +1,10 @@
 package com.myproject.command.userCommand;
 
 import com.myproject.command.util.Route;
+import com.myproject.dao.DriverDao;
 import com.myproject.dao.OrderDao;
 import com.myproject.dao.connection.DBManager;
+import com.myproject.dao.impl.DriverDaoImpl;
 import com.myproject.dao.impl.OrderDaoImpl;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ValidationException;
@@ -47,7 +49,8 @@ public class CountTotalReceiptCommandTest {
     public void execute() {
         dbManager = DBManager.getInstance();
         OrderDao orderDao = new OrderDaoImpl(dbManager);
-        CarOrderService carOrderService = new CarOrderServiceImpl(orderDao);
+        DriverDao driverDao = new DriverDaoImpl(dbManager);
+        CarOrderService carOrderService = new CarOrderServiceImpl(driverDao);
         CountTotalReceiptCommand countTotalReceiptCommand = new CountTotalReceiptCommand(carOrderService);
 
         try {

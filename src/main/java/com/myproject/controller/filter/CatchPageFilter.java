@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The CatchPageFilter class implements the Filter interface.
+ * Catch the desired urls and redirects to needed page for user,admin
+ */
 public class CatchPageFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(CatchPageFilter.class);
 
@@ -30,29 +34,23 @@ public class CatchPageFilter implements Filter {
 
         if (httpRequest.getRequestURI().contains("/view/admin/addNewCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.ADD_CAR_PAGE).forward(httpRequest, httpResponse);
-            //httpResponse.sendRedirect("redirect:/view/admin/addNewCar.jsp");
-           // filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/view/admin/updateCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.UPDATE_CAR_PAGE).forward(httpRequest, httpResponse);
-            //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
 
         if (httpRequest.getRequestURI().contains("/view/user/bookCar.jsp")) {
             httpRequest.getRequestDispatcher(ConstantPage.FULL_PATH_USER_CREATE_BOOKING).forward(httpRequest, httpResponse);
-            //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/view/user/confirmReceipt.jsp")){
             httpRequest.getRequestDispatcher(ConstantPage.CONFIRM_RECEIPT_FULL_PATH).forward(httpRequest,httpResponse);
-            //filterChain.doFilter(httpRequest, httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/view/user/user.jsp")) {
             try {
-                System.out.println("\nCatch Page  " + httpRequest.getSession().getAttribute("userLogin") + "\n" );
 
                 UserService userService = new UserServiceImpl();
                 httpRequest.getSession().setAttribute("userBalance",

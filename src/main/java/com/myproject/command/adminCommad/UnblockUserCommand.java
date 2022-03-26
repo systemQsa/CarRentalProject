@@ -8,13 +8,16 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
-import com.myproject.service.impl.UserServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The UnblockUserCommand class implements the Command interface.
+ * Represents class that  unblocks the user by admin. Returns to the admin home page
+ */
 public class UnblockUserCommand implements Command {
     private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private static final Logger logger = LogManager.getLogger(UnblockUserCommand.class);
@@ -28,6 +31,9 @@ public class UnblockUserCommand implements Command {
            //todo else go to error page if cant unblock user
            if (isSuccess){
                route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
+           }else{
+               setInformMessageIfErrorOccur("err.block_unblock_user",20,request);
+               throw new CommandException(ConstantPage.ADMIN_HOME_PAGE);
            }
         } catch (ServiceException e) {
             logger.error("IMPOSSIBLE UNBLOCK USER IN UnblockUserCommand class");

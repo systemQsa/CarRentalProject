@@ -6,6 +6,8 @@ import com.myproject.exception.DaoException;
 import com.myproject.exception.ValidationException;
 import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,8 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 public class ValidateInputTest {
+    private static final Logger logger = LogManager.getLogger(ValidateInputTest.class);
     private final Validate validateInput = new ValidateInput();
     private static final String JDBC_DRIVER = "org.h2.Driver";
     private static final String DB_URL = "jdbc:h2:~/test";
@@ -103,6 +104,7 @@ public class ValidateInputTest {
                 {
                     try {
                         assertThat(validateInput.loginValidate(login)).isTrue();
+                        logger.info("validation login test passed");
                     } catch (ValidationException e) {
                         e.printStackTrace();
                     }
@@ -116,6 +118,7 @@ public class ValidateInputTest {
 
         for (String badLogin : badLogins) {
             assertThrows(ValidationException.class, () -> validateInput.loginValidate(badLogin));
+            logger.info("validation bad logins in tests passed");
         }
 
     }
@@ -131,6 +134,7 @@ public class ValidateInputTest {
         passwords.forEach(pass -> {
             try {
                 assertThat(validateInput.passwordValidate(pass)).isTrue();
+                logger.info("validation password in tests has passed");
             } catch (ValidationException e) {
                 e.printStackTrace();
             }
@@ -142,6 +146,7 @@ public class ValidateInputTest {
     public void validatePasswordNegative() {
         try {
             assertTrue(validateInput.passwordValidate(new char[]{'@', 'a', '3'}));
+            logger.info("validation negative password in tests has passed");
         } catch (ValidationException e) {
             e.printStackTrace();
         }
@@ -158,6 +163,7 @@ public class ValidateInputTest {
         assertThat(map).allSatisfy((name, surname) -> {
             try {
                 assertThat(validateInput.nameSurnameValidate(name, surname)).isIn(true);
+                logger.info("validation name and surname in tests has passed");
             } catch (ValidationException e) {
                 e.printStackTrace();
             }
@@ -174,6 +180,7 @@ public class ValidateInputTest {
 
         for (Map.Entry<String, String> entry : badInputs.entrySet()) {
             assertThrows(ValidationException.class, () -> validateInput.nameSurnameValidate(entry.getKey(), entry.getValue()));
+            logger.info("validation bad name and surname in tests has passed");
         }
 
     }
@@ -185,6 +192,7 @@ public class ValidateInputTest {
         assertThat(phones).allSatisfy(phone->{
             assertThat(validateInput.phoneValidate(phone)).isTrue();
         });
+        logger.info("validation phone number in tests has passed");
     }
 
     @Test
@@ -194,6 +202,7 @@ public class ValidateInputTest {
         for (String badPhone:badPhones){
             assertThrows(ValidationException.class,()->validateInput.phoneValidate(badPhone));
          }
+        logger.info("validation bad phone numbers in tests has passed");
      }
 
     @Test
@@ -203,6 +212,7 @@ public class ValidateInputTest {
         assertThat(passports).allSatisfy(passport->{
             assertThat(validateInput.passportValidate(passport)).isTrue();
         });
+        logger.info("validation passport in tests has passed");
 
     }
 
@@ -215,6 +225,7 @@ public class ValidateInputTest {
         try {
             userDao.blockUnblockUser("user2@gmail.com", "Y");
             assertTrue(validateInput.userIsBlockedValidate("user2@gmail.com"));
+            logger.info("validation user is blocked in tests has passed");
         } catch (DaoException | ValidationException e) {
             e.printStackTrace();
         }
@@ -227,6 +238,7 @@ public class ValidateInputTest {
         ValidateInput validateInput = new ValidateInput();
         try {
             assertTrue(validateInput.datesAndTimeValidate(from,to,null));
+            logger.info("validation dates and time in tests has passed");
         } catch (ValidationException e) {
             e.printStackTrace();
         }

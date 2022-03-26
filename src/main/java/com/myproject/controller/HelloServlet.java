@@ -17,8 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
 
-
-@WebServlet(name = "helloServlet",urlPatterns = "/helloServlet")
+/**
+ * The HelloServlet class represents controller which accept client requests and command to be executed
+ * redirects to the desired class which implements the desired command
+ */
+@WebServlet(name = "helloServlet", urlPatterns = "/helloServlet")
 public class HelloServlet extends HttpServlet {
     private static final Logger logger = LogManager.getLogger(HelloServlet.class);
 
@@ -56,29 +59,28 @@ public class HelloServlet extends HttpServlet {
 
     private void processTheRequest(HttpServletRequest request, HttpServletResponse response) throws ControllerException, IOException, ServletException {
 
-        System.out.println("==============servlet===================" + request.getParameter("action"));
         String action = request.getParameter(GeneralConstant.ACTION);
         logger.info("Role " + request.getSession().getAttribute("login"));
         logger.info("Action " + request.getParameter("action"));
-        if (request.getParameter("search") != null){
+        if (request.getParameter("search") != null) {
             action = "search";
         }
 
-         String str = request.getContextPath();
+        String str = request.getContextPath();
         Command command;
         if (action != null) {
             command = PageAction.getCommand(action);
 
-             Route route;
+            Route route;
             try {
                 route = command.execute(request, response);
             } catch (CommandException | ValidationException e) {
                 logger.warn("CONTROLLER EXCEPTION");
-                request.getRequestDispatcher(e.getMessage()).forward(request,response);
+                request.getRequestDispatcher(e.getMessage()).forward(request, response);
                 throw new ControllerException(e.getMessage());
             }
             String path = route.getPathOfThePage();
-             if (route.getRoute().equals(Route.RouteType.FORWARD)) {
+            if (route.getRoute().equals(Route.RouteType.FORWARD)) {
                 System.gc();
                 request.getRequestDispatcher(route.getPathOfThePage()).forward(request, response);
             } else if (path.contains(GeneralConstant.REDIRECT)) {

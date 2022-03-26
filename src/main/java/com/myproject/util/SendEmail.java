@@ -2,13 +2,9 @@ package com.myproject.util;
 
 import java.util.Properties;
 import java.io.*;
-import java.util.*;
 import javax.mail.Part;
-import javax.servlet.*;
-import javax.servlet.http.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 
 /**
  * Sends message on Gmail in order to change receiver must be changed host and  probably need additional settings
@@ -24,7 +20,19 @@ import javax.activation.*;
 
 
 public class SendEmail {
-    private boolean textIsHtml = false;
+
+
+    /**
+     * Reads user email address and sends verification code to it
+     * By default it sends to author email to disable it just change
+     * from
+     * InternetAddress to = new InternetAddress(properties.getProperty("email"));
+     * to
+     * InternetAddress to = new InternetAddress(emailTo);
+     * and set email property into the property file from where the receiver will get the email about the verification!!!
+     * @param emailTo gets user email where to send secret code
+     * @return verification secret code
+     */
 
     public int sendEmailToRecipient(String emailTo) {
         int secretCode = (int)(Math.random() *((9999-1000)+1000));
@@ -64,6 +72,11 @@ public class SendEmail {
         return secretCode;
     }
 
+
+    /**
+     * Gets the response message from user email
+     * @return plain text body from the email
+     */
     public String getEmailFromSender() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Properties properties = new Properties();
@@ -87,8 +100,10 @@ public class SendEmail {
                 for (int i = 0; i < multipart.getCount(); i++) {
                     BodyPart bodyPart = multipart.getBodyPart(i);
                     result = getText(bodyPart);
-                    result = result.replaceAll("<div dir=\"ltr\">","")
-                                    .replaceAll("</div>","").trim();
+                    if (result != null){
+                        result = result.replaceAll("<div dir=\"ltr\">","")
+                                .replaceAll("</div>","").trim();
+                    }
                 }
             }
 
@@ -102,7 +117,15 @@ public class SendEmail {
         return null;
     }
 
+    /**
+     * Checks whatever text ContentType is and clear ip up from unnecessary parts
+     * @param p BodyPart
+     * @return retrieves the plain body/text from the email
+     * @throws MessagingException in case can`t find proper type
+     * @throws IOException in case if can`t get input
+     */
     private String getText(Part p) throws MessagingException, IOException {
+        boolean textIsHtml = false;
         if (p.isMimeType("text/*")) {
             String s = (String) p.getContent();
             textIsHtml = p.isMimeType("text/html");
@@ -117,7 +140,6 @@ public class SendEmail {
                 if (bp.isMimeType("text/plain")) {
                     if (text == null)
                         text = getText(bp);
-                    continue;
                 } else if (bp.isMimeType("text/html")) {
                     String s = getText(bp);
                     if (s != null)

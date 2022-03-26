@@ -8,9 +8,13 @@ import com.myproject.service.DriverService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+/**
+ * The DriverServiceImpl class represent methods to work with Driver entity
+ */
+
 public class DriverServiceImpl implements DriverService {
     private static final Logger logger = LogManager.getLogger(DriverServiceImpl.class);
-    private DriverDao driverDao;
+    private final DriverDao driverDao;
 
 
     public DriverServiceImpl(){
@@ -21,8 +25,14 @@ public class DriverServiceImpl implements DriverService {
         this.driverDao = driverDao;
     }
 
+    /**
+     * The method change old driver rental price to new one
+     * @param newDriverPrice - gets new driver rental price
+     * @return if the rental was successfully updated returns true
+     * @throws ServiceException in case cannot change driver rental price
+     */
     @Override
-    public boolean changeDriverPrice(int newDriverPrice) throws ServiceException {
+    public boolean changeDriverPrice(double newDriverPrice) throws ServiceException {
         try {
             driverDao.updateDriverPrice(newDriverPrice);
         } catch (DaoException e) {
@@ -31,6 +41,12 @@ public class DriverServiceImpl implements DriverService {
         }
         return true;
     }
+
+    /**
+     *The method gets driver rental price
+     * @return if rental price were received successfully
+     * @throws ServiceException in case cannot get driver rental price
+     */
     @Override
     public double getDriverRentalPrice() throws ServiceException {
         double driverPrice;

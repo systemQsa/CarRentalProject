@@ -18,16 +18,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The OrderViewDaoImpl class represents the class to work with OrderViewForUserRequest entity and provides necessary methods for it
+ */
 public class OrderViewDaoImpl implements OrderViewDao {
     private Connection connection = null;
     private static final Logger logger = LogManager.getLogger(OrderViewDaoImpl.class);
     private ConnectManager connectManager;
 
-    public OrderViewDaoImpl(){
+    public OrderViewDaoImpl() {
         connectManager = ConnectionPool.getInstance();
     }
 
-    public OrderViewDaoImpl(ConnectManager connect){
+    public OrderViewDaoImpl(ConnectManager connect) {
         this.connectManager = connect;
     }
 
@@ -36,16 +39,23 @@ public class OrderViewDaoImpl implements OrderViewDao {
         this.connectManager = connectManager;
     }
 
-
+    /**
+     * The method gets all orders that were made by given user (all approved and declined)
+     *
+     * @param login       - gets user login
+     * @param startPage   - gets current web page
+     * @param noOfRecords - gets number of records
+     * @return all founded orders
+     * @throws DaoException in case cannot find orders
+     */
     @Override
-    public List<OrderViewForUserRequest> getOrdersForUser(String login, int startPage,int noOfRecords) throws DaoException {
-        connection =connectManager.getConnection();
+    public List<OrderViewForUserRequest> getOrdersForUser(String login, int startPage, int noOfRecords) throws DaoException {
+        connection = connectManager.getConnection();
         ResultSet resultSet;
         ResultSet totalTableRecords;
         int start = startPage * noOfRecords - noOfRecords;
         int temp = 0;
         List<OrderViewForUserRequest> list = new ArrayList<>();
-        System.out.println("\nLogin " + login + " page# " + startPage);
 
         try (PreparedStatement statement = connection.prepareStatement("SELECT " + QuerySQL.ALL_ORDERS_USER_VIEW + "LIMIT ?,?")) {
             PreparedStatement countTotalRecordsInTable = connection.prepareStatement("SELECT COUNT(user_id) AS records," + QuerySQL.ALL_ORDERS_USER_VIEW);
@@ -97,11 +107,17 @@ public class OrderViewDaoImpl implements OrderViewDao {
         return list;
     }
 
+    /**
+     * The method returns all orders for manager
+     *
+     * @param approved    - gets desired order status
+     * @param startPage   - gets current web page
+     * @param noOfRecords - gets number of records to be found
+     * @return all founded orders
+     * @throws DaoException in case cannot find orders
+     */
     @Override
-    public List<OrderViewForUserRequest> getOrdersForManager(String approved, int startPage,int noOfRecords) throws DaoException {
-        System.out.println(
-                "get orders for manager in db"
-        );
+    public List<OrderViewForUserRequest> getOrdersForManager(String approved, int startPage, int noOfRecords) throws DaoException {
         connection = connectManager.getConnection();
         int temp = 0;
         int start = startPage * noOfRecords - noOfRecords;
@@ -112,15 +128,12 @@ public class OrderViewDaoImpl implements OrderViewDao {
             PreparedStatement statement2 = connection.prepareStatement("SELECT COUNT(user_id) as records," + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER);
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            System.out.println("START approved\n " + approved);
             statement2.setString(1, approved);
             totalRecords = statement2.executeQuery();
-            System.out.println("=========");
+            logger.info("Total records are were given in OrderViewDaoImpl class");
             if (totalRecords.next()) {
                 temp = totalRecords.getInt("records");
-                System.out.println("records " + temp);
             }
-            System.out.println("TEMP " + temp);
 
             statement.setString(1, approved);
             statement.setInt(2, start);
@@ -133,21 +146,21 @@ public class OrderViewDaoImpl implements OrderViewDao {
                 Car.CarBuilder car = new Car.CarBuilder();
                 OrderViewForUserRequest res =
                         viewOrderBuilder.setAmountOfRecords(temp)
-                        .setLogin(resultSet.getString("login"))
-                        .setOrder(order.setPassport(resultSet.getString("passport"))
-                                .setReceipt(resultSet.getDouble("receipt"))
-                                .setDateFrom(resultSet.getTimestamp("from_date"))
-                                .setDateTo(resultSet.getTimestamp("to_date"))
-                                .setWithDriver(resultSet.getString("with_driver")).build())
-                        .setCar(car.setName(resultSet.getString("name"))
-                                .setCarClass(resultSet.getString("carClass"))
-                                .setBrand(resultSet.getString("brand")).build()).build();
+                                .setLogin(resultSet.getString("login"))
+                                .setOrder(order.setPassport(resultSet.getString("passport"))
+                                        .setReceipt(resultSet.getDouble("receipt"))
+                                        .setDateFrom(resultSet.getTimestamp("from_date"))
+                                        .setDateTo(resultSet.getTimestamp("to_date"))
+                                        .setWithDriver(resultSet.getString("with_driver")).build())
+                                .setCar(car.setName(resultSet.getString("name"))
+                                        .setCarClass(resultSet.getString("carClass"))
+                                        .setBrand(resultSet.getString("brand")).build()).build();
 
                 list.add(res);
             }
 
             statement2.close();
-           connection.commit();
+            connection.commit();
 
         } catch (SQLException e) {
             try {
@@ -160,7 +173,6 @@ public class OrderViewDaoImpl implements OrderViewDao {
         } finally {
             connectManager.closeConnection(connection);
         }
-        System.out.println("\nList" + list + "\n");
         return list;
     }
 }

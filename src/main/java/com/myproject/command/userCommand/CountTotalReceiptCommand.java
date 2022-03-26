@@ -15,14 +15,18 @@ import com.myproject.validation.ValidateInput;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
+
+/**
+ * The CountTotalReceiptCommand class implements the Command interface.
+ * Represents class that count total amount of the receipt
+ * Gets the user balance on card and compare the user balance and the receipt price
+ * if user balance enough  than returns the info to the user that payment can be successfully processed
+ * else informs the user that the payment cannot be processed due to not enough balance on user card
+ */
 public class CountTotalReceiptCommand implements Command {
     private final CarOrderService carOrderService;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(ValidateInput.DATE_TIME_PATTERN);
@@ -48,9 +52,7 @@ public class CountTotalReceiptCommand implements Command {
         String withDriver = request.getParameter("flexRadioDefault");
         String userBalance = request.getParameter("userBalance");
         String userLogin = request.getParameter("userLogin");
-//        System.out.println("\nCount receipt!!!!  "
-//                + "passport " + userPassport + " fromDate" + fromDate + " toDAte" + toDate
-//                + "carPrice " + carRentPrice + " userBalance " + userBalance + "userLogin " + userLogin);
+
         try {
             validateInput.passportValidate(userPassport);
         } catch (ValidationException e) {
@@ -65,7 +67,6 @@ public class CountTotalReceiptCommand implements Command {
         }
 
         BigDecimal totalPrice;
-//        if (request.getParameter("fromDate") != null && request.getParameter("toDate") != null) {
 
         try {
 
@@ -112,7 +113,6 @@ public class CountTotalReceiptCommand implements Command {
             setInformMessageIfErrorOccur("err.balance_low", 11, request);
             throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
         }
-//        }
 
         route.setPathOfThePage(ConstantPage.CONFIRM_RECEIPT_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);

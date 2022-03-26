@@ -11,10 +11,6 @@
 <body>
 <jsp:include page="${pageContext.request.contentType}/WEB-INF/view/include/header.jsp"/>
 
-<h1>UPDATE CAR</h1>
-<%--    <c:out value="${requestScope.carName}"/>--%>
-<%--    <h4><%=application.getAttribute("carName")%></h4>--%>
-
 
 <h4>${sessionScope.get("carName")}</h4>
 
@@ -49,32 +45,7 @@
         </form>
     </div>
 </div>
-<p>${pageContext.request.contextPath}</p>
+
 <a href="${pageContext.request.contextPath}/view/admin/admin.jsp">${sessionScope.language['Go_back']}</a>
-
-
-
-
-<%--<form method="post" action="${pageContext.request.contentType}/car/helloServlet">--%>
-<%--    <input type="hidden" name="action" value="updateCar">--%>
-<%--    <input type="hidden" name="carId" value="${sessionScope.carId}">--%>
-
-<%--    <label>Car Name  ${sessionScope.carName}</label>--%>
-<%--    <input type="text" name="carName"  value="${sessionScope.get("carName")}">--%>
-
-<%--    <label>Car Class  ${sessionScope.carClass}</label>--%>
-<%--    <input type="text"  name="carClass" value="${sessionScope.carClass}">--%>
-
-<%--    <label>Car brand  ${sessionScope.brand}</label>--%>
-<%--    <input type="text" name="brand" value="${sessionScope.brand}">--%>
-
-<%--    <label>Car Rental price  ${sessionScope.rentalPrice}</label>--%>
-<%--    <input type="text"  name="rentalPrice" value="${sessionScope.rentalPrice}">--%>
-
-<%--    <label>Car photo  ${sessionScope.carPhoto}</label>--%>
-<%--    <input type="text" name="carPhoto" value="${sessionScope.carPhoto}">--%>
-<%--    <button type="submit">UPDATE</button>--%>
-<%--</form>--%>
-
 </body>
 </html>

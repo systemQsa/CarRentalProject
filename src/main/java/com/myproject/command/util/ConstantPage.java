@@ -1,5 +1,8 @@
 package com.myproject.command.util;
 
+/**
+ * The ConstantPage class stores all page urls
+ */
 public final class ConstantPage {
     public static final String ROOT = "/car/";
     public static final String HOME_PAGE = "/index.jsp";
@@ -22,9 +25,9 @@ public final class ConstantPage {
     public static final String WEB_INF_FULL_PATH_TO_MANAGER = "/WEB-INF/view/manager/manager.jsp";
     public static final String VIEW_ALL_NOT_ACCEPTED_ORDERS = "/WEB-INF/view/manager/allOrdersToAccept.jsp";
     public static final String ALL_ORDERS = "redirect:/view/manager/allOrdersToAccept.jsp";
-    public static final String VIEW_ALL_APPROVED_ORDERS = "/WEB-INF/view/manager/viewAllApprovedOrders.jsp";
+    public static final String VIEW_ALL_ORDERS = "/WEB-INF/view/manager/viewAllOrders.jsp";
     public static final String VIEW_ALL_DECLINED_ORDERS = "/WEB-INF/view/manager/viewAllDeclinedOrders.jsp";
-    public static final String VIEW_MY_ORDERS= "/WEB-INF/view/user/viewMyOrders.jsp";
+    public static final String VIEW_MY_ORDERS = "/WEB-INF/view/user/viewMyOrders.jsp";
     public static final String BOOK_CAR_PAGE = "/WEB-INF/view/user/bookCar.jsp";
     public static final String FORGOT_PASS_PAGE = "/forgotPass.jsp";
     public static final String UPDATE_PASS_PAGE = "/newPass.jsp";

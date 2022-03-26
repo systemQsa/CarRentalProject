@@ -7,12 +7,15 @@ import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.Order;
 import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
-import com.myproject.factory.impl.AbstractFactoryImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicReference;
+
+/**
+ * The OrderDaoImpl class represents class for work with Order entity and provides necessary methods for work
+ */
 
 public class OrderDaoImpl implements OrderDao {
     private Connection connection = null;
@@ -36,6 +39,16 @@ public class OrderDaoImpl implements OrderDao {
         this.connection = connection;
     }
 
+    /**
+     * THe method sets for given order status by manager(it can be successful as well as failed orders)
+     *
+     * @param managerLogin - gets manager login who accept or declined given order
+     * @param feedback     - gets manager feedback about order
+     * @param approved     - gets desired status for the given order
+     * @param orderId      - gets the order id
+     * @return if the order were successfully set in DB
+     * @throws DaoException in case by some reason cannot be set the given order
+     */
     @Override
     public boolean setApprovedOrderByManager(String managerLogin, String feedback, String approved, long orderId) throws DaoException {
         connection = connectManager.getConnection();
@@ -57,64 +70,71 @@ public class OrderDaoImpl implements OrderDao {
         return response;
     }
 
+    /**
+     * The method check if such order already exists in DB
+     *
+     * @param order - gets the order
+     * @return if order not exists returns false
+     * @throws DaoException in case order already exists in DB
+     */
     @Override
     public boolean checkIfSuchOrderExistsInDb(Order order) throws DaoException {
-        System.out.println("\nchecking the order!!!! " + order.getUserLogin() + " " + order.getCarId());
         connection = connectManager.getConnection();
-        ResultSet suchOrderInDB = null;
+        ResultSet suchOrderInDB;
         String query = "SELECT count(user_id) as record FROM orders JOIN orders_cars " +
-                "ON orders.id_order=orders_cars.order_id passport="+order.getPassport() + " AND from_date="+order.getFromDate()
-                 + " AND to_date=" + order.getToDate() +
-                " AND with_driver="+order.getWithDriver() + " AND receipt=" +order.getReceipt() +
-                " AND user_id="+order.getUserId() + " AND car_id=" + order.getCarId();
+                "ON orders.id_order=orders_cars.order_id passport=" + order.getPassport() + " AND from_date=" + order.getFromDate()
+                + " AND to_date=" + order.getToDate() +
+                " AND with_driver=" + order.getWithDriver() + " AND receipt=" + order.getReceipt() +
+                " AND user_id=" + order.getUserId() + " AND car_id=" + order.getCarId();
 
         System.out.println(query);
-        try(PreparedStatement checkOrderPresence = connection.prepareStatement(QuerySQL.CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER)){
-
+        try (PreparedStatement checkOrderPresence = connection.prepareStatement(QuerySQL.CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER)) {
 
             checkOrderPresence.setString(1, order.getPassport());
-            checkOrderPresence.setTimestamp(2,order.getDateFrom());
-            checkOrderPresence.setTimestamp(3,order.getDateTo());
-            checkOrderPresence.setString(4,order.getWithDriver());
-            checkOrderPresence.setDouble(5,order.getReceipt());
-            checkOrderPresence.setLong(6,order.getUserId());
-            checkOrderPresence.setInt(7,order.getCarId());
-
+            logger.info("connected and getting the response in the order already exists in DB");
+            checkOrderPresence.setTimestamp(2, order.getDateFrom());
+            checkOrderPresence.setTimestamp(3, order.getDateTo());
+            checkOrderPresence.setString(4, order.getWithDriver());
+            checkOrderPresence.setDouble(5, order.getReceipt());
+            checkOrderPresence.setLong(6, order.getUserId());
+            checkOrderPresence.setInt(7, order.getCarId());
             suchOrderInDB = checkOrderPresence.executeQuery();
 
-            System.out.println("=====1=====");
-            System.out.println("=====2=====");
             if (suchOrderInDB.next()) {
-                System.out.println("=====3=====");
                 int records = suchOrderInDB.getInt(1);
-
-                System.out.println("number "  + records);
                 if (records > 1) {
-                    System.out.println("order exists!!");
                     connection.rollback();
                     throw new DaoException("You have made this booking already!");
                 }
             }
-            System.out.println("=====4=====");
-
-        }catch (SQLException e){
+        } catch (SQLException e) {
             throw new DaoException("You have made this booking already!");
-        }finally {
+        } finally {
             connectManager.closeConnection(connection);
         }
         return false;
     }
 
+    /**
+     * The method process the booking it
+     * gets the user funds
+     * withdraw funds from user card
+     * inserts the order to the table
+     * connects order with user and chosen car
+     *
+     * @param order          - gets the order
+     * @param processPayment - gets if user wants to pay for the booking then withdraw funds
+     * @return the same order that was made
+     * @throws DaoException in case impossible to process the booking
+     */
     @Override
     public Order processTheBooking(Order order, boolean processPayment) throws DaoException {
         connection = connectManager.getConnection();
-        boolean result = false;
         ResultSet resultSet;
         ResultSet resultSet2;
-        ResultSet suchOrderInDB;
         AtomicReference<Order> orderAtomicReference = new AtomicReference<>(order);
         AtomicReference<Double> userBalance = new AtomicReference<>();
-        double balance = 0;
+        double balance;
         int orderId = 0;
         try (PreparedStatement setOrderToDB =
                      connection.prepareStatement(QuerySQL.INSERT_NEW_ORDER, Statement.RETURN_GENERATED_KEYS);
@@ -134,7 +154,7 @@ public class OrderDaoImpl implements OrderDao {
             setOrderToDB.setString(4, order.getWithDriver());
             setOrderToDB.setDouble(5, order.getReceipt());
             setOrderToDB.setLong(6, order.getUserId());
-            System.out.println("====1====" + order.getUserLogin() + "id " + order.getUserId());
+
             //1
             if (setOrderToDB.executeUpdate() > 0) {
                 resultSet2 = setOrderToDB.getGeneratedKeys();
@@ -143,44 +163,36 @@ public class OrderDaoImpl implements OrderDao {
                     order.setOrderId(orderId);
                 }
             }
-            System.out.println("====2====");
+
             //2
             setOrderForUser.setInt(1, orderId);
             setOrderForUser.setInt(2, order.getCarId());
             if (setOrderForUser.executeUpdate() > 0) {
-                result = true;
             }
 
-            System.out.println("====3====");
+
             if (processPayment) {
 
                 //3
                 getUserBalance.setLong(1, order.getUserId());
-                System.out.println("user id " + order.getUserId() + " " + order.getUserLogin());
                 resultSet = getUserBalance.executeQuery();
                 if (resultSet.next()) {
                     balance = resultSet.getDouble("balance");
                     userBalance.set(balance);
-                    System.out.println("balance " + balance);
                 }
-                System.out.println("====4====");
+
                 Double res = userBalance.get();
                 double value = res - orderAtomicReference.get().getReceipt();
-                System.out.println("value " + value);
                 if (value <= 0) {
                     logger.warn("NOT ENOUGH BALANCE ON CARD");
                     throw new SQLException("NOT ENOUGH BALANCE ON YOUR CARD");
                 }
-                System.out.println("====5====");
-                userBalance.compareAndSet(res, value);
+                 userBalance.compareAndSet(res, value);
                 changeUserBalance.setDouble(1, userBalance.get());
                 changeUserBalance.setString(2, order.getUserLogin());
-                if (changeUserBalance.executeUpdate() > 0) {
-                    result = true;
-                }
+                changeUserBalance.executeUpdate();
             }
-            System.out.println("====6====");
-            connection.commit();
+             connection.commit();
 
         } catch (SQLException e) {
             try {
@@ -194,10 +206,10 @@ public class OrderDaoImpl implements OrderDao {
         } finally {
             connectManager.closeConnection(connection);
         }
-        System.out.println("order receipt " + order.getReceipt() + " order id " + order.getOrderId());
-        return order;
+         return order;
     }
 
+    //todo remove this method
     @Override
     public double getDriverRentPrice(int id) throws DaoException {
         connection = connectManager.getConnection();

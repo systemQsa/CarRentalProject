@@ -8,8 +8,6 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
-import com.myproject.service.impl.UserServiceImpl;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+/**
+ * The BlockUserCommand class implements the Command interface.
+ * Represents class that blocks the user by admin. Returns to the admin home page
+ */
 public class BlockUserCommand implements Command {
     private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private static final Logger logger = LogManager.getLogger(AddCarCommand.class);

@@ -63,7 +63,7 @@ public class UserFilter implements Filter {
                 || Objects.equals(userRole, GeneralConstant.MANAGER)))) {
             // System.out.println("LOGGED USERS  FILTER 1" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
             // System.out.println("userName Context 1"+ request.getSession().getServletContext().getAttribute("userName"));
-
+            System.out.println("Logging out filter!!!!");
             //new LogOutCommand().execute(request,response);
 
 //
@@ -141,8 +141,8 @@ public class UserFilter implements Filter {
                     Optional<HashMap<List<Car>, Integer>> allCars = carService.getAllCars(1, 5);
                     HashMap<List<Car>, Integer> res = allCars.get();
                     allCars.ifPresent(cars -> request.setAttribute("allCars", new ArrayList<>(cars.keySet()).get(0)));
-                    allCars.ifPresent(val -> request.setAttribute("amountOfRecordsTotal", val.values().stream().findFirst().orElse(5)));
-                    allCars.ifPresent(v -> request.getSession().setAttribute("records", v.values().stream().findFirst()));
+                    allCars.ifPresent(val -> request.getSession().setAttribute("amountOfRecordsTotal", val.values().stream().findFirst().orElse(5)));
+                    allCars.ifPresent(v -> request.getSession().setAttribute("records", v.values().stream().findFirst().get()));
                     request.setAttribute("currentPage", 1);
                     request.setAttribute("noOfRecords", 5);
                     Collection<Integer> values = res.values();

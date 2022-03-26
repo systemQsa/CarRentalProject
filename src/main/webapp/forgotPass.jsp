@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html>
 <head>
@@ -25,7 +25,7 @@
                 <div class="panel-body">
                     <div class="text-center">
                         <h3><i class="fa fa-lock fa-4x"></i></h3>
-                        <h2 class="text-center">${sessionScope.language['forgot_password']}?</h2>
+                        <h2 class="text-center">${sessionScope.language['change_pass']}?</h2>
                         <p>${sessionScope.language['you_can_reset_your_password_here']}.</p>
                         <c:if test="${not empty requestScope.err}">
                                 <div class="alert alert-danger alert-dismissible">
@@ -36,19 +36,20 @@
                                 </div>
                         </c:if>
                         <div class="panel-body">
-
-                            <form id="register-form" role="form" autocomplete="off" class="form" method="post" action="helloServlet">
+                             <form id="register-form" role="form" autocomplete="off" class="form" method="post" action="helloServlet">
                                 <input type="hidden" name="action" value="forgotPass">
                                 <input type="hidden" name="setCommand" value="checkUser">
                                  <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
-                                        <input id="email" name="login" placeholder="${sessionScope.language['email_address']}" class="form-control"  type="email">
+                                        <input id="email" name="login" placeholder="${sessionScope.language['email_address']}"
+                                               class="form-control"  type="email">
                                     </div>
                                 </div>
                                 <div class="form-group">
 <%--                                    check if reset password need to put in value ??--%>
-                                    <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit"
+                                    <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Reset Password"
+                                           type="submit"
                                            data-target="#editMezalta" data-toggle="modal">
                                 </div>
 
@@ -63,6 +64,7 @@
     </div>
 </div>
 
+<%--this modal window opens when secret code were sent to user email--%>
 <div class="modal fade" id="editMezalta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

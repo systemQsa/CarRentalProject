@@ -67,7 +67,7 @@ INSERT INTO roles(role) VALUES ('admin');
 INSERT INTO roles(role) VALUES ('user');
 INSERT INTO roles(role) VALUES ('manager');
 
-INSERT INTO driver_price (price) VALUES ('100');
+INSERT INTO driver_price (price) VALUES ('10');
 
 INSERT INTO cars (name, carClass, brand, rent_price) VALUES ('porsche', 'A', 'porsche', 10.0);
 INSERT INTO cars (name,carClass,brand,rent_price) VALUES ('infinity','A','infinity',11.0);

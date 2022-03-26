@@ -6,10 +6,10 @@ import static org.junit.Assert.*;
 
 public class SendEmailTest {
     private final SendEmail sendEmail = new SendEmail();
-    private int number;
+
     @Test
     public void sendEmailToRecipient() {
-        number = sendEmail.sendEmailToRecipient("someEmail@gmail.com");
+        int number = sendEmail.sendEmailToRecipient("someEmail@gmail.com");
         assertTrue(number != 0);
     }
 

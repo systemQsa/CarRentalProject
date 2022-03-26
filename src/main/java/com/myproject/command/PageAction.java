@@ -7,6 +7,10 @@ import com.myproject.command.managerCommand.ViewAllNotConfirmedOrdersCommand;
 import com.myproject.command.managerCommand.ViewOrdersCommand;
 import com.myproject.command.userCommand.*;
 
+/**
+ * The PageAction represents class to store all actions related to the client request
+ * it defines which command is required. Returns desired class which handle the needed request
+ */
 public enum PageAction {
     LOG_IN("login",new LoginCommand()),
     LOG_OUT("logout",new LogOutCommand()),

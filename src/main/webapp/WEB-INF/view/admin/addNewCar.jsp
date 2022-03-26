@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>${sessionScope.language['add_new_car']}</title>
@@ -7,11 +7,12 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.min.js" integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
 <jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
+
 <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
     <div class="bg-light p-5 border shadow">
+
         <h4 class="text-center">${sessionScope.language['add_new_car']}</h4>
         <form  method="post"  action="${pageContext.request.contextPath}/helloServlet">
             <input type="hidden" name="action" value="addCar">

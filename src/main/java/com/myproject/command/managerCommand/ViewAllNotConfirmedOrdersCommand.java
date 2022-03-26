@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class ViewAllNotConfirmedOrdersCommand implements Command {
+    //todo check if this method is needed??!!
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();

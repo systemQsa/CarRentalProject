@@ -9,6 +9,10 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * The ConnectionPool class represents class to connect to the Database
+ * the connection setting must be added to the context file
+ */
 public class ConnectionPool implements ConnectManager{
     private static final Logger logger = LogManager.getLogger(ConnectionPool.class);
 
@@ -29,6 +33,10 @@ public class ConnectionPool implements ConnectManager{
         return localInstance;
     }
 
+    /**
+     * The method returns connection to the desired DataDase
+     * @return connection
+     */
     @Override
     public Connection getConnection() {
         DataSource dataSource;
@@ -47,6 +55,10 @@ public class ConnectionPool implements ConnectManager{
          return connection;
     }
 
+    /**
+     * the method closes the connection
+     * @param connection - gets the desired connection to be closed
+     */
     public  void closeConnection(Connection connection) {
         if (connection != null) {
             try {

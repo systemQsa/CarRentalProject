@@ -1,5 +1,8 @@
 package com.myproject.command.util;
 
+/**
+ * The Route class defines the route where the response will be sent after the processing the request
+ */
 public class Route {
     private RouteType route;
     private String pathOfThePage;
@@ -9,7 +12,7 @@ public class Route {
     }
 
     public void setRoute(RouteType route) {
-        if (route == null){
+        if (route == null) {
             route = RouteType.REDIRECT;
         }
         this.route = route;
@@ -20,12 +23,12 @@ public class Route {
     }
 
     public void setPathOfThePage(String pathOfThePage) {
-        if (this.pathOfThePage == null){
+        if (this.pathOfThePage == null) {
             this.pathOfThePage = pathOfThePage;
         }
-     }
+    }
 
-    public enum RouteType{
-        REDIRECT,FORWARD
+    public enum RouteType {
+        REDIRECT, FORWARD
     }
 }

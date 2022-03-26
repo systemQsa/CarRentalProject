@@ -14,8 +14,13 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The AddCarCommand class implements the Command interface.
+ * Represents class that adds a new car to the system
+ * Retrieves all required data about car and adds it to the table. Returns to the admin home page.
+ */
 public class AddCarCommand implements Command {
-    private CarService<Car> carService;
+    private final CarService<Car> carService;
     private static final Logger logger = LogManager.getLogger(AddCarCommand.class);
 
     public AddCarCommand() {

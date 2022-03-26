@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
@@ -9,22 +9,28 @@
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
 
 <div>
-    <a href="${pageContext.request.contextPath}/view/user/user.jsp" class="btn btn-info" role="button">${sessionScope.language['Go_back']}</a>
+    <a href="${pageContext.request.contextPath}/view/user/user.jsp"
+       class="btn btn-info" role="button">${sessionScope.language['Go_back']}</a>
 </div>
 
 <c:if test="${requestScope.err == 9}">
     <p class="text-center">${requestScope.errMSG}</p>
 </c:if>
+
 <c:if test="${requestScope.currentPage == 1}">
      <div class="btn-group dropright" aria-labelledby="dropdownMenuButton">
         <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Number of records
         </button>
         <div class="dropdown-menu">
-            <a class="dropdown-item" href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a>
-            <a class="dropdown-item" href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a>
-            <a class="dropdown-item" href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a>
-            <a class="dropdown-item" href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a>
+            <a class="dropdown-item"
+               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a>
+            <a class="dropdown-item"
+               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a>
+            <a class="dropdown-item"
+               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a>
+            <a class="dropdown-item"
+               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a>
         </div>
     </div>
 </c:if>
@@ -77,26 +83,6 @@
                     </tbody>
                 </table>
 
-    <%--            <c:if test="${requestScope.currentPage != 1}">--%>
-    <%--                <td><a href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage - 1}">${sessionScope.language['Previous']}</a></td>--%>
-    <%--            </c:if>--%>
-    <%--            <tr>--%>
-    <%--                <c:forEach begin="1" end="${requestScope.amountOfRecords.get()}" var="i">--%>
-    <%--                    <c:choose>--%>
-    <%--                        <c:when test="${requestScope.currentPage eq i}">--%>
-    <%--                            <td>${i}</td>--%>
-    <%--                        </c:when>--%>
-    <%--                        <c:otherwise>--%>
-    <%--                            <td><a href="?action=pagination&required=viewMyOrders&page=${i}">${i}</a></td>--%>
-    <%--                        </c:otherwise>--%>
-    <%--                    </c:choose>--%>
-    <%--                </c:forEach>--%>
-    <%--            </tr>--%>
-
-    <%--            <c:if test="${requestScope.currentPage lt requestScope.amountOfRecords.get()}">--%>
-    <%--                <td><a href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage + 1}">${sessionScope.language['Next']}</a></td>--%>
-    <%--            </c:if>--%>
-
                 <%--pagination--%>
                 <div class="text-center">
                     <input type="hidden" name="action" value="pagination">
@@ -105,9 +91,12 @@
                             <li class="page-item"><c:if test="${requestScope.currentPage != 1}">
                                 <td><a  class="page-link" href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage - 1}&noOfRecords=${requestScope.noOfRecords}">${sessionScope.language['Previous']}</a></td>
                             </c:if></li>
-                            <li class="page-item"><a class="page-link" href="?action=pagination&required=viewMyOrders&page=1&noOfRecords=${requestScope.noOfRecords}">1</a></li>
-                            <li class="page-item"><a class="page-link" href="?action=pagination&required=viewMyOrders&page=2&noOfRecords=${requestScope.noOfRecords}">2</a></li>
-                            <li class="page-item"><a class="page-link" href="?action=pagination&required=viewMyOrders&page=3&noOfRecords=${requestScope.noOfRecords}">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="?action=pagination&required=viewMyOrders&page=1&noOfRecords=${requestScope.noOfRecords}">1</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="?action=pagination&required=viewMyOrders&page=2&noOfRecords=${requestScope.noOfRecords}">2</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="?action=pagination&required=viewMyOrders&page=3&noOfRecords=${requestScope.noOfRecords}">3</a></li>
                             <li class="page-item">
                                 <c:if test="${requestScope.currentPage lt requestScope.noOfPages}">
                                     <td><a class="page-link" href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage + 1}&noOfRecords=${requestScope.noOfRecords}">${sessionScope.language['Next']}</a></td>

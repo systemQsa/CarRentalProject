@@ -11,14 +11,18 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
-import com.myproject.service.impl.CarOrderServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
 import java.util.List;
 
+
+/**
+ * The AcceptOrderCommand class implements the Command interface.
+ * Represents class that process the booking order.
+ * Manager accepts the order after it registers in the system and withdraw a certain amount from user card
+ */
 public class AcceptOrderCommand implements Command {
     private final CarOrderService carOrderService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
     private static final Logger logger = LogManager.getLogger(AcceptOrderCommand.class);
@@ -28,7 +32,6 @@ public class AcceptOrderCommand implements Command {
         Route route = new Route();
         Order acceptOrder = parseIncomeOrder(request.getParameter(GeneralConstant.Util.ACCEPT_USER_ORDER));
 
-        System.out.println("Accepted Order " + acceptOrder);
         try {
             if(!carOrderService.checkOrderPresenceInDb(acceptOrder)){
                  try {

@@ -2,19 +2,11 @@ package com.myproject.service.impl;
 
 import com.myproject.dao.OrderViewDao;
 import com.myproject.dao.connection.DBManager;
-import com.myproject.dao.entity.Order;
-import com.myproject.dao.entity.OrderViewForUserRequest;
-import com.myproject.dao.impl.OrderDaoImpl;
 import com.myproject.dao.impl.OrderViewDaoImpl;
-import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
 import com.myproject.service.OrderViewService;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 

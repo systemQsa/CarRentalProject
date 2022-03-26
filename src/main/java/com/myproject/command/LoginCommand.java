@@ -45,7 +45,7 @@ public class LoginCommand implements Command {
             setInformMessageIfErrorOccur("err.blocked_user",1,request);
              route.setPathOfThePage(ConstantPage.LOG_IN_PAGE);
             route.setRoute(Route.RouteType.REDIRECT);
-           throw new ValidationException("");
+           throw new ValidationException("/login.jsp");
 
         }
 

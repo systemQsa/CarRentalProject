@@ -9,12 +9,16 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
-import com.myproject.service.impl.UserServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+/**
+ * The TopUpBalanceCommand class implements the Command interface.
+ * Represents class that process the request from user to top up the balance
+ */
 
 public class TopUpBalanceCommand implements Command {
     private final UserService userService;
@@ -28,6 +32,14 @@ public class TopUpBalanceCommand implements Command {
         this.userService = userService;
     }
 
+    /**
+     * The method retrieves the amount  which should be replenished the user card
+     * @param request - gets the request with desired data for the process
+     * @param response - sends after the process was made
+     * @return route to the user page
+     * @throws CommandException in case some problems occur during retrieving the data from the request
+     * @throws ValidationException in case data validation was failed
+     */
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
        Route route = new Route();
@@ -41,12 +53,12 @@ public class TopUpBalanceCommand implements Command {
                  route.setPathOfThePage(ConstantPage.USER_HOME_PAGE);
                  request.getSession().setAttribute("userBalance",userService.getBalance(login));
              }else {
-                 //todo route to error page
-                 System.out.println("ERROR PAGE CANT TOP UP BALANCE");
+                 route.setPathOfThePage(ConstantPage.ERROR_PAGE);
              }
         } catch (ServiceException e) {
+            setInformMessageIfErrorOccur("err.top_up_balance",28,request);
             logger.error("PROBLEM IN TopUpBalanceCommand class CANT TOP UP USER BALANCE");
-           throw new CommandException(e.getMessage());
+           throw new CommandException(ConstantPage.USER_HOME_PAGE);
         }
         route.setRoute(Route.RouteType.REDIRECT);
         return route;

@@ -119,8 +119,4 @@ public class CarServiceImplTest {
         }
     }
 
-
-
-    public void addCar() {
-    }
 }

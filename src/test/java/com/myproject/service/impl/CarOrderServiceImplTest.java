@@ -1,8 +1,10 @@
 package com.myproject.service.impl;
 
+import com.myproject.dao.DriverDao;
 import com.myproject.dao.OrderDao;
 import com.myproject.dao.connection.DBManager;
 import com.myproject.dao.entity.Order;
+import com.myproject.dao.impl.DriverDaoImpl;
 import com.myproject.dao.impl.OrderDaoImpl;
 import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
@@ -26,9 +28,8 @@ public class CarOrderServiceImplTest {
     @Test
     public void countReceiptWithoutDriver() {
         dbManager = DBManager.getInstance();
-        OrderDao orderDao = new OrderDaoImpl(dbManager);
-        CarOrderService carOrderService = new CarOrderServiceImpl(orderDao);
-        //todo redone method with driver price 1
+        DriverDao driverDao = new DriverDaoImpl(dbManager);
+        CarOrderService carOrderService = new CarOrderServiceImpl(driverDao);
         try {
             BigDecimal bigDecimal = carOrderService.countReceipt(2, 10.0, false);
             assertEquals(20,bigDecimal.intValue());
@@ -41,12 +42,12 @@ public class CarOrderServiceImplTest {
     @Test
     public void countReceiptWithDriver() {
         dbManager = DBManager.getInstance();
-        OrderDao orderDao = new OrderDaoImpl(dbManager);
-        CarOrderService carOrderService = new CarOrderServiceImpl(orderDao);
-        //todo redone method with driver price 2
+        DriverDao driverDao = new DriverDaoImpl(dbManager);
+        CarOrderService carOrderService = new CarOrderServiceImpl(driverDao);
+
         try {
             BigDecimal bigDecimal = carOrderService.countReceipt(2, 10.0, true);
-            assertEquals(120,bigDecimal.intValue());
+            assertEquals(40,bigDecimal.intValue());
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -56,9 +57,8 @@ public class CarOrderServiceImplTest {
     @Test
     public void countReceiptNegative() {
         dbManager = DBManager.getInstance();
-        OrderDao orderDao = new OrderDaoImpl(dbManager);
-        CarOrderService carOrderService = new CarOrderServiceImpl(orderDao);
-        //todo redone method with driver price 3
+        DriverDao driverDao = new DriverDaoImpl(dbManager);
+        CarOrderService carOrderService = new CarOrderServiceImpl(driverDao);
         assertThrows(ServiceException.class,()->carOrderService.countReceipt(0, 10.0, false));
 
     }
@@ -67,7 +67,8 @@ public class CarOrderServiceImplTest {
     public void updateOrderByManager() {
         dbManager = DBManager.getInstance();
         OrderDao orderDao = new OrderDaoImpl(dbManager);
-        CarOrderService carOrderService = new CarOrderServiceImpl(orderDao);
+        DriverDao driverDao = new DriverDaoImpl(dbManager);
+        CarOrderService carOrderService = new CarOrderServiceImpl(driverDao,orderDao);
 
         Order.OrderBuilder order = new Order.OrderBuilder();
         order.setPassport("AB1234")
@@ -91,7 +92,8 @@ public class CarOrderServiceImplTest {
     public void setOrder() {
         dbManager = DBManager.getInstance();
         OrderDao orderDao = new OrderDaoImpl(dbManager);
-        CarOrderService carOrderService = new CarOrderServiceImpl(orderDao);
+        DriverDao driverDao = new DriverDaoImpl(dbManager);
+        CarOrderService carOrderService = new CarOrderServiceImpl(driverDao,orderDao);
         Order order;
 
         Order.OrderBuilder newOrder = new Order.OrderBuilder();

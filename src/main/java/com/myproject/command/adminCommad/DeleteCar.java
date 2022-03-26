@@ -9,13 +9,16 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
-import com.myproject.service.impl.CarServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The DeleteCar class implement the Command interface.
+ * Represents class that deletes current car from the system
+ */
 public class DeleteCar implements Command {
     private final CarService<Car> carService;
     private static final Logger logger = LogManager.getLogger(DeleteCar.class);

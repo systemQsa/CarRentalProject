@@ -1,11 +1,7 @@
 package com.myproject.service.impl;
 
 import com.myproject.dao.CarDao;
-import com.myproject.dao.UserDao;
-import com.myproject.dao.connection.ConnectManager;
 import com.myproject.dao.entity.Car;
-import com.myproject.dao.entity.User;
-import com.myproject.dao.impl.CarDaoImpl;
 import com.myproject.dao.query.QuerySQL;
 import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
@@ -13,14 +9,16 @@ import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The CarServiceImpl represents special methods for work with representing and processing requests related to Car entity
+ */
 public class CarServiceImpl implements CarService<Car> {
-    private  CarDao carDAO;
+    private final CarDao carDAO;
     private static final Logger logger = LogManager.getLogger(CarServiceImpl.class);
 
     public CarServiceImpl(){
@@ -31,6 +29,13 @@ public class CarServiceImpl implements CarService<Car> {
         this.carDAO = carDao;
     }
 
+
+    /**
+     * The method adds a new car
+     * @param request - gets Http request and retrieves all needed data
+     * @return added new Car
+     * @throws ServiceException in case if impossible add a new car to DataBase
+     */
     @Override
     public Car addCar(HttpServletRequest request) throws ServiceException{
         Car car;
@@ -50,6 +55,12 @@ public class CarServiceImpl implements CarService<Car> {
         return car;
     }
 
+    /**
+     * The method deletes car from DB by given id
+     * @param carId - gets car id
+     * @return in car was successfully deleted returns true
+     * @throws ServiceException in case cannot delete given car from DB
+     */
     @Override
     public boolean deleteCar(int carId) throws ServiceException{
         boolean response;
@@ -62,6 +73,13 @@ public class CarServiceImpl implements CarService<Car> {
         return response;
     }
 
+    /**
+     * The method gets all cars depends on desired request
+     * @param currentPage - gets current page from webpage
+     * @param noOfRecords - gets desired number of records to be found
+     * @return all found cars
+     * @throws ServiceException in case cannot get all cars
+     */
     @Override
     public Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage,int noOfRecords) throws ServiceException{
         try {
@@ -72,6 +90,12 @@ public class CarServiceImpl implements CarService<Car> {
         }
     }
 
+    /**
+     *
+     * @param car
+     * @return in car was successfully updated returns true
+     * @throws ServiceException in case cannot update the given car
+     */
     @Override
     public boolean updateCar(Car car) throws ServiceException{
         boolean isUpdated;
@@ -85,6 +109,14 @@ public class CarServiceImpl implements CarService<Car> {
         return isUpdated;
     }
 
+    /**
+     * The method sort cars by given order
+     * @param sortOrderCommand - gets desired sort order
+     * @param currPage - gets current page from web page
+     * @param noOfRecords - gets desired number of records
+     * @return all found cars
+     * @throws ServiceException in case cannot find cars by given order
+     */
     @Override
     public Optional<List<Car>> getSortedCars(String sortOrderCommand,int currPage,int noOfRecords)throws ServiceException {
         String neededQuery;
@@ -105,6 +137,12 @@ public class CarServiceImpl implements CarService<Car> {
         return Optional.of(carList);
     }
 
+    /**
+     * The method gets all cars by given name
+     * @param name - gets car name
+     * @return all found car(s)
+     * @throws ServiceException in case cannot find car(s) by given name
+     */
     @Override
     public Optional<List<Car>>getCar(String name) throws ServiceException {
         try{
@@ -114,6 +152,12 @@ public class CarServiceImpl implements CarService<Car> {
         }
     }
 
+    /**
+     * The method gets car by given car id
+     * @param carId - gets car id
+     * @return found car
+     * @throws ServiceException in case cannot find car by given id
+     */
     @Override
     public Car getOneCar(int carId) throws ServiceException {
         Car car;

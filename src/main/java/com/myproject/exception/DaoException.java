@@ -1,6 +1,10 @@
 package com.myproject.exception;
 
+/**
+ * The DaoException class indicates exceptions occur during process in Dao Classes
+ */
 public class DaoException extends Exception{
+
     public DaoException(String message) {
         super(message);
     }

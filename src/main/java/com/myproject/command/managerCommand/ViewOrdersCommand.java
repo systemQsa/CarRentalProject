@@ -9,7 +9,6 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.OrderViewService;
-import com.myproject.service.impl.ViewOrderServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The ViewOrdersCommand class implements the Command interface.
+ * Represents class that get all approved or all declined orders for the manager
+ */
 public class ViewOrdersCommand implements Command {
     private final OrderViewService orderViewService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarViewService();
     private static final Logger logger = LogManager.getLogger(ViewOrdersCommand.class);
@@ -34,9 +37,8 @@ public class ViewOrdersCommand implements Command {
                 resultForRequest =  orderViewService.getOrders(viewSuchOrders,startPage,noOfRecords);
                 if (resultForRequest.isPresent()){
                     List<OrderViewForUserRequest> approvedOrders = resultForRequest.get();
-                    System.out.println("\n\norders" + approvedOrders);
                     request.getSession().setAttribute("listOrders",approvedOrders);
-                    route.setPathOfThePage(ConstantPage.VIEW_ALL_APPROVED_ORDERS);
+                    route.setPathOfThePage(ConstantPage.VIEW_ALL_ORDERS);
                 }
             }
 
@@ -45,11 +47,12 @@ public class ViewOrdersCommand implements Command {
                 if (resultForRequest.isPresent()){
                     List<OrderViewForUserRequest> declinedOrders = resultForRequest.get();
                     request.getSession().setAttribute("listOrders",declinedOrders);
-                    route.setPathOfThePage(ConstantPage.VIEW_ALL_APPROVED_ORDERS);
+                    route.setPathOfThePage(ConstantPage.VIEW_ALL_ORDERS);
                 }
             }
         } catch (ServiceException e) {
             logger.warn("command to see all users approved or not approved orders failed!");
+            setInformMessageIfErrorOccur("err.cannot_get_all_orders",29,request);
             throw new CommandException(e.getMessage());
         }
         route.setRoute(Route.RouteType.FORWARD);

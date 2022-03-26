@@ -10,8 +10,6 @@ import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
 import com.myproject.service.UserService;
-import com.myproject.service.impl.CarServiceImpl;
-import com.myproject.service.impl.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +17,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class SearchCommand implements  Command{
+/**
+ * The SearchCommand class implements Command interface.
+ * Represents class to work with searching process
+ */
+public class SearchCommand implements Command {
     private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private final CarService<Car> carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+
+    /**
+     * The method retrieves desired arguments
+     * depending on search result execute different commands
+     *
+     * @param request  - gets request from the client
+     * @param response - sends the response to the browser
+     * @return return route where the result will be sent
+     * @throws CommandException    in case some problem occurred in SearchCommand class
+     * @throws ValidationException in case the input validation was failed
+     */
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
@@ -34,45 +47,45 @@ public class SearchCommand implements  Command{
         Optional<User> user;
         Optional<List<Car>> car;
         try {
-            if (role == null){
+            if (role == null) {
                 car = carService.getCar(search);
-                if (car.isPresent()){
+                if (car.isPresent()) {
                     searchCars = car.get();
-                    System.out.println("serach "  + searchCars);
-                    request.setAttribute("searchCommand","searchingCar");
-                    request.setAttribute("searchedCars",searchCars);
+                    System.out.println("serach " + searchCars);
+                    request.setAttribute("searchCommand", "searchingCar");
+                    request.setAttribute("searchedCars", searchCars);
                     route.setPathOfThePage("/index.jsp");
                 }
 
-            }else {
-            if (role.equals("admin") && search.contains("@")){
-                user = userService.getUser(search);
-                if (user.isPresent()){
-                    searchUser = user.get();
-                    System.out.println("serach "  + searchUser);
-                    request.setAttribute("searchCommand","searchingUser");
-                    request.setAttribute("searchedUser",searchUser);
-                    route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
-                }
-            }else {
-                     car = carService.getCar(search);
-                     if (car.isPresent()) {
+            } else {
+                if (role.equals("admin") && search.contains("@")) {
+                    user = userService.getUser(search);
+                    if (user.isPresent()) {
+                        searchUser = user.get();
+                        System.out.println("serach " + searchUser);
+                        request.setAttribute("searchCommand", "searchingUser");
+                        request.setAttribute("searchedUser", searchUser);
+                        route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
+                    }
+                } else {
+                    car = carService.getCar(search);
+                    if (car.isPresent()) {
                         searchCars = car.get();
-                        System.out.println("serach "  + searchCars);
-                         request.setAttribute("searchCommand","searchingCar");
+                        System.out.println("serach " + searchCars);
+                        request.setAttribute("searchCommand", "searchingCar");
                         request.setAttribute("searchedCars", searchCars);
-                        if (Objects.equals(request.getSession().getAttribute("role"),"admin")){
-                          route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
-                        } else if (Objects.equals(request.getSession().getAttribute("role"),"user")){
+                        if (Objects.equals(request.getSession().getAttribute("role"), "admin")) {
+                            route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
+                        } else if (Objects.equals(request.getSession().getAttribute("role"), "user")) {
                             route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_USER);
                         }
 
                     }
 
-                 }
+                }
             }
             route.setRoute(Route.RouteType.FORWARD);
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             throw new CommandException(e.getMessage());
         }
         return route;

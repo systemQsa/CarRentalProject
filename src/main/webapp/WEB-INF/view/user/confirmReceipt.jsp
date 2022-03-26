@@ -9,30 +9,17 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.min.js" integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-<%--<h1>CONFIRM RECEIPT</h1>--%>
-<%--<h2> CAR ID ${sessionScope.carIdReq}</h2>--%>
-
-<%--<p>${sessionScope.userLogin}</p>--%>
-
-<%--<jsp:include page="${pageContext.request.contentType}/WEB-INF/view/include/header.jsp"/>--%>
 <jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
-
-<%--<h1>CONFIRM RECEIPT</h1>--%>
-<%--<h2> CAR ID ${sessionScope.carIdReq}</h2>--%>
-
-<%--<p>${sessionScope.userLogin}</p>--%>
 
 
 <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
     <div class="bg-light p-5 border shadow">
         <%--                <h3>${pageContext.request.locale}</h3>--%>
         <form method="post" action="${pageContext.request.contextPath}/helloServlet">
-
             <input type="hidden" name="carId" value="${sessionScope.carIdReq}">
             <input type="hidden" name="userIdByLogin" value="${sessionScope.userIdByLogin}">
             <input type="hidden" name="userBalance" value="${sessionScope.userBalance}">
             <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
-
 
             <div>
                 <h4 class="text-center">${sessionScope.language['Confirm_the_booking']}</h4>
@@ -100,7 +87,8 @@
                 </c:when>
                 <c:otherwise>
                      <div class="alert alert-warning alert-dismissible fade show">
-                            ${sessionScope.language['You_don`t_have_enough_money_for_booking']}! ${sessionScope.language['Please_pop_up_your_balance_and_try_again']}!
+                            ${sessionScope.language['You_don`t_have_enough_money_for_booking']}!
+                                    ${sessionScope.language['Please_pop_up_your_balance_and_try_again']}!
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -119,5 +107,6 @@
         </form>
     </div>
 </div>
+
 </body>
 </html>

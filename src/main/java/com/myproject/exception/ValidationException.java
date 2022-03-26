@@ -1,5 +1,8 @@
 package com.myproject.exception;
 
+/**
+ * The ValidationException class indicates exceptions occur during validation process
+ */
 public class ValidationException extends Exception{
     public ValidationException(String message) {
         super(message);

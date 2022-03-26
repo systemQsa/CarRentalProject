@@ -28,7 +28,10 @@ public class SortCarsByWantedOrderCommand implements Command {
         String wantedOrder = request.getParameter("order");
         String pageId = request.getParameter("page");
         String role = (String) request.getSession().getAttribute("role");
-        String  records = request.getParameter("noOfRecords");
+        String  records = request.getParameter("noOrRecordsSorted");
+        Integer amountOfTotalRecords = (Integer) request.getSession().getAttribute("records");
+
+
         int currPage;
         int noOfRecords;
         if (pageId != null && records != null){
@@ -38,7 +41,7 @@ public class SortCarsByWantedOrderCommand implements Command {
             currPage = 1;
             noOfRecords = 5;
         }
-        System.out.println("WANTED ORDER " + wantedOrder + " " + pageId);
+        System.out.println("WANTED ORDER " + wantedOrder + " " + pageId + " " + noOfRecords);
 
 
 
@@ -46,9 +49,19 @@ public class SortCarsByWantedOrderCommand implements Command {
         try {
             request.setAttribute("order",wantedOrder);
             request.setAttribute("currentPage",currPage);
-            request.setAttribute("noOfRecords",noOfRecords);
+            request.setAttribute("noOrRecordsSorted",noOfRecords);
             Optional<List<Car>> sortedCars = carService.getSortedCars(wantedOrder,currPage,noOfRecords);
             sortedCars.ifPresent(cars -> request.setAttribute("sortedCars", cars));
+
+
+            System.out.println("total records!!!!"  + amountOfTotalRecords);
+            int result = (amountOfTotalRecords / noOfRecords);
+            if (result % noOfRecords > 0) {
+                result++;
+            }
+            System.out.println("result " + result);
+            request.setAttribute("noOfPages",result);
+
             wantedOrder = null;
             if (role == null){
                 route.setPathOfThePage(ConstantPage.HOME_PAGE);

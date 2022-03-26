@@ -10,13 +10,17 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
-import com.myproject.service.impl.UserServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The SetRoleForUserCommand class implements the Command interface.
+ * The class after getting the request from the client defines
+ * the user role and redirects to the allowed ulr home page
+ */
 public class SetRoleForUserCommand implements Command {
     private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private static final Logger logger = LogManager.getLogger(SetRoleForUserCommand.class);

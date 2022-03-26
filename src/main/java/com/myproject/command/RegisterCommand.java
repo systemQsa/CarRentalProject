@@ -8,7 +8,6 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
-import com.myproject.service.impl.UserServiceImpl;
 import com.myproject.validation.Validate;
 import com.myproject.validation.ValidateInput;
 import org.apache.log4j.LogManager;
@@ -17,24 +16,35 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The RegisterCommand class implements Command interface.
+ * Represents class to register new users
+ */
 public class RegisterCommand implements Command {
     private static final Logger logger = LogManager.getLogger(RegisterCommand.class);
     private final Validate validateInput;
     private final UserService userService;
 
-    public RegisterCommand(){
+    public RegisterCommand() {
         userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
         validateInput = new ValidateInput();
     }
 
-    public RegisterCommand(UserService userService){
+    public RegisterCommand(UserService userService) {
         this.userService = userService;
         validateInput = new ValidateInput(userService);
     }
 
+    /**
+     * The method retrieves desired date from the request, validates the input date and register new user
+     *
+     * @param request  - gets request from the client
+     * @param response - sends the response depending on the result
+     * @return the route to where the result will be sent
+     * @throws CommandException in case some problems occur in RegisterCommand class
+     */
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
-        //todo validate fields add to DB data
         String name = request.getParameter("name");
         String surname = request.getParameter("surname");
         String phoneNumber = request.getParameter("phone");
@@ -42,24 +52,24 @@ public class RegisterCommand implements Command {
         char[] password = request.getParameter(GeneralConstant.PASSWORD).toCharArray();
         Route route = new Route();
 
-         try {
+        try {
             validateInput.nameSurnameValidate(name, surname);
         } catch (ValidationException e) {
             setInformMessageIfErrorOccur("err.name_surname", 4, request);
-              throw new CommandException(ConstantPage.REGISTER_PAGE);
+            throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
 
         try {
             validateInput.loginValidate(login);
         } catch (ValidationException e) {
             setInformMessageIfErrorOccur("err.login", 5, request);
-             throw new CommandException(ConstantPage.REGISTER_PAGE);
+            throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
         try {
             validateInput.passwordValidate(password);
         } catch (ValidationException e) {
             setInformMessageIfErrorOccur("err.password", 6, request);
-             throw new CommandException(ConstantPage.REGISTER_PAGE);
+            throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
         try {
             validateInput.phoneValidate(phoneNumber);

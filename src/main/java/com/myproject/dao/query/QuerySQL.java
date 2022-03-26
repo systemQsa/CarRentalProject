@@ -1,9 +1,12 @@
 package com.myproject.dao.query;
 
-
+/**
+ * The QuerySQL class represents class of query constants for requests to DataBase
+ */
 public final class QuerySQL {
     public static final String GET_USER_ID_ACCORDING_TO_INPUT = "SELECT role_id,password FROM users WHERE login=?";
     public static final String ADD_NEW_USER = "INSERT INTO users(name,surname,login,password,phone) VALUES(?,?,?,?,?)";
+    public static final String UPDATE_USER_ROLE_TO_ADMIN_ROLE = "UPDATE users SET role_id=1 WHERE id_user=?";
     public static final String GET_ALL_USERS = "SELECT id_user,name,surname,login,phone,banned,register_date,role_id FROM users ORDER BY id_user DESC";
     public static final String GET_ALL_CARS = "SELECT id_car,name,carClass,brand,rent_price FROM cars ORDER BY id_car DESC LIMIT ?,?";
     public static final String GET_CARS_TOTAL_RECORDS  = "SELECT COUNT(id_car) as records FROM cars";
@@ -40,15 +43,15 @@ public final class QuerySQL {
     public static final String SEARCH_CAR_BY_NAME = "SELECT id_car,name,carClass,brand,rent_price FROM cars WHERE name=?";
     public static final String UPDATE_PASS = "UPDATE users SET password=? WHERE login=?";
     public static final String CHECK_IF_CAR_ALREADY_PRESENT_IN_DB = "SELECT name,carClass,brand,rent_price FROM cars WHERE name=? AND carClass=? AND brand=? AND rent_price=?";
-    public static final String CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER = "SELECT count(user_id) as record " +
-            "FROM orders JOIN orders_cars ON id_order=order_id " +
-            "WHERE passport=? " +
-            "AND from_date=? " +
-            "AND to_date=? " +
-            "AND with_driver=? " +
-            "AND receipt=? " +
-            "AND user_id=? " +
-            "AND car_id=?;";
+    public static final String CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER =   "SELECT count(user_id) as record " +
+                                                                                "FROM orders JOIN orders_cars ON id_order=order_id " +
+                                                                                 "WHERE passport=? " +
+                                                                                 "AND from_date=? " +
+                                                                                 "AND to_date=? " +
+                                                                                 "AND with_driver=? " +
+                                                                                 "AND receipt=? " +
+                                                                                 "AND user_id=? " +
+                                                                                 "AND car_id=?;";
 
     public static final String UPDATE_DRIVER_PRICE = "UPDATE driver_price SET price=? WHERE id=1";
     public static final String GET_DRIVER_PRICE = "SELECT price FROM driver_price WHERE id=1";

@@ -7,9 +7,6 @@ import com.myproject.command.util.Route;
 import com.myproject.dao.entity.Order;
 import com.myproject.exception.CommandException;
 import com.myproject.exception.ValidationException;
-import com.myproject.factory.impl.AbstractFactoryImpl;
-import com.myproject.service.CarOrderService;
-import com.myproject.service.impl.CarOrderServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -19,16 +16,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The ConfirmBookingCommand class implements the Command interface.
+ * Represents class that retrieves all data about the order
+ * adds not approved order to the storage from where
+ * the manager will see all not approved orders and will decide what to do with the order.
+ * When user click to confirm the booking all the data comes here and redirects to the user page
+ * but the funds re not withdraw from the balance and the order are not registered in the system
+ */
 public class ConfirmBookingCommand implements Command {
-    private final CarOrderService carOrderService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
     private static final Logger logger = LogManager.getLogger(ConfirmBookingCommand.class);
 
 
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
-        boolean isSuccess;
-
+        System.out.println("CONFIRM BOOKING CLASS WORKING");
         List<Order> orderList = new ArrayList<>();
         List<Order> orders = Collections.synchronizedList(orderList);
         route.setPathOfThePage(ConstantPage.USER_HOME_PAGE);
@@ -38,7 +41,6 @@ public class ConfirmBookingCommand implements Command {
         String withDriver = request.getParameter("withDriver");
         String totalPrice = request.getParameter("totalPrice");
         String userIdByLogin = request.getParameter("userIdByLogin");
-        System.out.println("\n User login " + request.getParameter("userLogin") + "\n");
         String userLogin = request.getParameter("userLogin");
         String carId = request.getParameter("carId");
 
@@ -55,7 +57,7 @@ public class ConfirmBookingCommand implements Command {
         orders.add(newOrder.build());
 
         OrderStorage.ddOrder(newOrder.build());
-
+        logger.info("Confirming the payment");
         route.setRoute(Route.RouteType.REDIRECT);
         return route;
     }

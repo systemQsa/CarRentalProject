@@ -14,6 +14,10 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * The UpdateDriverPriceCommand class implements the Command interface.
+ * Presents class that updates driver rental price and returns to the admin page
+ */
 public class UpdateDriverPriceCommand implements Command {
     private final DriverService driverService;
     private static final Logger logger = LogManager.getLogger(UpdateDriverPriceCommand.class);
@@ -30,16 +34,16 @@ public class UpdateDriverPriceCommand implements Command {
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         String newDriverPrice = request.getParameter("newDriverPrice");
-        int newPrice = 0;
+        double newPrice = 0;
         if (newDriverPrice != null) {
-            newPrice = Integer.parseInt(newDriverPrice);
+            newPrice = Double.parseDouble(newDriverPrice);
         }
         try {
             driverService.changeDriverPrice(newPrice);
         } catch (ServiceException e) {
             setInformMessageIfErrorOccur("err.update_driver_price",22,request);
             logger.warn("Problem in UpdateDriverPriceCommand class cant update rental price for drivers");
-            throw new CommandException("/WEB-INF/view/admin/admin.jsp");
+            throw new CommandException(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
         }
 
         try {

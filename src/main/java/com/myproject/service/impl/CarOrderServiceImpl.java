@@ -3,29 +3,24 @@ package com.myproject.service.impl;
 import com.myproject.dao.DriverDao;
 import com.myproject.dao.OrderDao;
 import com.myproject.dao.entity.Order;
-import com.myproject.dao.impl.OrderDaoImpl;
 import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
+/**
+ * The CarOrderServiceImpl class represents methods to processing the request related with Order entity
+ */
 public class CarOrderServiceImpl implements CarOrderService {
-    private final OrderDao orderDao;
-    private DriverDao driverDao;
+    private  OrderDao orderDao;
+    private final DriverDao driverDao;
     private static final Logger logger = LogManager.getLogger(CarOrderServiceImpl.class);
     private final Lock lock = new ReentrantLock();
 
@@ -33,11 +28,26 @@ public class CarOrderServiceImpl implements CarOrderService {
         orderDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getOrderDao();
         driverDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getDriverDao();
     }
+
     //todo change to DriverDao
-    public CarOrderServiceImpl(OrderDao orderDao){
+    public CarOrderServiceImpl(DriverDao driverDao){
+        this.driverDao = driverDao;
+    }
+
+    public CarOrderServiceImpl(DriverDao driverDao,OrderDao orderDao){
+        this.driverDao = driverDao;
         this.orderDao = orderDao;
     }
 
+
+    /**
+     * The method count total receipt by given data
+     * @param diffHours - gets amount of rental hours
+     * @param carRentPrice - gets car rental price
+     * @param isWithDriver - gets option with driver or not
+     * @return counted price for the booking
+     * @throws ServiceException in case by some reason cannot count the receipt for the booking
+     */
     @Override
     public BigDecimal countReceipt(long diffHours, double carRentPrice, boolean isWithDriver) throws ServiceException {
         int idPriceDriverByDefault = 1;
@@ -60,51 +70,55 @@ public class CarOrderServiceImpl implements CarOrderService {
         return new BigDecimal(optionWithDriverCoast);
     }
 
+    /**
+     * The method if desired order already presence in DB
+     * @param order - gets the order desired to be booked
+     * @return in the order already exists in DB returns true
+     * @throws ServiceException in case by some reason the searched order cannot be found
+     */
     @Override
     public boolean checkOrderPresenceInDb(Order order) throws ServiceException {
         try {
             orderDao.checkIfSuchOrderExistsInDb(order);
         } catch (DaoException e) {
+            logger.warn("Something went wrong cant check the presence in db fir given order");
             throw new ServiceException(e);
         }
         return false;
     }
+
+    /**
+     * The method if the booking were accepted or declined register the order
+     * @param managerLogin - gets manager login who were accepted or declined the given booking
+     * @param orderId - gets order id
+     * @param approved - gets if the booking is approved
+     * @param feedback - gets manager feedback
+     * @return if manager update registered new order returns true
+     * @throws ServiceException in case if given order cannot be registered by manager
+     */
     @Override
     public boolean updateOrderByManager(String managerLogin, long orderId, String approved, String feedback) throws ServiceException {
         boolean isApproved;
         try {
             isApproved = orderDao.setApprovedOrderByManager(managerLogin, feedback, approved, orderId);
         } catch (DaoException e) {
+            logger.warn("Some problem occur can`t update/register the new order in CarOrderServiceImpl class");
             throw new ServiceException(e.getMessage());
         }
         return isApproved;
     }
 
+    /**
+     * The method process the booking and payment process
+     * @param order - gets desired order
+     * @param processPayment - gets response if the booking wanted to be paid
+     * @return the order
+     * @throws ServiceException in case the payment was failed or due to cannot process the booking
+     */
+
     @Override
     public Order setOrder(Order order, boolean processPayment) throws ServiceException {
-//        Order.OrderBuilder order = new Order.OrderBuilder();
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
        Order orderResult;
-//        Date parseFromDate = null;
-//        Date parseToDate = null;
-//        try {
-//            parseFromDate = dateFormat.parse(fromDate);
-//            parseToDate = dateFormat.parse(toDate);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Timestamp fromDateTime = new Timestamp(parseFromDate.getTime());
-//        Timestamp toDateTime = new Timestamp(parseToDate.getTime());
-//
-//        order.setPassport(passport)
-//                .setFromDate(fromDate)
-//                .setToDate(toDate)
-//                .setWithDriver(withDriver)
-//                .setReceipt(receipt)
-//                .setUserId(userId)
-//                .setDateFrom(fromDateTime)
-//                .setDateTo(toDateTime);
         try {
             lock.lock();
             orderResult = orderDao.processTheBooking(order, processPayment);

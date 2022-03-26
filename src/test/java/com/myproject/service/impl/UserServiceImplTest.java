@@ -52,9 +52,6 @@ public class UserServiceImplTest {
 
     }
 
-
-    public void logInValidation(){}
-
     @Test
     public void getBalance(){
         dbManager = DBManager.getInstance();
@@ -168,14 +165,5 @@ public class UserServiceImplTest {
         }
     }
 
-    @Test
-    public void updateUserStatusNegative(){
-        dbManager = DBManager.getInstance();
-        UserDao<User> userDao = new UserDaoImpl(dbManager);
-        UserService userService = new UserServiceImpl(userDao);
-
-        assertThrows(ServiceException.class,()-> assertTrue(userService.updateUserStatus("user2@gmail.com", null)));
-
-    }
 
 }

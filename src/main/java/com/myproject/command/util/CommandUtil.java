@@ -11,42 +11,63 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
+/**
+ * The CommandUtil class register the user in the system.
+ * Check if user is logged in already.
+ * Sets role for the user
+ * Gets the role from income page
+ */
+
 public class CommandUtil {
     private static final Logger logger = LogManager.getLogger(TopUpBalanceCommand.class);
     private static final HashMap<String, String> loggedUsers = new HashMap<>();
 
+    /**
+     * The method  sets role user login into the system
+     *
+     * @param req   - gets the request from web page
+     * @param role  - gets defined user role
+     * @param login - gets user role
+     */
     public static void setRoleForUser(HttpServletRequest req, String role, String login) {
         HttpSession session = req.getSession();
         ServletContext context = req.getServletContext();
         context.setAttribute(GeneralConstant.USER_NAME, login);
         session.setAttribute(GeneralConstant.ROLE, role);
-        session.setAttribute(GeneralConstant.USER_NAME,login);
-        req.setAttribute(GeneralConstant.LOGIN,login);
-        logger.info("setRoleForUser() method wordks");
+        session.setAttribute(GeneralConstant.USER_NAME, login);
+        req.setAttribute(GeneralConstant.LOGIN, login);
+        logger.info("setRoleForUser() method works");
     }
 
-    public  boolean userIsLogged(HttpServletRequest request) {
-        //todo get all logged users!
+    /**
+     * The method checks if user already logged into the system
+     *
+     * @param request - gets the request with required data from the client
+     * @return if the user is logged into the system returns true else returns false
+     */
+    public boolean userIsLogged(HttpServletRequest request) {
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
-        ServletContext context = request.getServletContext();
         String userName = (String) request.getSession().getAttribute(GeneralConstant.USER_NAME);
-        System.out.println("userName  commandUtil " + userName);
         if (loggedUsers.contains(userName)
-                && (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.ADMIN)
-                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.USER)
-                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE),GeneralConstant.MANAGER))) {
-            System.out.println("\n\nloggedUsers 1 " + loggedUsers + " userName " + userName + " Login" + request.getAttribute("login"));
-             logger.info("userIsLogged() method");
+                && (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), GeneralConstant.ADMIN)
+                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), GeneralConstant.USER)
+                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), GeneralConstant.MANAGER))) {
+            logger.info("userIsLogged() method");
             return true;
         }
-        //loggedUsers.add(request.getParameter(GeneralConstant.LOGIN));
-       // request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
         logger.info("userIsLogged() method");
         return false;
     }
-    public static String getUserRoleFromPage(HttpServletRequest request){
+
+    /**
+     * The method defines the user role from the page
+     *
+     * @param request - gets the request with all required data
+     * @return user role
+     */
+    public static String getUserRoleFromPage(HttpServletRequest request) {
         String role = request.getSession().getAttribute("role").toString();
-        if (role!= null){
+        if (role != null) {
             logger.info("getUserRoleFromPage() method");
             return role;
         }

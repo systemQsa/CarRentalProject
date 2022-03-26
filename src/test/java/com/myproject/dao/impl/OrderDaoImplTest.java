@@ -21,20 +21,6 @@ public class OrderDaoImplTest {
 
     }
 
-    @Test
-    public void getDriverRentPrice() {
-        dbManager = DBManager.getInstance();
-        OrderDaoImpl orderDao = new OrderDaoImpl(dbManager);
-
-        try {
-            double driverRentPrice = orderDao.getDriverRentPrice(1);
-            assertEquals("100.0", String.valueOf(driverRentPrice));
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
 
     @Test
