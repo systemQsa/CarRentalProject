@@ -1,7 +1,6 @@
 package com.myproject.command.userCommand;
 
 import com.myproject.command.Command;
-import com.myproject.command.adminCommad.SetRoleForUserCommand;
 import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.Route;
 import com.myproject.dao.entity.Car;
@@ -10,7 +9,6 @@ import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
-import com.myproject.service.impl.CarServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -41,7 +39,6 @@ public class SortCarsByWantedOrderCommand implements Command {
             currPage = 1;
             noOfRecords = 5;
         }
-        System.out.println("WANTED ORDER " + wantedOrder + " " + pageId + " " + noOfRecords);
 
 
 
@@ -54,7 +51,6 @@ public class SortCarsByWantedOrderCommand implements Command {
             sortedCars.ifPresent(cars -> request.setAttribute("sortedCars", cars));
 
 
-            System.out.println("total records!!!!"  + amountOfTotalRecords);
             int result = (amountOfTotalRecords / noOfRecords);
             if (result % noOfRecords > 0) {
                 result++;

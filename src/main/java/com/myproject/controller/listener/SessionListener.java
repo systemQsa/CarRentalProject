@@ -1,7 +1,6 @@
 package com.myproject.controller.listener;
 
 
-import com.myproject.command.util.GeneralConstant;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -14,7 +13,6 @@ public class SessionListener implements HttpSessionListener {
     private static final Logger logger = LogManager.getLogger(SessionListener.class);
     @Override
     public void sessionCreated(HttpSessionEvent session) {
-       // boolean user = session.getSession().getAttribute(GeneralConstant.ROLE).equals("user");
         System.out.println("\nSession working!!!");
         session.getSession().setMaxInactiveInterval(1200);
         logger.info("time session is set");

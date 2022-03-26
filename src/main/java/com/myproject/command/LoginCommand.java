@@ -5,7 +5,6 @@ import com.myproject.dao.entity.User;
 import com.myproject.exception.*;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
-import com.myproject.service.impl.UserServiceImpl;
 import com.myproject.validation.Validate;
 import com.myproject.validation.ValidateInput;
 import org.apache.log4j.LogManager;

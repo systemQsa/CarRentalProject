@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 /**
  * The BlockUserCommand class implements the Command interface.
  * Represents class that blocks the user by admin. Returns to the admin home page
+ *
  */
 public class BlockUserCommand implements Command {
     private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();

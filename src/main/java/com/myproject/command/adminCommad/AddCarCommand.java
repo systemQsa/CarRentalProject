@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * The AddCarCommand class implements the Command interface.
  * Represents class that adds a new car to the system
  * Retrieves all required data about car and adds it to the table. Returns to the admin home page.
+ *
  */
 public class AddCarCommand implements Command {
     private final CarService<Car> carService;

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * The DeleteCar class implement the Command interface.
  * Represents class that deletes current car from the system
+ *
  */
 public class DeleteCar implements Command {
     private final CarService<Car> carService;
