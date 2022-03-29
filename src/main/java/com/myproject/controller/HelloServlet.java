@@ -75,7 +75,7 @@ public class HelloServlet extends HttpServlet {
             try {
                 route = command.execute(request, response);
             } catch (CommandException | ValidationException e) {
-                logger.warn("CONTROLLER EXCEPTION");
+                logger.warn("CONTROLLER EXCEPTION " + e.getMessage() + " URI = " + request.getRequestURI() + " URL = " + request.getRequestURL() + " SERVPATH = "  + request.getServletPath());
                 request.getRequestDispatcher(e.getMessage()).forward(request, response);
                 throw new ControllerException(e.getMessage());
             }

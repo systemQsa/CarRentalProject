@@ -291,7 +291,6 @@ public class CarDaoImpl implements CarDao {
         int start = currPage * noOfRecords - noOfRecords;
         List<Car> carList = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(neededQuery)) {
-            //todo pagination finish properly
             statement.setInt(1, start);
             statement.setInt(2, noOfRecords);
             resultSet = statement.executeQuery();
@@ -312,30 +311,6 @@ public class CarDaoImpl implements CarDao {
             connectManager.closeConnection(connection);
         }
         logger.info("CARS WERE SORTED SUCCESSFULLY");
-        return carList;
-    }
-
-    //todo delete method
-    public List<Car> getSortedCarsByCarClass() throws DaoException {
-        connection = connectManager.getConnection();
-        ResultSet resultSet;
-        List<Car> carList = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_ALL_CARS_SORT_BY_CAR_CLASS)) {
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Car.CarBuilder car = new Car.CarBuilder();
-                car.setName(resultSet.getString("name"))
-                        .setCarClass(resultSet.getString("carClass"))
-                        .setBrand(resultSet.getString("brand"))
-                        .setRentalPrice(resultSet.getDouble("rent_price"));
-                carList.add(car.build());
-            }
-
-        } catch (SQLException e) {
-            throw new DaoException("CANT GET ALL SORTED CARS BY CAR CLASS", e);
-        } finally {
-            connectManager.closeConnection(connection);
-        }
         return carList;
     }
 }

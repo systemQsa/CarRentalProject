@@ -209,25 +209,4 @@ public class OrderDaoImpl implements OrderDao {
          return order;
     }
 
-    //todo remove this method
-    @Override
-    public double getDriverRentPrice(int id) throws DaoException {
-        connection = connectManager.getConnection();
-        ResultSet resultSet;
-        double rentalPrice = 0;
-        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.GET_DRIVER_RENT_PRICE)) {
-            statement.setInt(1, id);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                rentalPrice = resultSet.getDouble("price");
-            }
-        } catch (SQLException e) {
-            logger.error("CANT GET RENTAL DRIVER PRICE");
-            throw new DaoException("CANT GET RENTAL DRIVER PRICE", e);
-        } finally {
-            connectManager.closeConnection(connection);
-        }
-        return rentalPrice;
-    }
-
 }

@@ -37,10 +37,6 @@
                 <label>${sessionScope.language['Rental_Price']} ${sessionScope.rentalPrice}</label>
                 <input type="text"  name="rentalPrice" value="${sessionScope.rentalPrice}">
             </div>
-            <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
-                <label>${sessionScope.language['Photo']} ${sessionScope.carPhoto}</label>
-                <input type="text" name="carPhoto" value="${sessionScope.carPhoto}">
-            </div>
             <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Update']}</button>
         </form>
     </div>

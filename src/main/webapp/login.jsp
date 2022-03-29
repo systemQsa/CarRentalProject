@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="ftm" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false"%>
 <html>
 <head >
@@ -12,6 +11,7 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
+<a href="${pageContext.request.contextPath}/index.jsp" role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
 
 <!-- Login Form -->
 <div class="col-md-6 col-lg-4 offset-lg-4 offset-md-3 mt-5">
@@ -40,6 +40,5 @@
     </div>
 </div>
 
-<a href="${pageContext.request.contextPath}/index.jsp">${sessionScope.language['Go_back']}</a>
 </body>
 </html>

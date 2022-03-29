@@ -29,7 +29,6 @@ public class CarOrderServiceImpl implements CarOrderService {
         driverDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getDriverDao();
     }
 
-    //todo change to DriverDao
     public CarOrderServiceImpl(DriverDao driverDao){
         this.driverDao = driverDao;
     }
@@ -50,7 +49,6 @@ public class CarOrderServiceImpl implements CarOrderService {
      */
     @Override
     public BigDecimal countReceipt(long diffHours, double carRentPrice, boolean isWithDriver) throws ServiceException {
-        int idPriceDriverByDefault = 1;
         double optionWithDriverCoast = 0;
         if (diffHours <= 0) {
             throw new ServiceException("The minimum order time is an hour! Please enter time properly!");

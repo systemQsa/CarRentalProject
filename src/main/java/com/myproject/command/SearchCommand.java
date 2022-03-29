@@ -48,7 +48,7 @@ public class SearchCommand implements Command {
         Optional<List<Car>> car;
         try {
             if (role == null) {
-                car = carService.getCar(search);
+                car = carService.getCar(search.trim());
                 if (car.isPresent()) {
                     searchCars = car.get();
                     System.out.println("serach " + searchCars);
@@ -59,7 +59,7 @@ public class SearchCommand implements Command {
 
             } else {
                 if (role.equals("admin") && search.contains("@")) {
-                    user = userService.getUser(search);
+                    user = userService.getUser(search.trim());
                     if (user.isPresent()) {
                         searchUser = user.get();
                         System.out.println("serach " + searchUser);
@@ -68,7 +68,7 @@ public class SearchCommand implements Command {
                         route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
                     }
                 } else {
-                    car = carService.getCar(search);
+                    car = carService.getCar(search.trim());
                     if (car.isPresent()) {
                         searchCars = car.get();
                         System.out.println("serach " + searchCars);

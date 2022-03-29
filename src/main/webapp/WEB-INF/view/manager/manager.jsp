@@ -19,7 +19,7 @@
             <a class="navbar-brand" href="#">${sessionScope.language['label.Rental_Car']}</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="${pageContext.request.contextPath}/view/manager/manager.jsp">${sessionScope.language['Home']}</a></li>
             <li>  <a href="?action=pagination&required=viewOrders&viewSuchOrders=approved&page=1&noOfRecords=5">${sessionScope.language['Approved_orders']}</a></li>
             <li> <a href="?action=pagination&required=viewOrders&viewSuchOrders=declined&page=1&noOfRecords=5">${sessionScope.language['Declined_orders']}</a></li>
             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
@@ -36,21 +36,23 @@
 <%--            </li>--%>
         </ul>
 
-        <form class="navbar-form navbar-left">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="${sessionScope.language['Search']}" name="search">
-                <div class="input-group-btn">
-                    <button class="btn btn-default" type="submit">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
+<%--        <form class="navbar-form navbar-left">--%>
+<%--            <div class="input-group">--%>
+<%--                <input type="text" class="form-control" placeholder="${sessionScope.language['Search']}" name="search">--%>
+<%--                <div class="input-group-btn">--%>
+<%--                    <button class="btn btn-default" type="submit">--%>
+<%--                        <i class="glyphicon glyphicon-search"></i>--%>
+<%--                    </button>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </form>--%>
         <ul class="nav navbar-nav navbar-right">
-            <form method="get" action="${pageContext.request.contextPath}/helloServlet">
-                <input type="hidden" name="action" value="logout">
-                <button class="btn btn-outline-secondary my-2 my-sm-0 btn-sm" type="submit">${sessionScope.language['label.Logout']}</button>
-            </form>
+            <div style="margin-top: 15%">
+                <form method="get" action="${pageContext.request.contextPath}/helloServlet">
+                    <input type="hidden" name="action" value="logout">
+                    <button type="submit" class="btn btn-link">${sessionScope.language['label.Logout']}</button>
+                </form>
+            </div>
         </ul>
     </div>
 </nav>
@@ -106,7 +108,7 @@
         </c:forEach>
     </c:when>
     <c:otherwise>
-        <p>${sessionScope.language['There_are_no_records_yet']}!</p>
+        <p class="text-center">${sessionScope.language['There_are_no_records_yet']}!</p>
     </c:otherwise>
 </c:choose>
 

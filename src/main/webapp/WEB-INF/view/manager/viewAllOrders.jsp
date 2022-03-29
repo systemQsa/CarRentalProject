@@ -7,29 +7,52 @@
 <body>
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
 
-<c:if test="${requestScope.currentPage == 1}">
-    <div class="btn-group dropright" aria-labelledby="dropdownMenuButton">
-        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Number of records
-        </button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a>
+<%--<c:if test="${requestScope.currentPage == 1}">--%>
+<%--    <div class="btn-group dropright" aria-labelledby="dropdownMenuButton">--%>
+<%--        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
+<%--            Number of records--%>
+<%--        </button>--%>
+<%--        <div class="dropdown-menu">--%>
+<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a>--%>
 
-            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a>
+<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a>--%>
 
-            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a>
+<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a>--%>
 
-            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a>
-        </div>
-    </div>
-</c:if>
+<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--</c:if>--%>
 
 <c:choose>
     <c:when test="${not empty requestScope.listOrders}">
+        <div class="row">
+            <div class="col-md-6 col-sm-offset-10">
+                <a href="${pageContext.request.contextPath}/view/manager/manager.jsp" role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
+            </div>
+        </div>
         <table class="table table-hover">
+            <c:if test="${requestScope.currentPage == 1}">
+                <ul class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['Amount']}<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a></li>
+
+                        <li><a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a></li>
+
+                        <li><a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a></li>
+
+                        <li><a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a></li>
+                    </ul>
+                </ul>
+           </c:if>
+
+
+
+
             <thead>
                 <tr>
-                    <th scope="col">${sessionScope.language['label.Login']}</th>
+                    <th scope="col">${sessionScope.language['User_login']}</th>
                     <th scope="col">${sessionScope.language['Passport']}</th>
                     <th scope="col">${sessionScope.language['Receipt']}</th>
                     <th scope="col">${sessionScope.language['From_date']}</th>
@@ -61,8 +84,8 @@
 <input type="hidden" name="action" value="pagination">
        <c:if test="${requestScope.noOfRecords <= requestScope.amountOfRecordsTotal}">
         <h3>
-            <c:out value="${requestScope.noOfRecords}"/>
-            <c:out value="${requestScope.amountOfRecordsTotal}"/>
+<%--            <c:out value="${requestScope.noOfRecords}"/>--%>
+<%--            <c:out value="${requestScope.amountOfRecordsTotal}"/>--%>
         </h3>
             <div class="text-center">
                 <ul class="pagination justify-content-center">
@@ -104,6 +127,6 @@
     </c:otherwise>
 </c:choose>
 
- <a href="${pageContext.request.contextPath}/view/manager/manager.jsp">${sessionScope.language['Go_back']}</a>
+<%-- <a href="${pageContext.request.contextPath}/view/manager/manager.jsp">${sessionScope.language['Go_back']}</a>--%>
 </body>
 </html>

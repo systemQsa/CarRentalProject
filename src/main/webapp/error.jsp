@@ -9,6 +9,17 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/index.css">
 </head>
 <body>
+
+<%--<p>Request url</p>--%>
+<%--<c:out value="${pageContext.request.requestURL}"/>--%>
+
+<%--<p>Request uri</p>--%>
+<%--<c:out value="${pageContext.request.requestURI}"/>--%>
+
+<%--<p>Path info</p>--%>
+<%--<c:out value="${pageContext.request.pathInfo}"/>--%>
+
+<c:out value="${requestScope.errMSG}"/>
  <%-- <div class="container">--%>
 <%--    <div class="col-6 offset-md-3">--%>
 <%--        <img src="http://lamcdn.net/lookatme.ru/post_image-image/sIaRmaFSMfrw8QJIBAa8mA-small.png" alt="404" />--%>

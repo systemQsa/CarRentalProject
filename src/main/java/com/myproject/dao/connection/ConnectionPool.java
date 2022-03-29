@@ -34,7 +34,7 @@ public class ConnectionPool implements ConnectManager{
     }
 
     /**
-     * The method returns connection to the desired DataDase
+     * The method returns connection to the desired DataBase
      * @return connection
      */
     @Override

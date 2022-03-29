@@ -30,13 +30,14 @@ public class BlockUserCommand implements Command {
         String userLogin = request.getParameter("userLogin");
         try {
             boolean isSuccess = userService.blockUser(userLogin);
-            //todo else go to error page if cant block user
             if (isSuccess){
                 route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
+                setSuccessMessage("info.block_unblock_user",3,request);
             }
         } catch (ServiceException e){
             logger.error("CANT BLOCK USER IN BlockUserCommand SOME PROBLEM");
-            throw new CommandException("CANT BLOCK USER IN COMMAND",e);
+            setInformMessageIfErrorOccur("err.block_unblock_user",31,request);
+            throw new CommandException(ConstantPage.ADMIN_HOME_PAGE);
         }
         route.setRoute(Route.RouteType.REDIRECT);
         return route;

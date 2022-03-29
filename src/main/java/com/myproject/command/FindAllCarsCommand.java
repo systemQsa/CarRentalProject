@@ -28,6 +28,7 @@ public class FindAllCarsCommand implements Command {
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
         Route route = new Route();
+        System.out.println("\nFind All Cars Working");
         String page = request.getParameter("page");
         int noOfRecords = Integer.parseInt(request.getParameter("noOfRecords"));
         int currPage;

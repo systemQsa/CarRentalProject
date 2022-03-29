@@ -9,7 +9,6 @@ import com.myproject.exception.ServiceException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
 import com.myproject.service.DriverService;
-import com.myproject.service.impl.CarServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -18,8 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The UserFilter class implements Filter interface.
+ * Represents the class that catch user actions.
+ * If user login loads the start page with all available cars
+ * if user clicks on back arrow without any previous actions
+ * it`s automatically logout the user and redirects to the guest page
+ */
 public class UserFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(UserFilter.class);
     private final DriverService driverService = new AbstractFactoryImpl().getFactory()
@@ -29,13 +34,11 @@ public class UserFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // Filter.super.init(filterConfig);
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        // System.out.println("URL " + request.getRequestURI());
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setHeader(GeneralConstant.CACHE_CONTROL, GeneralConstant.NO_STORE_MUST_REVALIDATE);
         response.setHeader(GeneralConstant.PRAGMA, GeneralConstant.NO_CACHE);
@@ -43,70 +46,34 @@ public class UserFilter implements Filter {
         String userRole = (String) request.getSession().getAttribute(GeneralConstant.ROLE);
         String urlPath = request.getRequestURI();
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
-//        String userLoginName = (String) request.getSession().getServletContext().getAttribute("userName");
-//        if (loggedUsers != null && loggedUsers.contains(userLoginName)
-//                && (request.getServletPath().contains("/login.jsp") || request.getServletPath().contains("/register.jsp")) ){
-//            System.out.println("USER ALREADY LOGGED" + request.getLocalAddr());
-//            System.out.println(request.getServletPath());
-//            request.getRequestDispatcher(ConstantPage.ADMIN_HOME_PAGE).forward(request,response);
-//
-//        }
-
-        // System.out.println("userName request " + request.getParameter("userName"));
         Object userName = request.getSession().getAttribute("userName");
-        //System.out.println("Servlet path " + request.getServletPath());
+
 
         if ((urlPath.contains(GeneralConstant.LOGIN)
                 || urlPath.contains(GeneralConstant.REGISTER))
                 && ((Objects.equals(userRole, GeneralConstant.ADMIN)
                 || Objects.equals(userRole, GeneralConstant.USER)
                 || Objects.equals(userRole, GeneralConstant.MANAGER)))) {
-            // System.out.println("LOGGED USERS  FILTER 1" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-            // System.out.println("userName Context 1"+ request.getSession().getServletContext().getAttribute("userName"));
-            System.out.println("Logging out filter!!!!");
-            //new LogOutCommand().execute(request,response);
-
-//
-//            CommandUtil.setRoleForUser(request, null, null);
-//            request.getSession().getServletContext().setAttribute(GeneralConstant.USER_NAME, null);
-//            request.getSession().setAttribute(GeneralConstant.ROLE,null);
-//            request.setAttribute(GeneralConstant.LOGIN,null);
             loggedUsers.remove((String) request.getSession().getServletContext().getAttribute("userName"));
             CommandUtil.setRoleForUser(request, null, null);
             request.getServletContext().setAttribute(GeneralConstant.USER_NAME, null);
             request.getSession().setAttribute(GeneralConstant.ROLE, null);
             request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
-            // System.out.println("DELETED USER NAME "+ request.getSession().getServletContext().getAttribute("userName"));
-            // System.out.println("LOGGED USERS  FILTER 1 AFTER DELETE " + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
 
             response.sendRedirect("/car/index.jsp");
-            logger.info("UserFilter WORKING");
+            logger.info("UserFilter working");
         }
 
-//        if ((request.getSession().getServletContext().getAttribute(GeneralConstant.USER_NAME) != null) &&
-//                (request.getSession().getServletContext().getAttribute(GeneralConstant.USER_NAME).equals("admin@gmail.com")
-//                && request.getServletPath().equals("/index.jsp"))){
-//            //response.sendRedirect("/car/login.jsp");
-//            System.out.println("userName Context 01"+ request.getSession().getServletContext().getAttribute("userName"));
+       //???
+//        if (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), "admin") && request.getRequestURI().contains("/login.jsp")
+//                || request.getRequestURI().contains("/register.jsp")) {
+//            // System.out.println("LOGGED USERS  FILTER 2" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
+//            // System.out.println("userName Context 2"+ request.getSession().getServletContext().getAttribute("userName"));
 //
-//            response.sendRedirect("/car/view/admin/admin.jsp");
-//        }
-
-
-        if (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), "admin") && request.getRequestURI().contains("/login.jsp")
-                || request.getRequestURI().contains("/register.jsp")) {
-            // System.out.println("LOGGED USERS  FILTER 2" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-            // System.out.println("userName Context 2"+ request.getSession().getServletContext().getAttribute("userName"));
-
-            // System.out.println("User already logged ================= " + request.getSession().getAttribute(GeneralConstant.ROLE));
-
-            // response.sendRedirect("/car" + ConstantPage.ADMIN_PAGE);
-            // request.getRequestDispatcher("redirect:/view/admin/admin.jsp").forward(request,response);
-        }
-
-//        if (request.getServletPath().contains("/view/admin/admin.jsp")
-//                && request.getSession().getServletContext().getAttribute("userName").equals("admin@gmail.com")){
-//            response.sendRedirect("/car/login.jsp");
+//            // System.out.println("User already logged ================= " + request.getSession().getAttribute(GeneralConstant.ROLE));
+//
+//            // response.sendRedirect("/car" + ConstantPage.ADMIN_PAGE);
+//            // request.getRequestDispatcher("redirect:/view/admin/admin.jsp").forward(request,response);
 //        }
 
         if (request.getRequestURI().contains(GeneralConstant.ADMIN)
@@ -167,11 +134,6 @@ public class UserFilter implements Filter {
 
 
         if ((urlPath.contains(GeneralConstant.ADMIN)) && userRole == null) {
-            //System.out.println("userName NuLL"+request.getSession().getAttribute("userName"));
-            //System.out.println("LOGGED USERS  FILTER 5" + request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
-            // System.out.println("userName Context 5 "+ request.getSession().getServletContext().getAttribute("userName"));
-
-            //System.out.println(CommandUtil.getUserRoleFromPage(request));
             response.sendRedirect("/car" + ConstantPage.LOG_IN_PAGE);
             filterChain.doFilter(request, response);
             return;
@@ -190,17 +152,11 @@ public class UserFilter implements Filter {
             return;
         }
 
-
-//        if (request.getRequestURI().contains("/include/header.jsp")){
-//            request.getRequestDispatcher("/WEB-INF/view/include/header.jsp").forward(request,response);
-//        }
-
         logger.info("UserFilter WORKING");
         filterChain.doFilter(request, response);
     }
 
     @Override
     public void destroy() {
-        // Filter.super.destroy();
     }
 }

@@ -32,10 +32,6 @@
                 <label class="form-label" for="rentalPrice">${sessionScope.language['Rental_Price']}</label>
                 <input type="text" id="rentalPrice" class="form-control" name="rentalPrice"/>
             </div>
-            <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
-                <label class="form-label" for="photo">${sessionScope.language['Photo']}</label>
-                <input type="file" id="photo" class="form-control" name="photo"/>
-            </div>
             <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Add']}</button>
         </form>
     </div>

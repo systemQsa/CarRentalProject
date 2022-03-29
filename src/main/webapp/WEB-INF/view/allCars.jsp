@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
@@ -7,7 +7,8 @@
     <link type="text/css" rel="stylesheet" href="<c:url value="/css/index.css"/> ">
 </head>
 <body>
-<div class="row col-md-9 col-md-push-2">
+
+<div class="row col-md-10 col-md-push-1">
     <div>
         <c:choose>
 <%--        displays cars in casual order desc--%>
@@ -21,17 +22,17 @@
 <%--                    Dropdown link--%>
 <%--                </a>--%>
 
-
+                  <c:if test="${requestScope.currentPage == 1}">
                     <ul class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">Amount<span class="caret"></span></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['Amount']}<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=5">5 items</a></li>
-                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=10">10 items</a></li>
-                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=25">25 items</a></li>
-                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=50">50 items</a></li>
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=5">5</a></li>
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=10">10</a></li>
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=25">25</a></li>
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?action=pagination&required=viewCars&page=${requestScope.currentPage}&noOfRecords=50">50</a></li>
                          </ul>
                     </ul>
-
+                  </c:if>
                     <thead>
                     <tr>
                         <th scope="col">${sessionScope.language['Id']}</th>
@@ -54,9 +55,6 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${sessionScope.role == null}">
-        <%--                               <button type="button"--%>
-        <%--                                        class="btn btn-warning btn-sm"--%>
-        <%--                                       data-target="#notLogedUser" data-toggle="modal">${sessionScope.language['Book_Car']}</button>--%>
                                         <a href="#modalColor" data-target-color="lightblue" data-toggle="modal" class="btn btn-warning"role="button">${sessionScope.language['Book_Car']}</a>
                                     </c:when>
                                     <c:when test="${sessionScope.role eq 'user'}">
@@ -109,17 +107,17 @@
 <%--                    displays cars in desired order--%>
             <c:when test="${not empty requestScope.sortedCars}">
                 <table class="table table-hover">
-                    <div class="btn-group dropright" aria-labelledby="dropdownMenuButton">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Amount of records
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=5" role="button">5</a>
-                            <a class="dropdown-item" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=10" role="button">10</a>
-                            <a class="dropdown-item" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=25" role="button">25</a>
-                            <a class="dropdown-item" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=50" role="button">50</a>
-                        </div>
-                    </div>
+                 <c:if test="${requestScope.currentPage == 1}">
+                    <ul class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['Amount']}<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=5" role="button">5</a></li>
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=10" role="button">10</a></li>
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=25" role="button">25</a></li>
+                            <li role="presentation"><a class="dropdown-item text-decoration-none" href="?sort=sorting&action=wantedOrder&order=${requestScope.order}&page=${requestScope.currentPage}&noOrRecordsSorted=50" role="button">50</a></li>
+                        </ul>
+                    </ul>
+                 </c:if>
                     <thead>
                     <tr>
                         <th scope="col">${sessionScope.language['Id']}</th>
@@ -189,20 +187,20 @@
 <%--                                </td>--%>
 <%--                            </c:if></li>--%>
 <%--                    </ul>--%>
-
             </c:when>
-<%--                    <c:otherwise>--%>
-<%--                        <div class="text-center">--%>
-<%--                            <h2> ${sessionScope.language['there_are_no_cars_yet']}!</h2>--%>
-<%--                        </div>--%>
-<%--                    </c:otherwise>--%>
+                <c:otherwise>
+<%--                    <div class="text-center">--%>
+<%--                        <h2>${sessionScope.language['nothing_was_found']}!</h2>--%>
+<%--                    </div>--%>
+<%--                    <br><br><br><br>--%>
+                </c:otherwise>
         </c:choose>
+        <br><br><br><br>
     </div>
+
 <%--                </table>--%>
 
     <c:if test="${not empty requestScope.sortedCars}">
-        <p>noOfRecords</p>
-        <c:out value="${requestScope.noOrRecordsSorted}"/>
             <div class="text-center">
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
@@ -231,70 +229,80 @@
 
 </div>
 
-<%--search desired car(s)--%>
-<c:choose>
-    <c:when test="${empty requestScope.searchedCars and empty requestScope.allCars and empty requestScope.sortedCars}">
-        <h3 class="text-center">${sessionScope.language['nothing_was_found']}!</h3>
-    </c:when>
-    <c:when test="${not empty requestScope.searchedCars}">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th scope="col">${sessionScope.language['Id']}</th>
-                <th scope="col">${sessionScope.language['Name']}</th>
-                <th scope="col">${sessionScope.language['Class']}</th>
-                <th scope="col">${sessionScope.language['Brand']}</th>
-                <th scope="col">${sessionScope.language['Rental_Price']}</th>
-            </tr>
-            </thead>
-        <tbody>
-        <c:forEach var="searchedCar" items="${requestScope.searchedCars}">
-            <td>${searchedCar.carId}</td>
-            <td>${searchedCar.name}</td>
-            <td>${searchedCar.carClass}</td>
-            <td>${searchedCar.brand}</td>
-            <td>${searchedCar.rentalPrice}</td>
-            <td>
-                <c:choose>
-                    <c:when test="${sessionScope.role == null}">
-                        <a href="#modalColor" data-target-color="lightblue" data-toggle="modal" class="btn btn-warning"role="button">${sessionScope.language['Book_Car']}</a>
-                    </c:when>
-                    <c:when test="${sessionScope.role eq 'user'}">
-                        <form method="post" action="${pageContext.request.contextPath}/helloServlet">
-                            <input type="hidden" name="action" value="bookCarReq">
-                            <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
-                            <input type="hidden" name="carId" value="${searchedCar.carId}">
-                            <input type="hidden" name="carName" value="${searchedCar.name}">
-                            <input type="hidden" name="carClass" value="${searchedCar.carClass}">
-                            <input type="hidden" name="carBrand" value="${searchedCar.brand}">
-                            <input type="hidden" name="rentPrice" value="${searchedCar.rentalPrice}">
-                            <button type="submit"
-                                    class="btn btn-warning btn-sm">${sessionScope.language['Book_Car']}</button>
-                        </form>
-                    </c:when>
-                </c:choose>
-            </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-    </c:when>
-</c:choose>
+
+<div class="row col-md-10 col-md-push-1">
+    <%--search desired car(s)--%>
+    <c:choose>
+        <c:when test="${empty requestScope.searchedCars and empty requestScope.allCars and empty requestScope.sortedCars}">
+            <br><br><br><br>
+
+            <div class="h-100 row align-items-center">
+                <div class="col">
+                    <h2 class="text-center">${sessionScope.language['nothing_was_found']}!</h2>
+                </div>
+            </div>
+            <br><br><br><br>
+        </c:when>
+        <c:when test="${not empty requestScope.searchedCars}">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">${sessionScope.language['Id']}</th>
+                    <th scope="col">${sessionScope.language['Name']}</th>
+                    <th scope="col">${sessionScope.language['Class']}</th>
+                    <th scope="col">${sessionScope.language['Brand']}</th>
+                    <th scope="col">${sessionScope.language['Rental_Price']}</th>
+                </tr>
+                </thead>
+            <tbody>
+            <c:forEach var="searchedCar" items="${requestScope.searchedCars}">
+                <td>${searchedCar.carId}</td>
+                <td>${searchedCar.name}</td>
+                <td>${searchedCar.carClass}</td>
+                <td>${searchedCar.brand}</td>
+                <td>${searchedCar.rentalPrice}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${sessionScope.role == null}">
+                            <a href="#modalColor" data-target-color="lightblue" data-toggle="modal" class="btn btn-warning"role="button">${sessionScope.language['Book_Car']}</a>
+                        </c:when>
+                        <c:when test="${sessionScope.role eq 'user'}">
+                            <form method="post" action="${pageContext.request.contextPath}/helloServlet">
+                                <input type="hidden" name="action" value="bookCarReq">
+                                <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
+                                <input type="hidden" name="carId" value="${searchedCar.carId}">
+                                <input type="hidden" name="carName" value="${searchedCar.name}">
+                                <input type="hidden" name="carClass" value="${searchedCar.carClass}">
+                                <input type="hidden" name="carBrand" value="${searchedCar.brand}">
+                                <input type="hidden" name="rentPrice" value="${searchedCar.rentalPrice}">
+                                <button type="submit"
+                                        class="btn btn-warning btn-sm">${sessionScope.language['Book_Car']}</button>
+                            </form>
+                        </c:when>
+                    </c:choose>
+                </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+        </c:when>
+    </c:choose>
 
 
-<%--modal window--%>
-<div class="modal fade" data-modal-color="" id="modalColor" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-info">
-                <h4 class="modal-title">${sessionScope.language['seems_you_are_not_logged_yet']}</h4>
-            </div>
-            <div class="modal-body bg-info">
-                <p>${sessionScope.language['to_make_booking_you_need_to_login_if_you_don`t_have_account_register']}</p>
-            </div>
-            <div class="modal-footer bg-info">
-                <a href="${pageContext.request.contextPath}/login.jsp">${sessionScope.language['label.Login']}</a>
-                 <button type="button" class="btn btn-link" data-dismiss="modal">${sessionScope.language['Close']}</button>
+    <%--modal window--%>
+    <div class="modal fade" data-modal-color="" id="modalColor" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h4 class="modal-title">${sessionScope.language['seems_you_are_not_logged_yet']}</h4>
+                </div>
+                <div class="modal-body bg-info">
+                    <p>${sessionScope.language['to_make_booking_you_need_to_login_if_you_don`t_have_account_register']}</p>
+                </div>
+                <div class="modal-footer bg-info">
+                    <a href="${pageContext.request.contextPath}/login.jsp">${sessionScope.language['label.Login']}</a>
+                     <button type="button" class="btn btn-link" data-dismiss="modal">${sessionScope.language['Close']}</button>
+                </div>
             </div>
         </div>
     </div>

@@ -10,8 +10,6 @@ public interface OrderDao {
 
     Order processTheBooking(Order order, boolean processPayment) throws DaoException;
 
-    double getDriverRentPrice(int id) throws DaoException;
-
     void setConnection(ConnectManager connectManager) throws DaoException;
 
     boolean setApprovedOrderByManager(String managerLogin, String feedback, String approved, long orderId) throws DaoException;

@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getUser(String login) throws ServiceException {
 
         try {
-            return Optional.of(userDao.findByLogin(login));
+            return Optional.ofNullable(userDao.findByLogin(login));
         } catch (DaoException e) {
             logger.warn("Cant get user in UserServiceImpl class by given login " + login);
             throw new ServiceException(e.getMessage());
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<List<User>> getAllUsers() throws ServiceException {
         try {
-            return Optional.of(userDao.findAll());
+            return Optional.ofNullable(userDao.findAll());
         } catch (DaoException e) {
             logger.warn("CANT FIND ALL USERS IN UserServiceImpl class");
             throw new ServiceException("CANT FIND ALL USERS");
@@ -299,11 +299,5 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("CANT SET NEW ROLE FOR GIVEN USER", e);
         }
         return statusChanged;
-    }
-
-    //todo get rid of this method
-    @Override
-    public UserService getInstance() {
-        return null;
     }
 }

@@ -10,6 +10,7 @@
 </head>
 <body>
 <jsp:include page="WEB-INF/view/errorMSG.jsp"/>
+<a href="${pageContext.request.contextPath}/index.jsp" role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
 
 <%--register form--%>
 <div class="container">
@@ -92,7 +93,5 @@
         </div>
     </div>
 </div>
-
-<a href="${pageContext.request.contextPath}/index.jsp">${sessionScope.language['Go_back']}</a>
 </body>
 </html>

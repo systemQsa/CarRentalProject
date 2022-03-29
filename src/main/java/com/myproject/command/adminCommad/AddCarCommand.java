@@ -39,6 +39,7 @@ public class AddCarCommand implements Command {
         try {
             Car car = carService.addCar(request);
             route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
+            setSuccessMessage("info.car_added",2,request);
         } catch (ServiceException e) {
             logger.error("CANT ADD NEW CAR IN AddCarCommand SOME PROBLEM");
             setInformMessageIfErrorOccur(e.getMessage(), 17, request);

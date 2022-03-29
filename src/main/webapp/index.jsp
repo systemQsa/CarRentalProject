@@ -19,9 +19,9 @@
             <a class="navbar-brand" href="#">${sessionScope.language['label.Rental_Car']}</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Page 1</a></li>
-            <li><a href="#">Page 2</a></li>
+            <li class="active"><a href="${pageContext.request.contextPath}/index.jsp">${sessionScope.language['Home']}</a></li>
+            <li><a href="#">${sessionScope.language['page']} 1</a></li>
+            <li><a href="#">${sessionScope.language['page']} 2</a></li>
             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                      <li role="presentation"><a href="?lang=en">${sessionScope.language['header.lang.eng']}</a></li>
@@ -49,11 +49,14 @@
 </nav>
 
 
+<div class="container">
+    <jsp:include page="/WEB-INF/view/allCars.jsp"/>
+</div>
+<div class="navbar fixed-bottom">
+    <jsp:include page="WEB-INF/view/include/footer.jsp"/>
+</div>
+<%--<a href="${pageContext.request.contextPath}/index2.jsp"></a>--%>
 
-
-<jsp:include page="/WEB-INF/view/allCars.jsp"/>
-<a href="${pageContext.request.contextPath}/index2.jsp"></a>
-<out:text/>
 
 
 
@@ -82,7 +85,7 @@
 <%--        });--%>
 <%--    });--%>
 <%--</script>--%>
-
+<%--<jsp:include page="WEB-INF/view/include/footer.jsp"/>--%>
 
 
 </body>

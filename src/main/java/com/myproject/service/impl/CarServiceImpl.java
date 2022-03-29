@@ -83,7 +83,7 @@ public class CarServiceImpl implements CarService<Car> {
     @Override
     public Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage,int noOfRecords) throws ServiceException{
         try {
-            return Optional.of(carDAO.findAll(currentPage,noOfRecords));
+            return Optional.ofNullable(carDAO.findAll(currentPage,noOfRecords));
         } catch (DaoException e) {
             logger.warn("CANT GET ALL CARS IN CarServiceImpl class");
             throw new ServiceException("CANT GET CARS IN SERVICE",e);
@@ -134,7 +134,7 @@ public class CarServiceImpl implements CarService<Car> {
             logger.warn("CANT GET ALL NEEDED CARS FOR SELECTED ORDER IN CarServiceImpl class");
            throw new ServiceException("CANT GET ALL NEEDED CARS FOR SELECTED ORDER",e);
         }
-        return Optional.of(carList);
+        return Optional.ofNullable(carList);
     }
 
     /**
@@ -146,7 +146,7 @@ public class CarServiceImpl implements CarService<Car> {
     @Override
     public Optional<List<Car>>getCar(String name) throws ServiceException {
         try{
-             return Optional.of(carDAO.searchCarsByName(name));
+             return Optional.ofNullable(carDAO.searchCarsByName(name));
         }catch (DaoException e){
             throw new ServiceException(e.getMessage());
         }

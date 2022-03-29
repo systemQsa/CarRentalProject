@@ -48,7 +48,7 @@ public class ViewOrderServiceImpl implements OrderViewService {
             throw new ServiceException(e.getMessage());
         }
         logger.info("User got its personal orders successfully");
-        return Optional.of(allUserOrdersPersonal);
+        return Optional.ofNullable(allUserOrdersPersonal);
     }
 
 
@@ -57,7 +57,7 @@ public class ViewOrderServiceImpl implements OrderViewService {
      * @param approved - gets required booking status (approved/declined)
      * @param startPage - gets page number
      * @param noOfRecords - gets required number of records
-     * @return Oprional list of orders (returns all approved/all declined orders)
+     * @return Optional list of orders (returns all approved/all declined orders)
      * @throws ServiceException in case if by some reason manager can`t get all orders
      */
     @Override
@@ -74,8 +74,7 @@ public class ViewOrderServiceImpl implements OrderViewService {
             logger.warn("getOrders() in ViewOrderServiceImpl Failed");
             throw new ServiceException(e.getMessage());
         }
-        assert res != null;
         logger.info("Manager got orders successfully");
-        return Optional.of(res);
+        return Optional.ofNullable(res);
     }
 }

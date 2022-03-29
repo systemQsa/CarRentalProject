@@ -15,7 +15,7 @@
  </head>
 <body>
 <div>
-    <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-info" role="button">${sessionScope.language['Go_back']}</a>
+    <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-info" role="button">${sessionScope.language['Go_back']}</a>
 </div>
 
 <div class="container">
@@ -47,8 +47,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-<%--                                    check if reset password need to put in value ??--%>
-                                    <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="Reset Password"
+                                    <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="${sessionScope.language['Send']}"
                                            type="submit"
                                            data-target="#editMezalta" data-toggle="modal">
                                 </div>

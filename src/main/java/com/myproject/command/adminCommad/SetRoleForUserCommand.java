@@ -32,14 +32,17 @@ public class SetRoleForUserCommand implements Command {
         try {
             if (action.equals(GeneralConstant.Util.SET_MANAGER)) {
                 userService.updateUserStatus(userLogin, UserRole.MANAGER);
+                setSuccessMessage("info.set_user_manager",4,request);
                 route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
             } else if (action.equals(GeneralConstant.Util.UNSET_MANAGER)) {
+              setSuccessMessage("info.unset_manager",5,request);
                 route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
                 userService.updateUserStatus(userLogin,UserRole.USER);
             }
         }catch (ServiceException e){
             logger.error("IMPOSSIBLE TO CHANGE ROLE FOR USER IN SetRoleForUserCommand class");
-            throw new CommandException("CANT CHANGE USER STATUS",e);
+            setInformMessageIfErrorOccur("err.set_role",32,request);
+            throw new CommandException("/WEB-INF/view/admin/admin.jsp");
         }
         route.setRoute(Route.RouteType.REDIRECT);
         return route;

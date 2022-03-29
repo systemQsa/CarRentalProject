@@ -18,28 +18,52 @@
 </c:if>
 
 <c:if test="${requestScope.currentPage == 1}">
-     <div class="btn-group dropright" aria-labelledby="dropdownMenuButton">
-        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Number of records
-        </button>
-        <div class="dropdown-menu">
+
+    <ul class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['Amount']}<span class="caret"></span></a>
+        <ul class="dropdown-menu" role="menu">
+            <li>
             <a class="dropdown-item"
                href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a>
+            </li>
+            <li>
             <a class="dropdown-item"
                href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a>
+            </li>
+            <li>
             <a class="dropdown-item"
                href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a>
+            </li>
+            <li>
             <a class="dropdown-item"
                href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a>
-        </div>
-    </div>
+            </li>
+        </ul>
+    </ul>
+
+
+<%--     <div class="btn-group dropright" aria-labelledby="dropdownMenuButton">--%>
+<%--        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
+<%--            --%>
+<%--        </button>--%>
+<%--        <div class="dropdown-menu">--%>
+<%--            <a class="dropdown-item"--%>
+<%--               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a>--%>
+<%--            <a class="dropdown-item"--%>
+<%--               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a>--%>
+<%--            <a class="dropdown-item"--%>
+<%--               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a>--%>
+<%--            <a class="dropdown-item"--%>
+<%--               href="?action=pagination&required=viewMyOrders&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a>--%>
+<%--        </div>--%>
+<%--    </div>--%>
 </c:if>
 
 
 <div class="container">
 <%-- displays all user personal orders --%>
 
-    <div class="row col-md-9 col-md-push-2">
+    <div class="row col-md-10 col-md-push-1">
         <c:choose>
             <c:when test="${not empty requestScope.myPersonalOrders}">
                 <table class="table table-hover">

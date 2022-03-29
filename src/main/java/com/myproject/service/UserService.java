@@ -19,8 +19,6 @@ public interface UserService {
 
     boolean updateUserStatus(String login, UserRole userRole) throws ServiceException;
 
-    UserService getInstance();
-
     Optional<List<User>> getAllUsers() throws ServiceException;
 
     double getBalance(String login) throws ServiceException;

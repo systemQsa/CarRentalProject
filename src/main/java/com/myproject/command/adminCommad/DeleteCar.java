@@ -38,9 +38,10 @@ public class DeleteCar implements Command {
         try {
             //todo if car was successfully deleted back answer!
             boolean answer = carService.deleteCar(carId);
+            setSuccessMessage("info.car_deleted",1,request);
         } catch (ServiceException e) {
             logger.error("CANT DELETE CAR IN DeleteCar class");
-            throw new CommandException("CANT DELETE CAR IN COMMAND",e);
+            throw new CommandException("/WEB-INF/view/admin/admin.jsp");
         }
         route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);

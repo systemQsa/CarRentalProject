@@ -33,7 +33,6 @@ public class LoginCommand implements Command {
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
-        //todo print error messages on jsp
         Route route = new Route();
         String login = request.getParameter(GeneralConstant.LOGIN);
         char[]password = request.getParameter("password").toCharArray();
@@ -77,6 +76,7 @@ public class LoginCommand implements Command {
             try {
                  role = userService.logInValidation(login,password,request);
              } catch (ServiceException e) {
+                System.out.println("Failed");
                 throw new CommandException(ConstantPage.LOG_IN_PAGE);
             }
 

@@ -12,6 +12,9 @@
 <body>
 <%--<p>${sessionScope.userLogin}</p>--%>
 <%--<div class="form-gap"></div>--%>
+
+<a href="${pageContext.request.contextPath}/forgotPass.jsp" role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
+
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
@@ -47,6 +50,6 @@
     </div>
 </div>
 
-<a href="${pageContext.request.contextPath}/forgotPass.jsp">${sessionScope.language['Go_back']}</a>
+<%--<a href="${pageContext.request.contextPath}/forgotPass.jsp">${sessionScope.language['Go_back']}</a>--%>
 </body>
 </html>

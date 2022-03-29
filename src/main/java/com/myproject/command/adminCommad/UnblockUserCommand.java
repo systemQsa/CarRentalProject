@@ -28,15 +28,16 @@ public class UnblockUserCommand implements Command {
         boolean isSuccess;
         try {
            isSuccess =  userService.unblockUser(userLogin);
-           //todo else go to error page if cant unblock user
            if (isSuccess){
                route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
+               setSuccessMessage("info.block_unblock_user",3,request);
            }else{
                setInformMessageIfErrorOccur("err.block_unblock_user",20,request);
                throw new CommandException(ConstantPage.ADMIN_HOME_PAGE);
            }
         } catch (ServiceException e) {
             logger.error("IMPOSSIBLE UNBLOCK USER IN UnblockUserCommand class");
+            setInformMessageIfErrorOccur("err.block_unblock_user",32,request);
            throw new CommandException("CANT UNBLOCK USER SOME PROBLEMS OCCUR",e);
         }
         route.setRoute(Route.RouteType.REDIRECT);

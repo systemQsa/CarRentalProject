@@ -58,6 +58,7 @@ public class ConfirmBookingCommand implements Command {
 
         OrderStorage.ddOrder(newOrder.build());
         logger.info("Confirming the payment");
+        setSuccessMessage("info.order_send_to_process",6,request);
         route.setRoute(Route.RouteType.REDIRECT);
         return route;
     }
