@@ -20,7 +20,7 @@ public final class QuerySQL {
     public static final String FIND_CAR_BY_NAME = "SELECT id_car FROM cars WHERE name=?";
     public static final String UPDATE_CAR = "UPDATE cars SET name=?,carClass=?,brand=?,rent_price=?,photo=? WHERE id_car=?";
     public static final String GET_ONE_CAR_BY_ID = "SELECT id_car,name,carClass,brand,rent_price,photo FROM cars WHERE id_car=?";
-    public static final String TOP_UP_USER_BALANCE = "UPDATE users SET balance=? WHERE login=?";
+    public static final String UPDATE_USER_BALANCE = "UPDATE users SET balance=? WHERE login=?";
     public static final String SEE_USER_BALANCE = "SELECT balance FROM users WHERE login=?";
     public static final String BAN_AND_UNBAN_USER = "UPDATE users SET banned=? WHERE login=?";
     public static final String CHECK_USER_STATUS = "SELECT banned FROM users WHERE login=?";
@@ -51,7 +51,7 @@ public final class QuerySQL {
                                                                                  "AND with_driver=? " +
                                                                                  "AND receipt=? " +
                                                                                  "AND user_id=? " +
-                                                                                 "AND car_id=?;";
+                                                                                 "AND car_id=?";
 
     public static final String UPDATE_DRIVER_PRICE = "UPDATE driver_price SET price=? WHERE id=1";
     public static final String GET_DRIVER_PRICE = "SELECT price FROM driver_price WHERE id=1";

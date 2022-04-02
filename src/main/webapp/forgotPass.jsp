@@ -43,9 +43,10 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
                                         <input id="email" name="login" placeholder="${sessionScope.language['email_address']}"
-                                               class="form-control"  type="email">
+                                               class="form-control"  type="text">
                                     </div>
                                 </div>
+
                                 <div class="form-group">
                                     <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="${sessionScope.language['Send']}"
                                            type="submit"

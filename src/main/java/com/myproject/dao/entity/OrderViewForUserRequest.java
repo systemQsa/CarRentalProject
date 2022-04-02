@@ -5,7 +5,7 @@ import java.util.Objects;
 
 
 public class OrderViewForUserRequest implements Serializable {
-    private static final long serialUID = 1L;
+    private static final long serialUID = 568909095648311123L;
     private String login;
     private int amountOfRecords;
     private Order order;

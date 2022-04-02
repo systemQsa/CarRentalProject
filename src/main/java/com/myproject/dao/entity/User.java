@@ -3,24 +3,26 @@ package com.myproject.dao.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
 public class User implements Comparable<User>, Serializable {
-    private static final long serialUID = 1L;
+    private static final long serialUID = 3423344345465655654L;
     private long userId;
     private String name;
     private String surname;
     private String serialPassportNumber;
     private String login;
     private String userRole;
-    private Timestamp registerDate;
+   // private Timestamp registerDate;
     private BigDecimal balance;
     private String isBanned;
     private String password;
     private String salt;
     private String phone;
     private int role;
+    private LocalDateTime registerDate;
 
     public static class UserBuilder {
         private final User user;
@@ -68,7 +70,7 @@ public class User implements Comparable<User>, Serializable {
             return this;
         }
 
-        public UserBuilder setRegisterDate(Timestamp registerDate) {
+        public UserBuilder setRegisterDate(LocalDateTime registerDate) {
             user.registerDate = registerDate;
             return this;
         }
@@ -122,7 +124,7 @@ public class User implements Comparable<User>, Serializable {
         return userRole;
     }
 
-    public Timestamp getRegisterDate() {
+    public LocalDateTime getRegisterDate() {
         return registerDate;
     }
 

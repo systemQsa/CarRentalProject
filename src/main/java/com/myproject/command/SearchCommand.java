@@ -22,8 +22,10 @@ import java.util.Optional;
  * Represents class to work with searching process
  */
 public class SearchCommand implements Command {
-    private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
-    private final CarService<Car> carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+    private final UserService userService =
+            new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
+    private final CarService<Car> carService =
+            new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
 
     /**
      * The method retrieves desired arguments
@@ -36,51 +38,41 @@ public class SearchCommand implements Command {
      * @throws ValidationException in case the input validation was failed
      */
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         String role = (String) request.getSession().getAttribute("role");
         String search = request.getParameter("search");
 
-        System.out.println("\n search " + request.getRequestURL() + " " + request.getRequestURI());
-        User searchUser;
-        List<Car> searchCars;
-        Optional<User> user;
-        Optional<List<Car>> car;
         try {
             if (role == null) {
-                car = carService.getCar(search.trim());
-                if (car.isPresent()) {
-                    searchCars = car.get();
-                    System.out.println("serach " + searchCars);
+
+                carService.getCar(search.trim()).ifPresent(searchedCar -> {
                     request.setAttribute("searchCommand", "searchingCar");
-                    request.setAttribute("searchedCars", searchCars);
+                    request.setAttribute("searchedCars", searchedCar);
                     route.setPathOfThePage("/index.jsp");
-                }
+                });
 
             } else {
-                if (role.equals("admin") && search.contains("@")) {
-                    user = userService.getUser(search.trim());
-                    if (user.isPresent()) {
-                        searchUser = user.get();
-                        System.out.println("serach " + searchUser);
+
+                 if (role.equals("admin") && search.contains("@")) {
+                     userService.getUser(search.trim()).ifPresent(searchedUser -> {
                         request.setAttribute("searchCommand", "searchingUser");
-                        request.setAttribute("searchedUser", searchUser);
+                        request.setAttribute("searchedUser", searchedUser);
                         route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
-                    }
+                    });
+
                 } else {
-                    car = carService.getCar(search.trim());
-                    if (car.isPresent()) {
-                        searchCars = car.get();
-                        System.out.println("serach " + searchCars);
+
+                    carService.getCar(search.trim()).ifPresent(searchedCars -> {
                         request.setAttribute("searchCommand", "searchingCar");
-                        request.setAttribute("searchedCars", searchCars);
+                        request.setAttribute("searchedCars", searchedCars);
                         if (Objects.equals(request.getSession().getAttribute("role"), "admin")) {
                             route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
                         } else if (Objects.equals(request.getSession().getAttribute("role"), "user")) {
                             route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_USER);
                         }
-
-                    }
+                    });
 
                 }
             }

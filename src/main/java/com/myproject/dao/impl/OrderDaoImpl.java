@@ -50,7 +50,8 @@ public class OrderDaoImpl implements OrderDao {
      * @throws DaoException in case by some reason cannot be set the given order
      */
     @Override
-    public boolean setApprovedOrderByManager(String managerLogin, String feedback, String approved, long orderId) throws DaoException {
+    public boolean setApprovedOrderByManager(String managerLogin, String feedback,
+                                             String approved, long orderId) throws DaoException {
         connection = connectManager.getConnection();
         boolean response = false;
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_APPROVED_ORDER_BY_MANAGER)) {
@@ -81,19 +82,13 @@ public class OrderDaoImpl implements OrderDao {
     public boolean checkIfSuchOrderExistsInDb(Order order) throws DaoException {
         connection = connectManager.getConnection();
         ResultSet suchOrderInDB;
-        String query = "SELECT count(user_id) as record FROM orders JOIN orders_cars " +
-                "ON orders.id_order=orders_cars.order_id passport=" + order.getPassport() + " AND from_date=" + order.getFromDate()
-                + " AND to_date=" + order.getToDate() +
-                " AND with_driver=" + order.getWithDriver() + " AND receipt=" + order.getReceipt() +
-                " AND user_id=" + order.getUserId() + " AND car_id=" + order.getCarId();
 
-        System.out.println(query);
         try (PreparedStatement checkOrderPresence = connection.prepareStatement(QuerySQL.CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER)) {
 
             checkOrderPresence.setString(1, order.getPassport());
-            logger.info("connected and getting the response in the order already exists in DB");
-            checkOrderPresence.setTimestamp(2, order.getDateFrom());
-            checkOrderPresence.setTimestamp(3, order.getDateTo());
+            logger.info("connected and getting the response if the order already exists in DB");
+            checkOrderPresence.setTimestamp(2, Timestamp.valueOf(order.getDateFrom()));
+            checkOrderPresence.setTimestamp(3, Timestamp.valueOf(order.getDateTo()));
             checkOrderPresence.setString(4, order.getWithDriver());
             checkOrderPresence.setDouble(5, order.getReceipt());
             checkOrderPresence.setLong(6, order.getUserId());
@@ -102,14 +97,17 @@ public class OrderDaoImpl implements OrderDao {
 
             if (suchOrderInDB.next()) {
                 int records = suchOrderInDB.getInt(1);
-                if (records > 1) {
+                if (records >= 1) {
                     connection.rollback();
+                    logger.warn("Order already exist in DB");
                     throw new DaoException("You have made this booking already!");
                 }
             }
         } catch (SQLException e) {
+            logger.warn("Order already exist in DB");
             throw new DaoException("You have made this booking already!");
         } finally {
+            logger.info("Ths order not found in DB");
             connectManager.closeConnection(connection);
         }
         return false;
@@ -143,14 +141,14 @@ public class OrderDaoImpl implements OrderDao {
              PreparedStatement setOrderForUser =
                      connection.prepareStatement(QuerySQL.SET_ORDERS_FOR_USER);
              PreparedStatement changeUserBalance =
-                     connection.prepareStatement(QuerySQL.TOP_UP_USER_BALANCE)) {
+                     connection.prepareStatement(QuerySQL.UPDATE_USER_BALANCE)) {
 
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
             setOrderToDB.setString(1, order.getPassport());
-            setOrderToDB.setTimestamp(2, order.getDateFrom());
-            setOrderToDB.setTimestamp(3, order.getDateTo());
+            setOrderToDB.setTimestamp(2, Timestamp.valueOf(order.getDateFrom()));
+            setOrderToDB.setTimestamp(3, Timestamp.valueOf(order.getDateTo()));
             setOrderToDB.setString(4, order.getWithDriver());
             setOrderToDB.setDouble(5, order.getReceipt());
             setOrderToDB.setLong(6, order.getUserId());
@@ -167,9 +165,7 @@ public class OrderDaoImpl implements OrderDao {
             //2
             setOrderForUser.setInt(1, orderId);
             setOrderForUser.setInt(2, order.getCarId());
-            if (setOrderForUser.executeUpdate() > 0) {
-            }
-
+            setOrderForUser.executeUpdate();
 
             if (processPayment) {
 

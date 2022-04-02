@@ -10,8 +10,9 @@
      <script defer src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.1/js/bootstrap.min.js" integrity="sha512-UR25UO94eTnCVwjbXozyeVd6ZqpaAE9naiEUBK/A+QDbfSTQFhPGj5lOR6d8tsgbBk84Ggb5A3EkjsOgPRPcKA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
+<a href="${pageContext.request.contextPath}/index.jsp" role="button"
+   class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
 <jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
-<a href="${pageContext.request.contextPath}/index.jsp" role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
 
 <!-- Login Form -->
 <div class="col-md-6 col-lg-4 offset-lg-4 offset-md-3 mt-5">
@@ -21,11 +22,14 @@
                 <input type="hidden" name="action" value="login">
                 <div class="mb-4">
                     <input  name="login" type="text" placeholder="${sessionScope.language['label.login']}">
-                    <p class="form-text text-end">${sessionScope.language['label.Enter']}${sessionScope.language['label.username']}</p>
+                    <p class="form-text text-end">
+                        ${sessionScope.language['label.Enter']}${sessionScope.language['label.username']}</p>
                  </div>
                 <div class="mb-4">
-                    <input name="password" type="password" class="form-control" placeholder="${sessionScope.language['label.password']}">
-                    <p class="form-text text-end"> ${sessionScope.language['label.Enter']}${sessionScope.language['label.email']}</p>
+                    <input name="password" type="password" class="form-control"
+                           placeholder="${sessionScope.language['label.password']}">
+                    <p class="form-text text-end">
+                        ${sessionScope.language['label.Enter']}${sessionScope.language['label.email']}</p>
                  </div>
                 <div class="mb-4 form-check w-100">
                     <p class="text-center">
@@ -33,9 +37,11 @@
                            class="float-end">${sessionScope.language['forgot_password']}?</a>
                      </p>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 my-3 shadow" >${sessionScope.language['label.Login']}</button>
+                <button type="submit" class="btn btn-primary w-100 my-3 shadow">
+                    ${sessionScope.language['label.Login']}</button>
                 <p class="text-center m-0">${sessionScope.language['not_have_account_yet']},
-                    <a href="${pageContext.request.contextPath}/register.jsp">${sessionScope.language['label.register']}</a></p>
+                    <a href="${pageContext.request.contextPath}/register.jsp">
+                        ${sessionScope.language['label.register']}</a></p>
             </form>
     </div>
 </div>

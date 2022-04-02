@@ -11,6 +11,8 @@
 <body>
 <jsp:include page="${pageContext.request.contentType}/WEB-INF/view/include/header.jsp"/>
 
+<a href="${pageContext.request.contextPath}/view/admin/admin.jsp"
+   role="button" class="btn btn-info btn:sm">${sessionScope.language['Go_back']}</a>
 
 <h4>${sessionScope.get("carName")}</h4>
 
@@ -34,14 +36,14 @@
                 <input type="text" name="brand" value="${sessionScope.brand}">
             </div>
             <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
-                <label>${sessionScope.language['Rental_Price']} ${sessionScope.rentalPrice}</label>
-                <input type="text"  name="rentalPrice" value="${sessionScope.rentalPrice}">
+                <label>${sessionScope.language['Rental_Price']}
+                    <fmt:formatNumber type="number" pattern=".00" value="${sessionScope.rentalPrice}"/></label>
+                <input type="text"  name="rentalPrice" value="
+                    <fmt:formatNumber type="number" pattern=".00" value="${sessionScope.rentalPrice}"/>">
             </div>
             <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Update']}</button>
         </form>
     </div>
 </div>
-
-<a href="${pageContext.request.contextPath}/view/admin/admin.jsp">${sessionScope.language['Go_back']}</a>
 </body>
 </html>

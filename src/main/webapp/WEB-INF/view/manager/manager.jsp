@@ -10,7 +10,6 @@
 <h6>${sessionScope.userLogin}</h6>
 
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
-<jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
 
 <%--navbar--%>
 <nav class="navbar navbar-inverse">
@@ -19,33 +18,20 @@
             <a class="navbar-brand" href="#">${sessionScope.language['label.Rental_Car']}</a>
         </div>
         <ul class="nav navbar-nav">
-            <li class="active"><a href="${pageContext.request.contextPath}/view/manager/manager.jsp">${sessionScope.language['Home']}</a></li>
-            <li>  <a href="?action=pagination&required=viewOrders&viewSuchOrders=approved&page=1&noOfRecords=5">${sessionScope.language['Approved_orders']}</a></li>
-            <li> <a href="?action=pagination&required=viewOrders&viewSuchOrders=declined&page=1&noOfRecords=5">${sessionScope.language['Declined_orders']}</a></li>
-            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
+            <li class="active">
+                <a href="${pageContext.request.contextPath}/view/manager/manager.jsp">${sessionScope.language['Home']}</a></li>
+            <li>
+                <a href="?action=pagination&required=viewOrders&viewSuchOrders=approved&page=1&noOfRecords=5">${sessionScope.language['Approved_orders']}</a></li>
+            <li>
+                <a href="?action=pagination&required=viewOrders&viewSuchOrders=declined&page=1&noOfRecords=5">${sessionScope.language['Declined_orders']}</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li role="presentation"><a href="?lang=en">${sessionScope.language['header.lang.eng']}</a></li>
                     <li role="presentation"><a href="?lang=uk">${sessionScope.language['header.lang.ukr']}</a></li>
                 </ul>
             </li>
-<%--            <li class="nav-item">&ndash;%&gt;--%>
-<%--                <form method="get" action="${pageContext.request.contextPath}/helloServlet">--%>
-<%--                    <input type="hidden" name="action" value="viewAllUnAcceptedOrders">--%>
-<%--                    <button type="submit" class="btn btn-outline-primary my-2 my-sm-0 btn-sm">${sessionScope.language['View_orders']}</button>--%>
-<%--                </form>--%>
-<%--            </li>--%>
         </ul>
-
-<%--        <form class="navbar-form navbar-left">--%>
-<%--            <div class="input-group">--%>
-<%--                <input type="text" class="form-control" placeholder="${sessionScope.language['Search']}" name="search">--%>
-<%--                <div class="input-group-btn">--%>
-<%--                    <button class="btn btn-default" type="submit">--%>
-<%--                        <i class="glyphicon glyphicon-search"></i>--%>
-<%--                    </button>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </form>--%>
         <ul class="nav navbar-nav navbar-right">
             <div style="margin-top: 15%">
                 <form method="get" action="${pageContext.request.contextPath}/helloServlet">
@@ -57,6 +43,20 @@
     </div>
 </nav>
 
+<%--shows errors msgs--%>
+<div class="container">
+    <div class="row">
+        <c:if test="${not empty requestScope.err}">
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <span class="text-center">
+                        <strong>${sessionScope.language['error']}!</strong><br>
+                         ${requestScope.errMSG}
+                    </span>
+            </div>
+        </c:if>
+    </div>
+</div>
 
 <%--displays orders list--%>
 <c:choose>
@@ -80,8 +80,8 @@
         <tr>
             <td>${order.userLogin}</td>
             <td>${order.passport}</td>
-            <td>${order.fromDate}</td>
-            <td>${order.toDate}</td>
+            <td>${applicationScope.dateTimeFormatter.format(order.dateFrom)}</td>
+            <td>${applicationScope.dateTimeFormatter.format(order.dateTo)}</td>
             <td>${order.withDriver}</td>
             <td>${order.receipt}</td>
 

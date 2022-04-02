@@ -31,10 +31,12 @@ public class UpdateDriverPriceCommand implements Command {
     }
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         String newDriverPrice = request.getParameter("newDriverPrice");
         double newPrice = 0;
+
         if (newDriverPrice != null) {
             newPrice = Double.parseDouble(newDriverPrice);
         }
@@ -47,8 +49,7 @@ public class UpdateDriverPriceCommand implements Command {
         }
 
         try {
-            double driverRentalPrice = driverService.getDriverRentalPrice();
-            request.getSession().setAttribute("driverRentalPrice",driverRentalPrice);
+            request.getSession().setAttribute("driverRentalPrice",driverService.getDriverRentalPrice());
         } catch (ServiceException e) {
             setInformMessageIfErrorOccur("err.get_driver_price",25,request);
             logger.warn("Problem occur in UpdateDriverPriceCommand class can`t get rental driver price");

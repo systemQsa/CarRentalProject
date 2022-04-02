@@ -25,7 +25,8 @@ public class SetRoleForUserCommand implements Command {
     private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private static final Logger logger = LogManager.getLogger(SetRoleForUserCommand.class);
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         String action = request.getParameter("action");
         String userLogin = request.getParameter("userLogin");
         Route route = new Route();

@@ -29,7 +29,8 @@ public class RedirectFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+                         FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String userRole = (String) request.getSession().getAttribute(GeneralConstant.ROLE);
@@ -72,7 +73,6 @@ public class RedirectFilter implements Filter {
                 throw new ServletException(e.getMessage());
             }
         }
-
 
         logger.info("Redirect filter working");
         filterChain.doFilter(request, response);

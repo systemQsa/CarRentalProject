@@ -41,17 +41,17 @@ public class CountTotalReceiptCommand implements Command {
     }
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
-        long orderDurationInHours = 0;
-
+        long orderDurationInHours;
+        BigDecimal totalPrice;
         String carRentPrice = request.getParameter("carRentPrice");
         String userPassport = request.getParameter("userPassport");
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
         String withDriver = request.getParameter("flexRadioDefault");
         String userBalance = request.getParameter("userBalance");
-        String userLogin = request.getParameter("userLogin");
 
         try {
             validateInput.passportValidate(userPassport);
@@ -66,58 +66,65 @@ public class CountTotalReceiptCommand implements Command {
             throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
         }
 
-        BigDecimal totalPrice;
-
         try {
-
             LocalDateTime dateTime1 = LocalDateTime.parse(fromDate, formatter);
             LocalDateTime dateTime2 = LocalDateTime.parse(toDate, formatter);
-
-            if (validateInput.datesAndTimeValidate(dateTime1, dateTime2, request)) {
-
-                orderDurationInHours = calculateHoursFromGivenDates(dateTime1, dateTime2);
+            try{
+                validateInput.ifInputDatesAndTimeAreMatchToRequiredRegex(fromDate,toDate);
+                validateInput.datesAndTimeValidate(dateTime1, dateTime2);
+            }catch (ValidationException e){
+                setInformMessageIfErrorOccur("err.date_time",10,request);
+                throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
             }
 
-            if ((orderDurationInHours > 0) && Double.parseDouble(carRentPrice) > 0) {
+            orderDurationInHours = calculateHoursFromGivenDates(dateTime1, dateTime2);
 
+            if ((orderDurationInHours > 0) && Double.parseDouble(carRentPrice) > 0) {
                 totalPrice = carOrderService.countReceipt(orderDurationInHours,
                         Double.parseDouble(carRentPrice), Boolean.parseBoolean(withDriver));
             } else {
                 setInformMessageIfErrorOccur("err.date_time", 10, request);
                 throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
             }
-            if (Boolean.parseBoolean(withDriver)) {
 
+            if (Boolean.parseBoolean(withDriver)) {
                 request.getSession().getServletContext().setAttribute("withDriver", "Y");
             } else {
-
                 request.getSession().getServletContext().setAttribute("withDriver", "N");
             }
-            request.getSession().getServletContext().setAttribute("userLogin", request.getParameter("userLoginReq"));
-            request.getSession().getServletContext().setAttribute("rentPriceReq", carRentPrice);
-            request.getSession().getServletContext().setAttribute("passport", userPassport);
-            request.getSession().getServletContext().setAttribute("fromDate", fromDate);
-            request.getSession().getServletContext().setAttribute("toDate", toDate);
-            request.getSession().getServletContext().setAttribute("totalPrice", String.format("%.2f", totalPrice));
+
+            setResponseToUser(request, carRentPrice, userPassport, fromDate, toDate, totalPrice);
 
             if (BigDecimal.valueOf(Double.parseDouble(userBalance)).compareTo(totalPrice) > 0) {
-
-                request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK, "You have enough balance for booking!");
-
+                request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK,
+                        "You have enough balance for booking!");
             } else {
-
                 request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK, null);
-
             }
+
         } catch (ServiceException e) {
             setInformMessageIfErrorOccur("err.balance_low", 11, request);
             throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
         }
-
+        localeDateTime(request);
         route.setPathOfThePage(ConstantPage.CONFIRM_RECEIPT_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);
         return route;
     }
+
+    private void setResponseToUser(HttpServletRequest request, String carRentPrice, String userPassport, String fromDate, String toDate, BigDecimal totalPrice) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        request.getSession().getServletContext().setAttribute("userLogin",
+                request.getParameter("userLoginReq"));
+        request.getSession().getServletContext().setAttribute("rentPriceReq", carRentPrice);
+        request.getSession().getServletContext().setAttribute("passport", userPassport);
+        request.getSession().getServletContext().setAttribute("fromDate", LocalDateTime.parse(fromDate,dateTimeFormatter));
+        request.getSession().getServletContext().setAttribute("toDate", LocalDateTime.parse(toDate,dateTimeFormatter));
+        request.getSession().setAttribute("fromDate", fromDate);
+        request.getSession().setAttribute("toDate", toDate);
+        request.getSession().getServletContext().setAttribute("totalPrice", String.format("%.2f", totalPrice));
+    }
+
 
     private long calculateHoursFromGivenDates(LocalDateTime dateFrom, LocalDateTime dateTo) {
         long diffInMinutes = Duration.between(dateFrom, dateTo).toMinutes();

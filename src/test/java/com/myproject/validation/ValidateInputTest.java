@@ -112,12 +112,12 @@ public class ValidateInputTest {
         );
     }
 
-    @Test
-    public void validateBadLogins() {
+    @Test(expected = ValidationException.class)
+    public void validateBadLogins() throws ValidationException {
         List<String> badLogins = Arrays.asList("user#gmail.com", "usergmail", "peter$gmail.com", "користувач1@gmail");
 
         for (String badLogin : badLogins) {
-            assertThrows(ValidationException.class, () -> validateInput.loginValidate(badLogin));
+            validateInput.loginValidate(badLogin);
             logger.info("validation bad logins in tests passed");
         }
 
@@ -171,15 +171,15 @@ public class ValidateInputTest {
 
     }
 
-    @Test
-    public void validateBadInputNameSurname() {
+    @Test(expected = ValidationException.class)
+    public void validateBadInputNameSurname() throws ValidationException {
         Map<String, String> badInputs = new HashMap<>();
         badInputs.put("123SD", "DFR#");
         badInputs.put("alice", "crazy12");
         badInputs.put("SDСф", "(*)");
 
         for (Map.Entry<String, String> entry : badInputs.entrySet()) {
-            assertThrows(ValidationException.class, () -> validateInput.nameSurnameValidate(entry.getKey(), entry.getValue()));
+            validateInput.nameSurnameValidate(entry.getKey(), entry.getValue());
             logger.info("validation bad name and surname in tests has passed");
         }
 
@@ -195,12 +195,12 @@ public class ValidateInputTest {
         logger.info("validation phone number in tests has passed");
     }
 
-    @Test
-    public void validatePhoneNumberNegative() {
+    @Test(expected = ValidationException.class)
+    public void validatePhoneNumberNegative() throws ValidationException {
         List<String> badPhones = Arrays.asList("45678","+123456", "+123456789012345","12","1","@","^&*)");
 
         for (String badPhone:badPhones){
-            assertThrows(ValidationException.class,()->validateInput.phoneValidate(badPhone));
+            validateInput.phoneValidate(badPhone);
          }
         logger.info("validation bad phone numbers in tests has passed");
      }
@@ -237,10 +237,54 @@ public class ValidateInputTest {
         LocalDateTime to = LocalDateTime.of(2022,Month.AUGUST,10,18,00,00);
         ValidateInput validateInput = new ValidateInput();
         try {
-            assertTrue(validateInput.datesAndTimeValidate(from,to,null));
+            assertTrue(validateInput.datesAndTimeValidate(from,to));
             logger.info("validation dates and time in tests has passed");
         } catch (ValidationException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test(expected = ValidationException.class)
+    public void validateDateTimeInputCorrect() throws ValidationException {
+       validateInput
+               .ifInputDatesAndTimeAreMatchToRequiredRegex("2022-12-32 12:34:345","2022-11-34 45:44:21");
+    }
+
+    @Test
+    public void validateDateTimePositive(){
+        try {
+            assertTrue(validateInput.
+                    ifInputDatesAndTimeAreMatchToRequiredRegex("2022-01-23 13:00:00","2022-01-23 15:00:00"));
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void validatePrice(){
+        try {
+            assertTrue(validateInput.validatePrice("34.55"));
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test(expected = ValidationException.class)
+    public void validatePriceNegative() throws ValidationException {
+        validateInput.validatePrice("23.4");
+    }
+
+    @Test
+    public void validateCarInput(){
+        try {
+            assertTrue(validateInput.validateCarInput("Renault","A","Caravelle"));
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test(expected = ValidationException.class)
+    public void validateCarInputNegative() throws ValidationException {
+        assertTrue(validateInput.validateCarInput("","A","Caravelle"));
     }
 }

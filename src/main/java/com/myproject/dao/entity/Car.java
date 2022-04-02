@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Car implements Serializable {
-    private static final long serialUID = 1L;
+    private static final long serialUID = 567898341290456784L;
     private int carId;
     private String name;
     private String brand;
     private String carClass;
-    private double rental_price;
+    private double rentalPrice;
     private String photo;
 
     public static class CarBuilder {
@@ -39,7 +39,7 @@ public class Car implements Serializable {
             return this;
         }
         public CarBuilder setRentalPrice(double rentalPrice){
-            car.rental_price = rentalPrice;
+            car.rentalPrice = rentalPrice;
             return this;
         }
         public CarBuilder setPhoto(String photoPath){
@@ -67,7 +67,7 @@ public class Car implements Serializable {
     }
 
     public double getRentalPrice() {
-        return rental_price;
+        return rentalPrice;
     }
 
     public String getPhoto() {
@@ -96,7 +96,7 @@ public class Car implements Serializable {
                 ", name='" + name + '\'' +
                 ", brand='" + brand + '\'' +
                 ", carClass='" + carClass + '\'' +
-                ", rental_price=" + rental_price +
+                ", rentalPrice=" + rentalPrice +
                 '}';
     }
 }

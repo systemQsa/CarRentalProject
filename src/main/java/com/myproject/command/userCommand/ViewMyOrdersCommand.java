@@ -14,8 +14,11 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * The ViewMyOrdersCommand class implements the Command interface.
@@ -27,18 +30,23 @@ public class ViewMyOrdersCommand implements Command {
     private static final Logger logger = LogManager.getLogger(ViewMyOrdersCommand.class);
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         String login = (String) request.getSession().getAttribute("userName");
         Optional<List<OrderViewForUserRequest>> resultOfMyPersonalOrders;
-        List<OrderViewForUserRequest> listOfOrders;
+
         try {
             resultOfMyPersonalOrders = orderViewService.getAllUserPersonalOrders(login, 0, 5);
-            if (resultOfMyPersonalOrders.isPresent()) {
-                listOfOrders = resultOfMyPersonalOrders.get();
-                request.getSession().setAttribute("myPersonalOrders", listOfOrders);
+
+            resultOfMyPersonalOrders.ifPresent(orders -> {
+                request.getSession().setAttribute("myPersonalOrders", orders);
+                request.setAttribute("dateTimeFormatter",
+                        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                        .withLocale(((ResourceBundle)request.getSession().getAttribute("language")).getLocale()));
                 route.setPathOfThePage(ConstantPage.VIEW_MY_ORDERS);
-            }
+            });
+
         } catch (ServiceException e) {
             logger.warn("something went wrong with sending user his orders in ViewMyOrdersCommand class");
             setInformMessageIfErrorOccur("You don`t have orders yet", 9, request);

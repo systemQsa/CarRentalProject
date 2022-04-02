@@ -85,7 +85,6 @@
     <table class="table table-hover">
         <thead>
         <tr>
-            <th scope="col">${sessionScope.language['Id']}</th>
             <th scope="col">${sessionScope.language['user.Name']}</th>
             <th scope="col">${sessionScope.language['user.Surname']}</th>
             <th scope="col">${sessionScope.language['user.Login']}</th>
@@ -98,7 +97,6 @@
         <tbody>
         <c:forEach var="user" items="${requestScope.allUsers}">
             <tr>
-                <th scope="row">${user.userId}</th>
                 <td>${user.name}</td>
                 <td>${user.surname}</td>
                 <td>${user.login}</td>
@@ -111,7 +109,7 @@
                         <td>${sessionScope.language['no']}</td>
                     </c:otherwise>
                 </c:choose>
-                <td>${user.registerDate}</td>
+                    <td>${applicationScope.dateTimeFormatter.format(user.registerDate)}</td>
                 <c:choose>
                     <c:when test="${user.userRole eq 'admin'}">
                         <td>${sessionScope.language['admin']}</td>
@@ -142,7 +140,6 @@
             </tr>
         </c:forEach>
         </tbody>
-<%--        <a href="${pageContext.request.contextPath}/view/admin/admin.jsp">${sessionScope.language['Go_back']}</a>--%>
     </table>
 </c:if>
 <div class="container">
@@ -200,7 +197,6 @@
             </c:if>
             <thead>
             <tr>
-                <th scope="col">${sessionScope.language['Id']}</th>
                 <th scope="col">${sessionScope.language['Name']}</th>
                 <th scope="col">${sessionScope.language['Class']}</th>
                 <th scope="col">${sessionScope.language['Brand']}</th>
@@ -210,11 +206,10 @@
             <tbody>
             <c:forEach var="car" items="${requestScope.allCars}">
                 <tr>
-                    <td>${car.carId}</td>
                     <td>${car.name}</td>
                     <td>${car.carClass}</td>
                     <td>${car.brand}</td>
-                    <td>${car.rentalPrice}</td>
+                    <td><fmt:formatNumber type="number" pattern=".00" value="${car.rentalPrice}"/></td>
                     <td>
                         <form method="post" action="${pageContext.request.contextPath}/helloServlet">
                             <input type="hidden" name="carId" value="${car.carId}">
@@ -230,7 +225,6 @@
             </c:forEach>
             </tbody>
             <div class="flex-end">
-    <%--            <a href="${pageContext.request.contextPath}/view/admin/admin.jsp">${sessionScope.language['Go_back']}</a>--%>
             </div>
         </table>
     </c:if>
@@ -285,7 +279,6 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">${sessionScope.language['Id']}</th>
                     <th scope="col">${sessionScope.language['user.Name']}</th>
                     <th scope="col">${sessionScope.language['user.Surname']}</th>
                     <th scope="col">${sessionScope.language['user.Login']}</th>
@@ -297,7 +290,6 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>${requestScope.searchedUser.userId}</td>
                     <td>${requestScope.searchedUser.name}</td>
                     <td>${requestScope.searchedUser.surname}</td>
                     <td>${requestScope.searchedUser.login}</td>
@@ -349,14 +341,10 @@
 <%-- displays searched car(s) for admin--%>
 <c:if test="${requestScope.searchCommand eq 'searchingCar'}">
     <c:choose>
-        <%--    <c:when test="${empty requestScope.searchedCars}">--%>
-        <%--        <h3 class="text-center">${sessionScope.language['nothing_was_found']}!</h3>--%>
-        <%--    </c:when>--%>
         <c:when test="${not empty requestScope.searchedCars}">
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">${sessionScope.language['Id']}</th>
                     <th scope="col">${sessionScope.language['Name']}</th>
                     <th scope="col">${sessionScope.language['Class']}</th>
                     <th scope="col">${sessionScope.language['Brand']}</th>
@@ -366,7 +354,6 @@
                 <tbody>
                 <c:forEach var="searchedCar" items="${requestScope.searchedCars}">
                     <tr>
-                        <td>${searchedCar.carId}</td>
                         <td>${searchedCar.name}</td>
                         <td>${searchedCar.carClass}</td>
                         <td>${searchedCar.brand}</td>

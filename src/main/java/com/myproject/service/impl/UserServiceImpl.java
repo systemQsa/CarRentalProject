@@ -3,18 +3,12 @@ package com.myproject.service.impl;
 import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.GeneralConstant;
 import com.myproject.dao.UserDao;
-import com.myproject.dao.connection.ConnectManager;
-import com.myproject.dao.connection.ConnectionPool;
 import com.myproject.dao.entity.User;
 import com.myproject.dao.entity.UserRole;
-import com.myproject.dao.impl.UserDaoImpl;
 import com.myproject.exception.DaoException;
 import com.myproject.exception.ServiceException;
 import com.myproject.exception.ValidationException;
-import com.myproject.factory.AbstractFactory;
-import com.myproject.factory.DaoFactory;
 import com.myproject.factory.impl.AbstractFactoryImpl;
-import com.myproject.factory.impl.DaoFactoryImpl;
 import com.myproject.service.UserService;
 import com.myproject.util.EncryptUtil;
 import org.apache.log4j.LogManager;
@@ -22,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +28,8 @@ public class UserServiceImpl implements UserService {
     private final UserDao<User> userDao;
 
     public UserServiceImpl(){
-        userDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getUserDao();
+        userDao =
+                new AbstractFactoryImpl().getFactory().getDaoFactory().getUserDao();
     }
 
     public UserServiceImpl(UserDao<User> userDao){
@@ -90,8 +84,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User getUserByLoginAndPass(String login, char[] password) throws ServiceException {
-        System.out.println("getUserByLoginAndPass service "  + login);
-        System.out.println(userDao);
         User user;
         try {
             user = userDao.getUserByLogin(login);
@@ -112,14 +104,16 @@ public class UserServiceImpl implements UserService {
      * @throws ValidationException in case if problem occur and can`t get user by given credentials
      */
     @Override
-    public String logInValidation(String login, char[] password, HttpServletRequest request) throws ValidationException {
+    public String logInValidation(String login, char[] password,
+                                  HttpServletRequest request) throws ValidationException {
         int userId = 0;
         User user;
         try {
             user = getUserByLoginAndPass(login, password);
         } catch (ServiceException e) {
             request.setAttribute(GeneralConstant.ErrorMSG.ERR, 2);
-            request.setAttribute(GeneralConstant.ErrorMSG.ERR_MSG, GeneralConstant.ErrorMSG.NOT_REGISTERED);
+            request.setAttribute(GeneralConstant.ErrorMSG.ERR_MSG,
+                    GeneralConstant.ErrorMSG.NOT_REGISTERED);
             logger.warn("Can`t get user by given credentials in UserServiceImpl class");
             throw new ValidationException(e.getMessage());
         }
@@ -211,14 +205,13 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean updateUserBalance(double balance, String login) throws ServiceException {
-        boolean response;
         try {
-            response = userDao.topUpBalance(balance, login);
+            return userDao.topUpBalance(balance, login);
         } catch (DaoException e) {
             logger.warn("CANT TOP UP USER BALANCE SOMETHING WENT WRONG IN UserServiceImpl class");
             throw new ServiceException(e);
         }
-        return response;
+
     }
 
     /**
@@ -229,14 +222,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String checkUserStatus(String login) throws ServiceException {
-        String status;
         try {
-            status = userDao.getUserStatus(login);
+            return userDao.getUserStatus(login);
         } catch (DaoException e) {
             logger.warn("CANT GET USER STATUS IN UserServiceImpl class");
             throw new ServiceException("CANT GET USER STATUS", e);
         }
-        return status;
     }
 
     /**
@@ -247,14 +238,13 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean unblockUser(String login) throws ServiceException {
-        boolean response;
         try {
-            response = userDao.blockUnblockUser(login, "N");
+            return userDao.blockUnblockUser(login, "N");
         } catch (DaoException e) {
             logger.warn("CANT UNBLOCK GIVEN USER " + login + " IN UserServiceImpl class");
             throw new ServiceException("CANT UNBLOCK USER IN SERVICE", e);
         }
-        return response;
+
     }
 
     /**
@@ -265,14 +255,12 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean blockUser(String login) throws ServiceException {
-        boolean isSuccess;
         try {
-            isSuccess = userDao.blockUnblockUser(login, "Y");
+            return userDao.blockUnblockUser(login, "Y");
         } catch (DaoException e) {
             logger.warn("CANT BLOCK GIVEN USER " + login + " IN UserServiceImpl class");
             throw new ServiceException("CANT BLOCK USER", e);
         }
-        return isSuccess;
     }
 
     /**
@@ -287,10 +275,12 @@ public class UserServiceImpl implements UserService {
         boolean statusChanged = false;
         try {
             User user = userDao.getUserByLogin(login);
-            if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS) && user.getRole() != UserRole.MANAGER.getId()
+            if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS)
+                    && user.getRole() != UserRole.MANAGER.getId()
                     && userRole.getRole().equals(GeneralConstant.MANAGER)) {
                 statusChanged = userDao.setUserRole(login, UserRole.MANAGER);
-            } else if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS) && user.getRole() != UserRole.USER.getId()
+            } else if (user.getIsBanned().equals(GeneralConstant.NOT_BLOCKED_STATUS)
+                    && user.getRole() != UserRole.USER.getId()
                     && userRole.getRole().equals(GeneralConstant.USER)) {
                 statusChanged = userDao.setUserRole(login, UserRole.USER);
             }

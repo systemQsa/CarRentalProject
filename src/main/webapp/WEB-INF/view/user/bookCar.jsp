@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>${sessionScope.language['Book_Car']}</title>
@@ -10,7 +11,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/2.14.1/moment.min.js"></script>
-<%--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>--%>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
@@ -22,7 +22,6 @@
 <jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
 
 <div class="container">
-
 
     <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
              <div class="bg-light p-5 border shadow">
@@ -55,7 +54,7 @@
                     <div class="form-group-row d-block p-2">
                         <span class="col-md-7"><strong>${sessionScope.language['Rental_Price']}</strong></span>
                         <input type="hidden" name="carRentPrice" value="${sessionScope.rentPriceReq}">
-                        <span >${sessionScope.rentPriceReq}</span>
+                        <span ><fmt:formatNumber type="number" pattern=".00" value="${sessionScope.rentPriceReq}"/> </span>
 
                     </div>
 
@@ -69,36 +68,18 @@
 
                         <div class="form-group-row d-block p-4">
     <%--                        radio button check--%>
+                            <h4>Driver rental price <fmt:formatNumber type="number" pattern=".00" value="${sessionScope.driverRentalPrice}"/> </h4>
                             <label class="radio-inline">
                                 <input  class="form-check-input" type="radio" name="flexRadioDefault"  value="false" checked>
                                 <strong>${sessionScope.language['Without_driver']}</strong>
                             </label>
                             <label class="radio-inline">
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" value="true">
-                                <strong>${sessionScope.language['With_driver']} + 10</strong>
+                                <strong>${sessionScope.language['With_driver']}</strong>
                             </label>
                         </div>
-<%--                    <div class="form-group-row d-block p-2">--%>
-<%--                         <span class="d-block p-2">--%>
-<%--                             <div class="form-check">--%>
-<%--                                 <span>${sessionScope.language['Without_driver']}</span>--%>
-<%--                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked value="false">--%>
-<%--                                <label class="form-check-label" for="flexRadioDefault2">--%>
-<%--                                </label>--%>
-<%--                            </div>--%>
-<%--                       </span>--%>
-<%--                        <span class="d-block p-2">--%>
-<%--                             <div class="form-check">--%>
-<%--                                  <span>${sessionScope.language['With_driver']} + 100</span>--%>
-<%--                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="true">--%>
-<%--                                <label class="form-check-label" for="flexRadioDefault1">--%>
-<%--                                  </label>--%>
-<%--                            </div>--%>
-<%--                       </span>--%>
 
-<%--                    </div>--%>
-
-                 <span class="d-block p-2">
+                   <span class="d-block p-2">
                         <div class='col-md-5'>
                             <div class="form-group">
                                 <label class="control-label">${sessionScope.language['From_date']}</label>
@@ -123,8 +104,8 @@
                                 </div>
                             </div>
                         </div>
-                    </span>
-                    <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Count']}</button>
+                   </span>
+                        <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Count']}</button>
                 </form>
              </div>
         </div>

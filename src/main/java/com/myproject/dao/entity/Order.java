@@ -2,10 +2,12 @@ package com.myproject.dao.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Order implements Serializable {
-    private static final long serialUID = 1L;
+    private static final long serialUID = 1345687982345674L;
     private long orderId;
     private long userId;
     private int carId;
@@ -14,9 +16,10 @@ public class Order implements Serializable {
     private String fromDate;
     private String toDate;
     private double receipt;
-    private Timestamp dateFrom;
-    private Timestamp dateTo;
+    private LocalDateTime dateFrom;
+    private LocalDateTime dateTo;
     private String userLogin;
+
 
     public static class OrderBuilder {
         private final Order order;
@@ -41,12 +44,12 @@ public class Order implements Serializable {
             return this;
         }
 
-        public OrderBuilder setDateFrom(Timestamp dateFrom) {
+        public OrderBuilder setDateFrom(LocalDateTime dateFrom) {
             order.dateFrom = dateFrom;
             return this;
         }
 
-        public OrderBuilder setDateTo(Timestamp dateTo) {
+        public OrderBuilder setDateTo(LocalDateTime dateTo) {
             order.dateTo = dateTo;
             return this;
         }
@@ -85,11 +88,11 @@ public class Order implements Serializable {
         this.orderId = orderId;
     }
 
-    public Timestamp getDateFrom() {
+    public LocalDateTime getDateFrom() {
         return dateFrom;
     }
 
-    public Timestamp getDateTo() {
+    public LocalDateTime getDateTo() {
         return dateTo;
     }
 
@@ -137,8 +140,8 @@ public class Order implements Serializable {
         Order order = (Order) o;
         return getUserId() == order.getUserId() && getCarId() == order.getCarId()
                 && Double.compare(order.getReceipt(), getReceipt()) == 0 && Objects.equals(getPassport(), order.getPassport())
-                && Objects.equals(getWithDriver(), order.getWithDriver()) && Objects.equals(getFromDate(), order.getFromDate())
-                && Objects.equals(getToDate(), order.getToDate()) && Objects.equals(getUserLogin(), order.getUserLogin());
+                && Objects.equals(getWithDriver(), order.getWithDriver()) && Objects.equals(getDateFrom(), order.getDateFrom())
+                && Objects.equals(getDateTo(), order.getDateTo()) && Objects.equals(getUserLogin(), order.getUserLogin());
     }
 
     @Override

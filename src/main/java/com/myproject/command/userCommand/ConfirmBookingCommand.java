@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,9 +31,9 @@ public class ConfirmBookingCommand implements Command {
 
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
-        System.out.println("CONFIRM BOOKING CLASS WORKING");
         List<Order> orderList = new ArrayList<>();
         List<Order> orders = Collections.synchronizedList(orderList);
         route.setPathOfThePage(ConstantPage.USER_HOME_PAGE);
@@ -43,7 +45,7 @@ public class ConfirmBookingCommand implements Command {
         String userIdByLogin = request.getParameter("userIdByLogin");
         String userLogin = request.getParameter("userLogin");
         String carId = request.getParameter("carId");
-
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         Order.OrderBuilder newOrder = new Order.OrderBuilder();
         newOrder.setCar(Integer.parseInt(carId))
@@ -51,12 +53,15 @@ public class ConfirmBookingCommand implements Command {
                 .setPassport(passport)
                 .setFromDate(fromDate)
                 .setToDate(toDate)
+                .setDateFrom(LocalDateTime.parse(fromDate,dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse(toDate,dateTimeFormatter))
                 .setWithDriver(withDriver)
                 .setReceipt(Double.parseDouble(totalPrice))
                 .setUserId(Integer.parseInt(userIdByLogin));
         orders.add(newOrder.build());
 
         OrderStorage.ddOrder(newOrder.build());
+        localeDateTime(request);
         logger.info("Confirming the payment");
         setSuccessMessage("info.order_send_to_process",6,request);
         route.setRoute(Route.RouteType.REDIRECT);

@@ -14,7 +14,6 @@
 
 <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
     <div class="bg-light p-5 border shadow">
-        <%--                <h3>${pageContext.request.locale}</h3>--%>
         <form method="post" action="${pageContext.request.contextPath}/helloServlet">
             <input type="hidden" name="carId" value="${sessionScope.carIdReq}">
             <input type="hidden" name="userIdByLogin" value="${sessionScope.userIdByLogin}">
@@ -39,7 +38,7 @@
                 <div class="mb-6 row">
                     <div class="col-md-4">${sessionScope.language['Rental_Price']}</div>
                     <input type="hidden" name="carRentPrice" value="${applicationScope.rentPriceReq}">
-                    <div class="col-md-8"> ${applicationScope.rentPriceReq}</div>
+                    <div class="col-md-8"><fmt:formatNumber value="${applicationScope.rentPriceReq}" type="number" pattern=".00"/> </div>
                 </div>
                 <div class="mb-6 row">
                     <div class="col-md-4">${sessionScope.language['Passport']}</div>
@@ -50,17 +49,26 @@
                 <div class="mb-6 row">
                     <div class="col-md-4">${sessionScope.language['With_driver']}</div>
                     <input type="hidden" name="withDriver" value="${applicationScope.withDriver}">
-                    <div class="col-md-8">${applicationScope.withDriver}</div>
+                    <div class="col-md-8">
+                        <c:choose>
+                            <c:when test="${applicationScope.withDriver eq 'N'}">
+                                ${sessionScope.language['no']}
+                            </c:when>
+                            <c:when test="${applicationScope.withDriver eq 'Y'}">
+                                ${sessionScope.language['yes']}
+                            </c:when>
+                        </c:choose>
+                    </div>
                 </div>
                 <div class="mb-6 row">
                     <div class="col-md-4">${sessionScope.language['From_date']}</div>
-                    <input type="hidden" name="fromDate" value="${applicationScope.fromDate}">
-                    <div class="col-md-8">${applicationScope.fromDate}</div>
+                    <input type="hidden" name="fromDate" value="${sessionScope.fromDate}">
+                    <div class="col-md-8">${applicationScope.dateTimeFormatter.format(applicationScope.fromDate)}</div>
                 </div>
                 <div class="mb-6 row">
                     <div class="col-md-4">${sessionScope.language['To_date']}</div>
-                    <input type="hidden" name="toDate" value="${applicationScope.toDate}">
-                    <div class="col-md-8">${applicationScope.toDate}</div>
+                    <input type="hidden" name="toDate" value="${sessionScope.toDate}">
+                    <div class="col-md-8">${applicationScope.dateTimeFormatter.format(applicationScope.toDate)}</div>
                 </div>
 
                 <div class="mb-6 row">
@@ -69,7 +77,6 @@
                     <div class="col-md-8">${applicationScope.totalPrice}</div>
                 </div>
             </div>
-            <%--            <button type="submit" class="btn btn-primary w-100 my-3 shadow" >Confirm</button>--%>
 
             <c:choose>
                 <c:when test="${not empty sessionScope.resultIfBalanceOk}">

@@ -27,7 +27,6 @@ public class CatchPageFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-        Object userRole = httpRequest.getSession().getAttribute(GeneralConstant.ROLE);
         httpResponse.setHeader(GeneralConstant.CACHE_CONTROL, GeneralConstant.NO_STORE_MUST_REVALIDATE);
         httpResponse.setHeader(GeneralConstant.PRAGMA, GeneralConstant.NO_CACHE);
         httpResponse.setDateHeader(GeneralConstant.EXPIRES, 0);

@@ -48,15 +48,22 @@ public class CommandUtil {
     public boolean userIsLogged(HttpServletRequest request) {
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
         String userName = (String) request.getSession().getAttribute(GeneralConstant.USER_NAME);
-        if (loggedUsers.contains(userName)
-                && (Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), GeneralConstant.ADMIN)
-                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), GeneralConstant.USER)
-                || Objects.equals(request.getSession().getAttribute(GeneralConstant.ROLE), GeneralConstant.MANAGER))) {
-            logger.info("userIsLogged() method");
-            return true;
+        String login = request.getParameter("login");
+        boolean response = false;
+
+        switch (request.getParameter("action")) {
+            case "login": response = loggedUsers.contains(login); break;
+
+            case "logout": response =  ((loggedUsers.contains(userName))
+                    && (Objects.equals(request.getSession()
+                    .getAttribute(GeneralConstant.ROLE), GeneralConstant.ADMIN)
+                    || Objects.equals(request.getSession()
+                    .getAttribute(GeneralConstant.ROLE), GeneralConstant.USER)
+                    || Objects.equals(request.getSession()
+                    .getAttribute(GeneralConstant.ROLE), GeneralConstant.MANAGER))); break;
         }
-        logger.info("userIsLogged() method");
-        return false;
+
+       return response;
     }
 
     /**

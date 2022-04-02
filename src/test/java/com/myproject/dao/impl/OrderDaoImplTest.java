@@ -7,18 +7,18 @@ import com.myproject.exception.DaoException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 import static org.junit.Assert.*;
 
 public class OrderDaoImplTest {
     private static DBManager dbManager;
-
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @BeforeClass
     public static void beforeTesting() {
          DBManager.getInstance().loadScript();
-
     }
 
 
@@ -32,8 +32,8 @@ public class OrderDaoImplTest {
         order.setPassport("AB1234")
                 .setUserLogin("user1@gmail.com")
                 .setCar(1)
-                .setDateFrom(Timestamp.valueOf("2022-04-22 17:00:00"))
-                .setDateTo(Timestamp.valueOf("2022-04-22 18:00:00"))
+                .setDateFrom(LocalDateTime.parse("2022-04-22 17:00:00",dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse("2022-04-22 18:00:00",dateTimeFormatter))
                 .setWithDriver("N")
                 .setReceipt(10.0)
                 .setUserId(1);
@@ -46,8 +46,8 @@ public class OrderDaoImplTest {
         }
     }
 
-    @Test
-    public void processTheBookingNegative() {
+    @Test(expected = DaoException.class)
+    public void processTheBookingNegative() throws DaoException {
         dbManager = DBManager.getInstance();
         OrderDaoImpl orderDao = new OrderDaoImpl(dbManager);
 
@@ -55,14 +55,12 @@ public class OrderDaoImplTest {
         order.setPassport("AB1234")
                 .setUserLogin("user1@gmail.com")
                 .setCar(1)
-                .setDateFrom(Timestamp.valueOf("2022-04-22 17:00:00"))
-                .setDateTo(Timestamp.valueOf("2022-04-22 18:00:00"))
+                .setDateFrom(LocalDateTime.parse("2022-04-22 17:00:00",dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse("2022-04-22 18:00:00",dateTimeFormatter))
                 .setWithDriver("N")
                 .setReceipt(100)
                 .setUserId(1);
-
-        assertThrows(DaoException.class, () -> orderDao.processTheBooking(order.build(), true));
-
+        orderDao.processTheBooking(order.build(), true);
     }
 
     @Test
@@ -74,8 +72,8 @@ public class OrderDaoImplTest {
         order.setPassport("AB1234")
                 .setUserLogin("user1@gmail.com")
                 .setCar(1)
-                .setDateFrom(Timestamp.valueOf("2022-04-22 17:00:00"))
-                .setDateTo(Timestamp.valueOf("2022-04-22 18:00:00"))
+                .setDateFrom(LocalDateTime.parse("2022-04-22 17:00:00",dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse("2022-04-22 18:00:00",dateTimeFormatter))
                 .setWithDriver("N")
                 .setReceipt(10.0)
                 .setUserId(1);

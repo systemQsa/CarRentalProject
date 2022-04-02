@@ -25,9 +25,6 @@
                 <li>
                     <a href="?action=pagination&required=viewMyOrders&page=1&noOfRecords=5">${sessionScope.language['my_orders']}</a>
                 </li>
-                <li>
-                    <a href="#">${sessionScope.language['page']} 2</a>
-                </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                                         href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">

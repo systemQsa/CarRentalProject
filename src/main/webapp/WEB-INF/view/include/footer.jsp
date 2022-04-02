@@ -11,7 +11,6 @@
             <p>
                 <out:text/>
             </p>
-<%--            "- All rights reserved."--%>
         </div>
     </div>
 </div>

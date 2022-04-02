@@ -9,8 +9,6 @@ import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarOrderService;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -77,7 +75,7 @@ public class CarOrderServiceImpl implements CarOrderService {
     @Override
     public boolean checkOrderPresenceInDb(Order order) throws ServiceException {
         try {
-            orderDao.checkIfSuchOrderExistsInDb(order);
+           orderDao.checkIfSuchOrderExistsInDb(order);
         } catch (DaoException e) {
             logger.warn("Something went wrong cant check the presence in db fir given order");
             throw new ServiceException(e);
@@ -96,14 +94,12 @@ public class CarOrderServiceImpl implements CarOrderService {
      */
     @Override
     public boolean updateOrderByManager(String managerLogin, long orderId, String approved, String feedback) throws ServiceException {
-        boolean isApproved;
         try {
-            isApproved = orderDao.setApprovedOrderByManager(managerLogin, feedback, approved, orderId);
+            return orderDao.setApprovedOrderByManager(managerLogin, feedback, approved, orderId);
         } catch (DaoException e) {
             logger.warn("Some problem occur can`t update/register the new order in CarOrderServiceImpl class");
             throw new ServiceException(e.getMessage());
         }
-        return isApproved;
     }
 
     /**
@@ -128,10 +124,5 @@ public class CarOrderServiceImpl implements CarOrderService {
             lock.unlock();
         }
         return orderResult;
-    }
-
-    @Override
-    public boolean bookTheCar(HttpServletRequest request, HttpServletResponse response) {
-        return true;
     }
 }

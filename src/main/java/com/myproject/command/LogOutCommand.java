@@ -33,8 +33,10 @@ public class LogOutCommand implements Command {
             session.setAttribute(GeneralConstant.USER_NAME, null);
             request.setAttribute(GeneralConstant.LOGIN, null);
             loggedUsers.remove((String) userName);
-            request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
-            System.out.println(request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
+            request.getSession().getServletContext()
+                    .setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
+            System.out.println(request.getSession()
+                    .getServletContext().getAttribute(GeneralConstant.LOGGED_USERS));
             logger.info("User is logged out");
             route.setPathOfThePage(ConstantPage.HOME_PAGE);
             route.setRoute(Route.RouteType.REDIRECT);

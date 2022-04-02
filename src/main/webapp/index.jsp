@@ -5,10 +5,7 @@
 <!DOCTYPE html>
 <html>
 <link>
-    <meta>
     <title>${sessionScope.language['label.Rental_Car']}</title>
- <%--    <style><%@include file="css/color.css"%></style>--%>
-<%--  <link rel="stylesheet" href="<c:url value="${pageContext.request.contextPath}/css/index.css"/>">--%>
 </head>
 <body>
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
@@ -20,8 +17,6 @@
         </div>
         <ul class="nav navbar-nav">
             <li class="active"><a href="${pageContext.request.contextPath}/index.jsp">${sessionScope.language['Home']}</a></li>
-            <li><a href="#">${sessionScope.language['page']} 1</a></li>
-            <li><a href="#">${sessionScope.language['page']} 2</a></li>
             <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['label.Language']}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                      <li role="presentation"><a href="?lang=en">${sessionScope.language['header.lang.eng']}</a></li>
@@ -48,45 +43,12 @@
     </div>
 </nav>
 
-
 <div class="container">
     <jsp:include page="/WEB-INF/view/allCars.jsp"/>
 </div>
-<div class="navbar fixed-bottom">
-    <jsp:include page="WEB-INF/view/include/footer.jsp"/>
-</div>
-<%--<a href="${pageContext.request.contextPath}/index2.jsp"></a>--%>
-
-
-
-
-
-<%--<div class="container bootstrap snippets bootdey">--%>
-<%--    <div class="btn-demo" id="btn-color-targets">--%>
-<%--        <a href="#modalColor" data-target-color="blue" data-toggle="modal" class="btn btn-default ">Blue</a>--%>
-<%--        <a href="#modalColor" data-target-color="lightblue" data-toggle="modal" class="btn btn-default ">Light Blue</a>--%>
-<%--        <a href="#modalColor" data-target-color="cyan" data-toggle="modal" class="btn btn-default ">Cyan</a>--%>
-<%--        <a href="#modalColor" data-target-color="bluegray" data-toggle="modal" class="btn btn-default ">Blue Gray</a>--%>
-<%--&lt;%&ndash;        <a href="#modalColor" data-target-color="green" data-toggle="modal" class="btn btn-default ">Green</a>&ndash;%&gt;--%>
-<%--        <a href="#modalColor" data-target-color="lightgreen" data-toggle="modal" class="btn btn-default ">Light Green</a>--%>
-<%--        <a href="#modalColor" data-target-color="red" data-toggle="modal" class="btn btn-default ">Red</a>--%>
-<%--        <a href="#modalColor" data-target-color="amber" data-toggle="modal" class="btn btn-default ">Amber</a>--%>
-<%--        <a href="#modalColor" data-target-color="orange" data-toggle="modal" class="btn btn-default ">Orange</a>--%>
-<%--        <a href="#modalColor" data-target-color="bluegray" data-toggle="modal" class="btn btn-default ">Blue Gray</a>--%>
-<%--        <a href="#modalColor" data-target-color="teal" data-toggle="modal" class="btn btn-default ">Teal</a>--%>
-<%--    </div>--%>
+<%--<div class="navbar fixed-bottom">--%>
+<%--    <jsp:include page="WEB-INF/view/include/footer.jsp"/>--%>
 <%--</div>--%>
-
-<%--<script>--%>
-<%--    $(document).ready(function(){--%>
-<%--        $('body').on('click', '#btn-color-targets > .btn', function(){--%>
-<%--            var color = $(this).data('target-color');--%>
-<%--            $('#modalColor').attr('data-modal-color', color);--%>
-<%--        });--%>
-<%--    });--%>
-<%--</script>--%>
-<%--<jsp:include page="WEB-INF/view/include/footer.jsp"/>--%>
-
 
 </body>
 </html>

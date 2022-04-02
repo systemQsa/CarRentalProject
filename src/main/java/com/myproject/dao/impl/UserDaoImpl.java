@@ -62,7 +62,7 @@ public class UserDaoImpl implements UserDao<User> {
                         .setLogin(resultSet.getString("login"))
                         .setPhone(resultSet.getString("phone"))
                         .setIsBanned(resultSet.getString("banned"))
-                        .setRegisterDate(Timestamp.valueOf(resultSet.getString("register_date")))
+                        .setRegisterDate(resultSet.getTimestamp("register_date").toLocalDateTime())
                         .setUserRole(UserRole.getRoleId(resultSet.getInt("role_id")));
                 listUsers.add(userBuilder.build());
             }
@@ -124,7 +124,7 @@ public class UserDaoImpl implements UserDao<User> {
                         .setFirstName(resultSet.getString("name"))
                         .setLastName(resultSet.getString("surname"))
                         .setLogin(resultSet.getString("login"))
-                        .setRegisterDate(resultSet.getTimestamp("register_date"))
+                        .setRegisterDate(resultSet.getTimestamp("register_date").toLocalDateTime())
                         .setIsBanned(resultSet.getString("banned"))
                         .setPhone(resultSet.getString("phone"))
                         .setRole(resultSet.getInt("role_id"));
@@ -186,8 +186,10 @@ public class UserDaoImpl implements UserDao<User> {
         ResultSet resultSet;
         System.out.println("Add RECORD TO TABLE" + newUser.getPhone());
         connection = connectManager.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.ADD_NEW_USER, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement setAdminStatus = connection.prepareStatement(QuerySQL.UPDATE_USER_ROLE_TO_ADMIN_ROLE)) {
+        try (PreparedStatement statement =
+                     connection.prepareStatement(QuerySQL.ADD_NEW_USER, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement setAdminStatus =
+                     connection.prepareStatement(QuerySQL.UPDATE_USER_ROLE_TO_ADMIN_ROLE)) {
             connection.setAutoCommit(false);
             statement.setString(1, newUser.getName());
             statement.setString(2, newUser.getSurname());
@@ -238,7 +240,7 @@ public class UserDaoImpl implements UserDao<User> {
 
 
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SEE_USER_BALANCE)) {
-            PreparedStatement statement2 = connection.prepareStatement(QuerySQL.TOP_UP_USER_BALANCE);
+            PreparedStatement statement2 = connection.prepareStatement(QuerySQL.UPDATE_USER_BALANCE);
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             statement.setString(1, login);

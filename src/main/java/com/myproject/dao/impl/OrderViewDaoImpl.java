@@ -49,16 +49,20 @@ public class OrderViewDaoImpl implements OrderViewDao {
      * @throws DaoException in case cannot find orders
      */
     @Override
-    public List<OrderViewForUserRequest> getOrdersForUser(String login, int startPage, int noOfRecords) throws DaoException {
+    public List<OrderViewForUserRequest> getOrdersForUser(String login,
+                                                          int startPage, int noOfRecords) throws DaoException {
         connection = connectManager.getConnection();
+
         ResultSet resultSet;
         ResultSet totalTableRecords;
         int start = startPage * noOfRecords - noOfRecords;
         int temp = 0;
         List<OrderViewForUserRequest> list = new ArrayList<>();
 
-        try (PreparedStatement statement = connection.prepareStatement("SELECT " + QuerySQL.ALL_ORDERS_USER_VIEW + "LIMIT ?,?")) {
-            PreparedStatement countTotalRecordsInTable = connection.prepareStatement("SELECT COUNT(user_id) AS records," + QuerySQL.ALL_ORDERS_USER_VIEW);
+        try (PreparedStatement statement =
+                     connection.prepareStatement("SELECT " + QuerySQL.ALL_ORDERS_USER_VIEW + "LIMIT ?,?")) {
+            PreparedStatement countTotalRecordsInTable =
+                    connection.prepareStatement("SELECT COUNT(user_id) AS records," + QuerySQL.ALL_ORDERS_USER_VIEW);
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             countTotalRecordsInTable.setString(1, login);
@@ -78,8 +82,8 @@ public class OrderViewDaoImpl implements OrderViewDao {
                 OrderViewForUserRequest res = orderViewBuilder
                         .setAmountOfRecords(temp)
                         .setOrder(order.setPassport(resultSet.getString("passport"))
-                                .setDateFrom(resultSet.getTimestamp("from_date"))
-                                .setDateTo(resultSet.getTimestamp("to_date"))
+                                .setDateFrom(resultSet.getTimestamp("from_date").toLocalDateTime())
+                                .setDateTo(resultSet.getTimestamp("to_date").toLocalDateTime())
                                 .setWithDriver(resultSet.getString("with_driver"))
                                 .setReceipt(resultSet.getDouble("receipt")).build())
                         .setCar(carBuilder.setName(resultSet.getString("name"))
@@ -103,7 +107,6 @@ public class OrderViewDaoImpl implements OrderViewDao {
         } finally {
             connectManager.closeConnection(connection);
         }
-        System.out.println("\nList  Orders " + list);
         return list;
     }
 
@@ -124,8 +127,10 @@ public class OrderViewDaoImpl implements OrderViewDao {
         ResultSet totalRecords;
         ResultSet resultSet;
         List<OrderViewForUserRequest> list = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement("SELECT " + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER + " LIMIT ?,?")) {
-            PreparedStatement statement2 = connection.prepareStatement("SELECT COUNT(user_id) as records," + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER);
+        try (PreparedStatement statement =
+                     connection.prepareStatement("SELECT " + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER + " LIMIT ?,?")) {
+            PreparedStatement statement2 =
+                    connection.prepareStatement("SELECT COUNT(user_id) as records," + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER);
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             statement2.setString(1, approved);
@@ -141,7 +146,8 @@ public class OrderViewDaoImpl implements OrderViewDao {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
 
-                OrderViewForUserRequest.OrderViewBuilder viewOrderBuilder = new OrderViewForUserRequest.OrderViewBuilder();
+                OrderViewForUserRequest.OrderViewBuilder viewOrderBuilder =
+                        new OrderViewForUserRequest.OrderViewBuilder();
                 Order.OrderBuilder order = new Order.OrderBuilder();
                 Car.CarBuilder car = new Car.CarBuilder();
                 OrderViewForUserRequest res =
@@ -149,8 +155,8 @@ public class OrderViewDaoImpl implements OrderViewDao {
                                 .setLogin(resultSet.getString("login"))
                                 .setOrder(order.setPassport(resultSet.getString("passport"))
                                         .setReceipt(resultSet.getDouble("receipt"))
-                                        .setDateFrom(resultSet.getTimestamp("from_date"))
-                                        .setDateTo(resultSet.getTimestamp("to_date"))
+                                        .setDateFrom(resultSet.getTimestamp("from_date").toLocalDateTime())
+                                        .setDateTo(resultSet.getTimestamp("to_date").toLocalDateTime())
                                         .setWithDriver(resultSet.getString("with_driver")).build())
                                 .setCar(car.setName(resultSet.getString("name"))
                                         .setCarClass(resultSet.getString("carClass"))

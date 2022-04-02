@@ -25,15 +25,15 @@ public class BlockUserCommand implements Command {
     private static final Logger logger = LogManager.getLogger(AddCarCommand.class);
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         String userLogin = request.getParameter("userLogin");
         try {
-            boolean isSuccess = userService.blockUser(userLogin);
-            if (isSuccess){
+            userService.blockUser(userLogin);
                 route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
                 setSuccessMessage("info.block_unblock_user",3,request);
-            }
+
         } catch (ServiceException e){
             logger.error("CANT BLOCK USER IN BlockUserCommand SOME PROBLEM");
             setInformMessageIfErrorOccur("err.block_unblock_user",31,request);

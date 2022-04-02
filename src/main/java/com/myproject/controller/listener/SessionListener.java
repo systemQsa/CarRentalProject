@@ -13,7 +13,6 @@ public class SessionListener implements HttpSessionListener {
     private static final Logger logger = LogManager.getLogger(SessionListener.class);
     @Override
     public void sessionCreated(HttpSessionEvent session) {
-        System.out.println("\nSession working!!!");
         session.getSession().setMaxInactiveInterval(1200);
         logger.info("time session is set");
 

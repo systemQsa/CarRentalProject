@@ -15,13 +15,6 @@
             <c:when test="${not empty requestScope.allCars}">
                  <table class="table table-hover">
 
-<%--            <c:if test="${requestScope.currentPage == 1}">--%>
-
-<%--            <div class="dropdown show">--%>
-<%--                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
-<%--                    Dropdown link--%>
-<%--                </a>--%>
-
                   <c:if test="${requestScope.currentPage == 1}">
                     <ul class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">${sessionScope.language['Amount']}<span class="caret"></span></a>
@@ -35,7 +28,6 @@
                   </c:if>
                     <thead>
                     <tr>
-                        <th scope="col">${sessionScope.language['Id']}</th>
                         <th scope="col">${sessionScope.language['Name']}</th>
                         <th scope="col">${sessionScope.language['Class']}</th>
                         <th scope="col">${sessionScope.language['Brand']}</th>
@@ -47,11 +39,10 @@
 
                     <c:forEach var="car" items="${requestScope.allCars}">
                         <tr>
-                            <th scope="row">${car.carId}</th>
                             <td>${car.name}</td>
                             <td>${car.carClass}</td>
                             <td>${car.brand}</td>
-                            <td>${car.rentalPrice}</td>
+                            <td><fmt:formatNumber value="${car.rentalPrice}" type="number" pattern=".00"/> </td>
                             <td>
                                 <c:choose>
                                     <c:when test="${sessionScope.role == null}">
@@ -82,7 +73,6 @@
                     <div class="text-center">
                 <%--pagination--%>
                          <input type="hidden" name="action" value="pagination">
-<%--                    <c:if test="${requestScope.noOfRecords <= requestScope.amountOfRecordsTotal}">--%>
                             <ul class="pagination justify-content-center">
                                 <li class="page-item">
                                     <c:if test="${requestScope.currentPage != 1}">
@@ -102,7 +92,6 @@
                                     </c:if></li>
                                 </c:if>
                             </ul>
-<%--                    </c:if>--%>
             </c:when>
 <%--                    displays cars in desired order--%>
             <c:when test="${not empty requestScope.sortedCars}">
@@ -120,7 +109,6 @@
                  </c:if>
                     <thead>
                     <tr>
-                        <th scope="col">${sessionScope.language['Id']}</th>
                         <th scope="col">${sessionScope.language['Name']}</th>
                         <th scope="col">${sessionScope.language['Class']}</th>
                         <th scope="col">${sessionScope.language['Brand']}</th>
@@ -130,16 +118,14 @@
                     <tbody>
                         <c:forEach var="car" items="${requestScope.sortedCars}">
                             <tr>
-                                <th scope="row">${car.carId}</th>
                                 <td>${car.name}</td>
                                 <td>${car.carClass}</td>
                                 <td>${car.brand}</td>
-                                <td>${car.rentalPrice}</td>
+                                <td><fmt:formatNumber value="${car.rentalPrice}" type="number" pattern=".00"/> </td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${sessionScope.role == null}">
-                                            <button type="button"
-                                                    class="btn btn-warning btn-sm">${sessionScope.language['Book_Car']}</button>
+                                            <a href="#modalColor" data-target-color="lightblue" data-toggle="modal" class="btn btn-warning"role="button">${sessionScope.language['Book_Car']}</a>
                                         </c:when>
                                         <c:when test="${sessionScope.role eq 'user'}">
 
@@ -162,43 +148,10 @@
                         </c:forEach>
                      </tbody>
                 </table>
-                        <%--pagination--%>
-<%--                    <input type="hidden" name="action" value="pagination">--%>
-<%--                    <ul class="pagination justify-content-center">--%>
-<%--                        <li class="page-item">--%>
-<%--                            <c:if test="${requestScope.currentPage != 1}">--%>
-<%--                                <td><a class="page-link"--%>
-<%--                                       href="?action=pagination&required=viewCars&page=${requestScope.currentPage - 1}">${sessionScope.language['Previous']}</a>--%>
-<%--                                </td>--%>
-<%--                            </c:if></li>--%>
-<%--                        <li class="page-item"><a class="page-link"--%>
-<%--                                                 href="?sort=byName&action=wantedOrder&order=${requestScope.order}&page=1">1</a>--%>
-<%--                        </li>--%>
-<%--                        <li class="page-item"><a class="page-link"--%>
-<%--                                                 href="?sort=byName&action=wantedOrder&order=${requestScope.order}&page=2">2</a>--%>
-<%--                        </li>--%>
-<%--                        <li class="page-item"><a class="page-link"--%>
-<%--                                                 href="?sort=byName&action=wantedOrder&order=${requestScope.order}&page=3">3</a>--%>
-<%--                        </li>--%>
-<%--                        <li class="page-item">--%>
-<%--                            <c:if test="${requestScope.currentPage lt requestScope.records}">--%>
-<%--                                <td><a class="page-link"--%>
-<%--                                       href="?action=pagination&required=viewCars&page=${requestScope.currentPage + 1}">${sessionScope.language['Next']}</a>--%>
-<%--                                </td>--%>
-<%--                            </c:if></li>--%>
-<%--                    </ul>--%>
             </c:when>
-                <c:otherwise>
-<%--                    <div class="text-center">--%>
-<%--                        <h2>${sessionScope.language['nothing_was_found']}!</h2>--%>
-<%--                    </div>--%>
-<%--                    <br><br><br><br>--%>
-                </c:otherwise>
         </c:choose>
         <br><br><br><br>
     </div>
-
-<%--                </table>--%>
 
     <c:if test="${not empty requestScope.sortedCars}">
             <div class="text-center">
@@ -247,7 +200,6 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">${sessionScope.language['Id']}</th>
                     <th scope="col">${sessionScope.language['Name']}</th>
                     <th scope="col">${sessionScope.language['Class']}</th>
                     <th scope="col">${sessionScope.language['Brand']}</th>
@@ -256,11 +208,10 @@
                 </thead>
             <tbody>
             <c:forEach var="searchedCar" items="${requestScope.searchedCars}">
-                <td>${searchedCar.carId}</td>
                 <td>${searchedCar.name}</td>
                 <td>${searchedCar.carClass}</td>
                 <td>${searchedCar.brand}</td>
-                <td>${searchedCar.rentalPrice}</td>
+                <td><fmt:formatNumber value="${searchedCar.rentalPrice}" type="number" pattern=".00"/> </td>
                 <td>
                     <c:choose>
                         <c:when test="${sessionScope.role == null}">

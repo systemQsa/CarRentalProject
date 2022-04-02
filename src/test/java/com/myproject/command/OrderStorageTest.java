@@ -28,6 +28,7 @@ public class OrderStorageTest {
 
     @Test
     public void addOrder() {
+        OrderStorage.getOrders().clear();
         OrderStorage.ddOrder(order.build());
         OrderStorage.ddOrder(order2.build());
         assertEquals(2, OrderStorage.getOrders().size());

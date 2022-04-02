@@ -25,7 +25,8 @@ public class UpdateCarCommand implements Command {
     private static final Logger logger = LogManager.getLogger(UpdateCarCommand.class);
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Car.CarBuilder updatedCar = new Car.CarBuilder();
         Route route = new Route();
 
@@ -35,7 +36,8 @@ public class UpdateCarCommand implements Command {
                             .setName(request.getParameter(GeneralConstant.CarConstants.CAR_NAME))
                             .setCarClass(request.getParameter(GeneralConstant.CarConstants.CAR_CLASS))
                             .setBrand(request.getParameter(GeneralConstant.CarConstants.CAR_BRAND))
-                            .setRentalPrice(Double.parseDouble(request.getParameter(GeneralConstant.CarConstants.CAR_RENTAL_PRICE)))
+                            .setRentalPrice(Double.parseDouble(request.getParameter(GeneralConstant
+                                    .CarConstants.CAR_RENTAL_PRICE)))
                             .setPhoto(request.getParameter("carPhoto")).build()
             );
             route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);

@@ -41,15 +41,15 @@ public class TopUpBalanceCommand implements Command {
      * @throws ValidationException in case data validation was failed
      */
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
        Route route = new Route();
        String userLogin = request.getParameter("userLogin");
        String topUpBalance = request.getParameter("topUpBalance");
         String login = (String) request.getSession().getServletContext().getAttribute(GeneralConstant.USER_NAME);
 
         try {
-             boolean isTopUpBalanceWasSuccessful  = userService.updateUserBalance(Double.parseDouble(topUpBalance),userLogin);
-             if (isTopUpBalanceWasSuccessful){
+             if (userService.updateUserBalance(Double.parseDouble(topUpBalance),userLogin)){
                  route.setPathOfThePage(ConstantPage.USER_HOME_PAGE);
                  request.getSession().setAttribute("userBalance",userService.getBalance(login));
              }else {

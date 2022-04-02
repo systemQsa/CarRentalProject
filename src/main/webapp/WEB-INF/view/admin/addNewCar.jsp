@@ -8,6 +8,10 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
+
+<a href="${pageContext.request.contextPath}/view/admin/admin.jsp"
+   role="button" class="btn btn-info btn:sm">${sessionScope.language['Go_back']}</a>
+
 <jsp:include page="/WEB-INF/view/errorMSG.jsp"/>
 
 <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
@@ -18,24 +22,23 @@
             <input type="hidden" name="action" value="addCar">
             <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
                 <label class="form-label" for="carName">${sessionScope.language['Name']}</label>
-                <input type="text" id="carName" class="form-control" name="name"/>
+                <input type="text" id="carName" class="form-control" name="name" placeholder="${sessionScope.language['Name']}"/>
             </div>
             <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
                 <label class="form-label" for="carClass">${sessionScope.language['Class']}</label>
-                <input type="text" id="carClass" class="form-control" name="carClass"/>
+                <input type="text" id="carClass" class="form-control" name="carClass" placeholder="${sessionScope.language['Class']}"/>
             </div>
             <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
                 <label class="form-label" for="carBrand">${sessionScope.language['Brand']}</label>
-                <input type="text" id="carBrand" class="form-control" name="brand"/>
+                <input type="text" id="carBrand" class="form-control" name="brand" placeholder="${sessionScope.language['Brand']}"/>
             </div>
             <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
                 <label class="form-label" for="rentalPrice">${sessionScope.language['Rental_Price']}</label>
-                <input type="text" id="rentalPrice" class="form-control" name="rentalPrice"/>
+                <input type="text" id="rentalPrice" class="form-control" name="rentalPrice" placeholder="00.00"/>
             </div>
             <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Add']}</button>
         </form>
     </div>
-    <a href="${pageContext.request.contextPath}/view/admin/admin.jsp">${sessionScope.language['Go_back']}</a>
 </div>
 
 </body>

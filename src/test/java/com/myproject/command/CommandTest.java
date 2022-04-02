@@ -33,10 +33,4 @@ public class CommandTest {
 
 
     }
-
-
-    public void setInformMessageIfErrorOccur() {
-       //HttpServletRequest answer = command.setInformMessageIfErrorOccur("message",1,request);
-       verify(command).setInformMessageIfErrorOccur("mess",2,request);
-    }
 }

@@ -8,13 +8,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class OrderViewDaoImplTest {
     private static DBManager dbManager;
-
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @BeforeClass
     public static void beforeTesting() {
         DBManager.getInstance().loadScript();
@@ -29,8 +31,8 @@ public class OrderViewDaoImplTest {
 
        Order.OrderBuilder order = new Order.OrderBuilder();
        order.setPassport("AB1234")
-                .setDateFrom(Timestamp.valueOf("2022-04-22 17:00:00"))
-                .setDateTo(Timestamp.valueOf("2022-04-22 18:00:00"))
+                .setDateFrom(LocalDateTime.parse("2022-04-22 17:00:00",dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse("2022-04-22 18:00:00",dateTimeFormatter))
                 .setWithDriver("N")
                 .setReceipt(10.0)
                 .setUserId(1);
@@ -52,8 +54,8 @@ public class OrderViewDaoImplTest {
 
         Order.OrderBuilder order = new Order.OrderBuilder();
         order.setPassport("AB1234")
-                .setDateFrom(Timestamp.valueOf("2022-04-22 17:00:00"))
-                .setDateTo(Timestamp.valueOf("2022-04-22 18:00:00"))
+                .setDateFrom(LocalDateTime.parse("2022-04-22 17:00:00",dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse("2022-04-22 18:00:00",dateTimeFormatter))
                 .setWithDriver("N")
                 .setReceipt(10.0)
                 .setUserId(1);

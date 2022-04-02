@@ -27,13 +27,16 @@ import java.util.List;
  */
 
 public class DeclineOrderCommand implements Command {
-    private final CarOrderService carOrderService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
+    private final CarOrderService carOrderService =
+            new AbstractFactoryImpl().getFactory().getServiceFactory().getCarOrderService();
     private static final Logger logger = LogManager.getLogger(DeclineOrderCommand.class);
 
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
+
         String order = request.getParameter("declineUserOrder");
         boolean declineOrderResult;
         Order resultOrder = parseIncomeOrder(order);
@@ -42,20 +45,12 @@ public class DeclineOrderCommand implements Command {
             Order declinedOrder = carOrderService.setOrder(resultOrder, false);
 
             if (declinedOrder != null) {
-
-                declineOrderResult = carOrderService.updateOrderByManager(
+                    declineOrderResult = carOrderService.updateOrderByManager(
                         (String) request.getSession().getAttribute(GeneralConstant.Util.USER_NAME),
                         declinedOrder.getOrderId(), request.getParameter(GeneralConstant.Util.APPROVED),
                         request.getParameter("feedback")
                 );
-
-                if (declineOrderResult) {
-                    List<Order> orders = OrderStorage.getOrders();
-
-                    orders.remove(resultOrder);
-
-                    request.getSession().getServletContext().setAttribute("orderList", orders);
-                }
+                    setDeclineOrderResult(request, declineOrderResult, resultOrder);
             }
 
         } catch (ServiceException e) {
@@ -67,5 +62,13 @@ public class DeclineOrderCommand implements Command {
         route.setPathOfThePage(ConstantPage.MANAGER_HOME_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);
         return route;
+    }
+
+    private void setDeclineOrderResult(HttpServletRequest request, boolean declineOrderResult, Order resultOrder) {
+        if (declineOrderResult) {
+            List<Order> orders = OrderStorage.getOrders();
+            orders.remove(resultOrder);
+            request.getSession().getServletContext().setAttribute("orderList", orders);
+        }
     }
 }

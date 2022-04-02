@@ -44,7 +44,8 @@ public class RegisterCommand implements Command {
      * @throws CommandException in case some problems occur in RegisterCommand class
      */
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException {
         String name = request.getParameter("name");
         String surname = request.getParameter("surname");
         String phoneNumber = request.getParameter("phone");
@@ -65,16 +66,18 @@ public class RegisterCommand implements Command {
             setInformMessageIfErrorOccur("err.login", 5, request);
             throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
-        try {
-            validateInput.passwordValidate(password);
-        } catch (ValidationException e) {
-            setInformMessageIfErrorOccur("err.password", 6, request);
-            throw new CommandException(ConstantPage.REGISTER_PAGE);
-        }
+
         try {
             validateInput.phoneValidate(phoneNumber);
         } catch (ValidationException e) {
             setInformMessageIfErrorOccur("err.phone", 7, request);
+            throw new CommandException(ConstantPage.REGISTER_PAGE);
+        }
+
+        try {
+            validateInput.passwordValidate(password);
+        } catch (ValidationException e) {
+            setInformMessageIfErrorOccur("err.password", 6, request);
             throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
 
@@ -85,7 +88,6 @@ public class RegisterCommand implements Command {
             setInformMessageIfErrorOccur("err.not_unique_login", 8, request);
             throw new CommandException(ConstantPage.REGISTER_PAGE);
         }
-
 
         route.setPathOfThePage(ConstantPage.LOG_IN_PAGE);
         route.setRoute(Route.RouteType.REDIRECT);

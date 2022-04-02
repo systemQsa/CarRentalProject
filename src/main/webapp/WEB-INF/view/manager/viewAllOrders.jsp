@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
@@ -6,23 +7,6 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/view/include/header.jsp"/>
-
-<%--<c:if test="${requestScope.currentPage == 1}">--%>
-<%--    <div class="btn-group dropright" aria-labelledby="dropdownMenuButton">--%>
-<%--        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--%>
-<%--            Number of records--%>
-<%--        </button>--%>
-<%--        <div class="dropdown-menu">--%>
-<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=5" role="button">5</a>--%>
-
-<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=10" role="button">10</a>--%>
-
-<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=25" role="button">25</a>--%>
-
-<%--            <a class="dropdown-item" href="?action=pagination&required=viewOrders&viewSuchOrders=${requestScope.viewSuchOrders}&page=${requestScope.currentPage}&noOfRecords=50" role="button">50</a>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--</c:if>--%>
 
 <c:choose>
     <c:when test="${not empty requestScope.listOrders}">
@@ -47,9 +31,6 @@
                 </ul>
            </c:if>
 
-
-
-
             <thead>
                 <tr>
                     <th scope="col">${sessionScope.language['User_login']}</th>
@@ -68,10 +49,17 @@
                      <tr>
                         <th scope="row">${listOrders.login}</th>
                         <td>${listOrders.order.passport}</td>
-                        <td>${listOrders.order.receipt}</td>
-                        <td>${listOrders.order.dateFrom}</td>
-                        <td>${listOrders.order.dateTo}</td>
-                        <td>${listOrders.order.withDriver}</td>
+                         <td><fmt:formatNumber type="number" pattern=".00" value="${listOrders.order.receipt}"/> </td>
+                         <td>${applicationScope.dateTimeFormatter.format(listOrders.order.dateFrom)}</td>
+                         <td>${applicationScope.dateTimeFormatter.format(listOrders.order.dateTo)}</td>
+                         <c:choose>
+                             <c:when test="${listOrders.order.withDriver eq 'N'}">
+                                 <td>${sessionScope.language['no']}</td>
+                             </c:when>
+                             <c:when test="${listOrders.order.withDriver eq 'Y'}">
+                                <td>${sessionScope.language['yes']}</td>
+                             </c:when>
+                         </c:choose>
                         <td>${listOrders.car.name}</td>
                         <td>${listOrders.car.carClass}</td>
                         <td>${listOrders.car.brand}</td>
@@ -84,8 +72,7 @@
 <input type="hidden" name="action" value="pagination">
        <c:if test="${requestScope.noOfRecords <= requestScope.amountOfRecordsTotal}">
         <h3>
-<%--            <c:out value="${requestScope.noOfRecords}"/>--%>
-<%--            <c:out value="${requestScope.amountOfRecordsTotal}"/>--%>
+
         </h3>
             <div class="text-center">
                 <ul class="pagination justify-content-center">
@@ -126,7 +113,5 @@
         </div>
     </c:otherwise>
 </c:choose>
-
-<%-- <a href="${pageContext.request.contextPath}/view/manager/manager.jsp">${sessionScope.language['Go_back']}</a>--%>
 </body>
 </html>

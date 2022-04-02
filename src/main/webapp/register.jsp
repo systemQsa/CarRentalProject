@@ -9,9 +9,9 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
+<a href="${pageContext.request.contextPath}/index.jsp"
+   role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
 <jsp:include page="WEB-INF/view/errorMSG.jsp"/>
-<a href="${pageContext.request.contextPath}/index.jsp" role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
-
 <%--register form--%>
 <div class="container">
     <div class="row justify-content-center">
@@ -45,6 +45,18 @@
                             </div>
                             <div class="form-group">
                                 <label for="username"
+                                       class="cols-sm-2 control-label">${sessionScope.language['label.Username']}</label>
+                                <div class="cols-sm-10">
+                                    <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-users fa"
+                                                                       aria-hidden="true"></i></span>
+                                        <input type="text" class="form-control" name="login" id="username"
+                                               placeholder="${sessionScope.language['label.username']}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="username"
                                        class="cols-sm-2 control-label"> ${sessionScope.language['label.Phone']}+(380)</label>
                                 <div class="cols-sm-10">
                                     <div class="input-group">
@@ -54,18 +66,6 @@
                                                placeholder="${sessionScope.language['label.Phone']}"/>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="username"
-                                   class="cols-sm-2 control-label">${sessionScope.language['label.Username']}</label>
-                            <div class="cols-sm-10">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-users fa"
-                                                                       aria-hidden="true"></i></span>
-                                    <input type="text" class="form-control" name="login" id="username"
-                                           placeholder="${sessionScope.language['label.username']}"/>
-                                 </div>
                             </div>
                         </div>
                         <div class="form-group">

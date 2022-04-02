@@ -15,7 +15,7 @@ public interface CarService<Car> {
 
     Optional<HashMap<List<Car>,Integer>> getAllCars(int currentPage,int noOfRecords) throws ServiceException;
 
-    Car getOneCar(int carId) throws ServiceException;
+    Optional<Car> getOneCar(int carId) throws ServiceException;
 
     boolean updateCar(Car car) throws ServiceException;
 

@@ -8,8 +8,6 @@ import com.myproject.service.OrderViewService;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class ViewOrderServiceImplTest {
     private DBManager dbManager;
 
@@ -18,25 +16,20 @@ public class ViewOrderServiceImplTest {
         DBManager.getInstance().loadScript();
     }
 
-    @Test
-    public void getAllUserPersonalOrders() {
+    @Test(expected = ServiceException.class)
+    public void getAllUserPersonalOrders() throws ServiceException {
         dbManager = DBManager.getInstance();
 
         OrderViewDao orderViewDao = new OrderViewDaoImpl(dbManager);
         OrderViewService orderViewService = new ViewOrderServiceImpl(orderViewDao);
-
-        assertThrows(ServiceException.class,()->orderViewService.getAllUserPersonalOrders("notExistUser@gmail.com", 1,3));
-
+        orderViewService.getAllUserPersonalOrders("notExistUser@gmail.com", 1,3);
     }
 
-    @Test
-    public void getOrders() {
+    @Test(expected = ServiceException.class)
+    public void getOrders() throws ServiceException {
         dbManager = DBManager.getInstance();
         OrderViewDao orderViewDao = new OrderViewDaoImpl(dbManager);
         OrderViewService orderViewService = new ViewOrderServiceImpl(orderViewDao);
-
-        assertThrows(ServiceException.class, () -> orderViewService.getOrders(null, 1,1));
-
-
+        orderViewService.getOrders(null, 1,1);
     }
 }

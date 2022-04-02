@@ -20,7 +20,8 @@ public class CancelCarBookingCommand implements Command {
     private static final Logger logger = LogManager.getLogger(CancelCarBookingCommand.class);
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         request.getSession().setAttribute(request.getParameter("userPassport"), null);
         request.getSession().setAttribute(request.getParameter("fromDate"), null);

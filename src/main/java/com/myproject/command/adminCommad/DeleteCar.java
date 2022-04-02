@@ -28,11 +28,9 @@ public class DeleteCar implements Command {
         carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
     }
 
-    public DeleteCar(CarService<Car> carService){
-        this.carService = carService;
-    }
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         int carId = Integer.parseInt(request.getParameter("carId"));
         Route route = new Route();
         try {

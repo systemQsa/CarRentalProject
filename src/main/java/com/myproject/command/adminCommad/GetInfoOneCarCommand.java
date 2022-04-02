@@ -23,22 +23,27 @@ import javax.servlet.http.HttpSession;
  * about the current car
  */
 public class GetInfoOneCarCommand implements Command {
-    private final CarService<Car> carService = new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+    private final CarService<Car> carService =
+            new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+
     private static final Logger logger = LogManager.getLogger(GetInfoOneCarCommand.class);
 
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
         try {
-            Car car = carService.getOneCar(Integer.parseInt(request.getParameter("carId")));
             HttpSession session = request.getSession();
-            session.setAttribute("carId",car.getCarId());
-            session.setAttribute("carName", car.getName());
-            session.setAttribute("carClass",car.getCarClass());
-            session.setAttribute("brand",car.getBrand());
-            session.setAttribute("rentalPrice",car.getRentalPrice());
-            session.setAttribute("carPhoto",car.getPhoto());
-            route.setPathOfThePage(ConstantPage.UPDATE_CAR_PAGE_REDIRECT);
+            carService.getOneCar(Integer.parseInt(request.getParameter("carId")))
+                    .ifPresent(car -> {
+                        session.setAttribute("carId", car.getCarId());
+                        session.setAttribute("carName", car.getName());
+                        session.setAttribute("carClass", car.getCarClass());
+                        session.setAttribute("brand", car.getBrand());
+                        session.setAttribute("rentalPrice", car.getRentalPrice());
+                        session.setAttribute("carPhoto", car.getPhoto());
+                        route.setPathOfThePage(ConstantPage.UPDATE_CAR_PAGE_REDIRECT);
+                    });
         } catch (ServiceException e) {
             logger.error("CANT GET INFO ABOUT GIVEN CAR CHECK IF THIS CAR EXISTS");
             throw new CommandException("CANT FIND CAR", e);

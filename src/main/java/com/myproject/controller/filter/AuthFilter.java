@@ -37,7 +37,7 @@ public class AuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String role = (String) request.getSession().getAttribute("role");
 
-        String ERROR_PAGE = "/error.jsp";
+        String ERROR_PAGE = "/error404.jsp";
         if (role == null) {
             if (!generalUrls.contains(request.getServletPath())) {
                 request.getRequestDispatcher(ERROR_PAGE).forward(request, response);

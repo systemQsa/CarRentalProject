@@ -46,35 +46,6 @@ public class DBManager implements ConnectManager {
         }
     }
 
-    public String getUrl() {
-        String url = null;
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream("connection.properties");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        Properties prop = new Properties();
-        try {
-            prop.load(fis);
-            url = (String) prop.get("connection.url");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return url;
-    }
-
-    public Connection getConnection(String connectionUrl) throws SQLException {
-        Connection connect = null;
-        try {
-            connect = DriverManager.getConnection(connectionUrl);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        connection = connect;
-        return connect;
-    }
-
     @Override
     public Connection getConnection() {
         Connection connect = null;

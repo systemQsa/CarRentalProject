@@ -2,6 +2,7 @@ package com.myproject.command;
 
 import com.myproject.command.util.*;
 import com.myproject.dao.entity.User;
+import com.myproject.dao.impl.UserDaoImpl;
 import com.myproject.exception.*;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.UserService;
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 
 public class LoginCommand implements Command {
@@ -31,29 +33,16 @@ public class LoginCommand implements Command {
         validateInput = new ValidateInput(userService);
     }
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         HashSet<String> loggedUsers = (HashSet<String>) request.getSession().getServletContext().getAttribute(GeneralConstant.LOGGED_USERS);
         Route route = new Route();
         String login = request.getParameter(GeneralConstant.LOGIN);
         char[]password = request.getParameter("password").toCharArray();
 
-
-         if (validateInput.userIsBlockedValidate(login)){
-            logger.warn("Blocked user tried to log in");
-            setInformMessageIfErrorOccur("err.blocked_user",1,request);
-             route.setPathOfThePage(ConstantPage.LOG_IN_PAGE);
-            route.setRoute(Route.RouteType.REDIRECT);
-           throw new ValidationException("/login.jsp");
-
-        }
+        checkUserIsBlockedByManager(request, route, login);
 
         logger.info("USER LOGIN  == " + login);
-
-        if (commandUtil.userIsLogged(request)) {
-            String userRole = CommandUtil.getUserRoleFromPage(request);
-            route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(userRole));
-            logger.info("user is logged");
-        }else{
 
             try{
                 validateInput.loginValidate(login);
@@ -76,7 +65,7 @@ public class LoginCommand implements Command {
             try {
                  role = userService.logInValidation(login,password,request);
              } catch (ServiceException e) {
-                System.out.println("Failed");
+                setInformMessageIfErrorOccur("err.no_such_user",38,request);
                 throw new CommandException(ConstantPage.LOG_IN_PAGE);
             }
 
@@ -84,34 +73,49 @@ public class LoginCommand implements Command {
                 try {
                      user = userService.getUserByLoginAndPass(login,password);
                  } catch (ServiceException e) {
-                    throw new CommandException(e.getMessage());
+                    setInformMessageIfErrorOccur("err.no_such_user",38,request);
+                    throw new CommandException(ConstantPage.LOG_IN_PAGE);
                 }
             }else {
                 setInformMessageIfErrorOccur("err.password",3,request);
                 throw new ValidationException(ConstantPage.LOG_IN_PAGE);
             }
 
-
-
-            CommandUtil.setRoleForUser(request,role,login);
-            route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(role));
-            request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
-            try {
-                request.getSession().setAttribute(GeneralConstant.Util.USER_BALANCE,userService.getBalance(login));
-                request.getSession().setAttribute(GeneralConstant.Util.USER_ID_BY_LOGIN,user.getUserId());
-                request.getSession().setAttribute(GeneralConstant.Util.USER_LOGIN,user.getLogin());
-            } catch (ServiceException e) {
-                logger.error("USER CANT LOGIN SOMETHING WENT WRONG");
-                  throw new CommandException(ConstantPage.LOG_IN_PAGE);
+            if (commandUtil.userIsLogged(request)) {
+                logger.info("user is logged");
+                setInformMessageIfErrorOccur("err.user_already_logged",37,request);
+                throw new CommandException(ConstantPage.LOG_IN_PAGE);
+            }else{
+                CommandUtil.setRoleForUser(request,role,login);
+                route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(role));
+                request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
+                try {
+                    request.getSession().setAttribute(GeneralConstant.Util.USER_BALANCE,userService.getBalance(login));
+                    request.getSession().setAttribute(GeneralConstant.Util.USER_ID_BY_LOGIN,user.getUserId());
+                    request.getSession().setAttribute(GeneralConstant.Util.USER_LOGIN,user.getLogin());
+                } catch (ServiceException e) {
+                    logger.error("USER CANT LOGIN SOMETHING WENT WRONG");
+                    throw new CommandException(ConstantPage.LOG_IN_PAGE);
+                }
+                logger.info("user NOT logged!");
             }
-            logger.info("user NOT logged!");
 
-        }
-
-        route.setRoute(Route.RouteType.REDIRECT);
-
-        loggedUsers.add(login);
-        request.getSession().getServletContext().setAttribute(GeneralConstant.Util.LOGGED_USERS, loggedUsers);
+            route.setRoute(Route.RouteType.REDIRECT);
+            loggedUsers.add(login);
+            request.getSession().getServletContext().setAttribute(GeneralConstant.Util.LOGGED_USERS, loggedUsers);
           return route;
+    }
+
+
+    private void checkUserIsBlockedByManager(HttpServletRequest request,
+                                             Route route, String login) throws ValidationException {
+        if (validateInput.userIsBlockedValidate(login)){
+           logger.warn("Blocked user tried to log in");
+           setInformMessageIfErrorOccur("err.blocked_user",1, request);
+            route.setPathOfThePage(ConstantPage.LOG_IN_PAGE);
+           route.setRoute(Route.RouteType.REDIRECT);
+          throw new ValidationException("/login.jsp");
+
+       }
     }
 }

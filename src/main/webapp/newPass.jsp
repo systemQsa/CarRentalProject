@@ -10,11 +10,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
 <body>
-<%--<p>${sessionScope.userLogin}</p>--%>
-<%--<div class="form-gap"></div>--%>
 
 <a href="${pageContext.request.contextPath}/forgotPass.jsp" role="button" class="btn btn-info btn-sm">${sessionScope.language['Go_back']}</a>
-
+<jsp:include page="WEB-INF/view/errorMSG.jsp"/>
 <div class="container">
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
@@ -34,8 +32,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-<%--                                    check if value change password need also bundle???--%>
-                                    <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="change password" type="submit"
+                                    <input name="recover-submit" class="btn btn-lg btn-primary btn-block" value="${sessionScope.language['change_password']}" type="submit"
                                            data-target="#editMezalta" data-toggle="modal">
                                 </div>
 
@@ -49,7 +46,5 @@
         </div>
     </div>
 </div>
-
-<%--<a href="${pageContext.request.contextPath}/forgotPass.jsp">${sessionScope.language['Go_back']}</a>--%>
 </body>
 </html>

@@ -30,8 +30,7 @@ public class CarServiceImplTest {
         CarService<Car> carService = new CarServiceImpl(carDao);
 
         try {
-            Car oneCar = carService.getOneCar(1);
-            assertEquals("porsche", oneCar.getName());
+             carService.getOneCar(1).ifPresent(oneCar-> assertEquals("porsche", oneCar.getName()));
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -100,6 +99,7 @@ public class CarServiceImplTest {
                 carList = allCars.get().keySet().stream().findFirst().orElse(null);
 
             }
+            assertTrue(carList.size() != 0);
             assertEquals(2,carList.size());
         } catch (ServiceException e) {
             e.printStackTrace();

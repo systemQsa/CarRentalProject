@@ -22,13 +22,14 @@ public class UnblockUserCommand implements Command {
     private final UserService userService = new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
     private static final Logger logger = LogManager.getLogger(UnblockUserCommand.class);
     @Override
-    public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
+    public Route execute(HttpServletRequest request,
+                         HttpServletResponse response) throws CommandException, ValidationException {
         String userLogin = request.getParameter("userLogin");
         Route route = new Route();
-        boolean isSuccess;
+
         try {
-           isSuccess =  userService.unblockUser(userLogin);
-           if (isSuccess){
+
+           if (userService.unblockUser(userLogin)){
                route.setPathOfThePage(ConstantPage.ADMIN_HOME_PAGE);
                setSuccessMessage("info.block_unblock_user",3,request);
            }else{

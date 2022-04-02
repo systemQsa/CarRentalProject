@@ -17,7 +17,13 @@ public interface Validate {
 
     boolean userIsBlockedValidate(String login) throws ValidationException;
 
-    boolean datesAndTimeValidate(LocalDateTime fromDate, LocalDateTime toDate, HttpServletRequest request) throws ValidationException;
+    boolean datesAndTimeValidate(LocalDateTime fromDate, LocalDateTime toDate) throws ValidationException;
 
     boolean passportValidate(String passport) throws ValidationException;
+
+    boolean ifInputDatesAndTimeAreMatchToRequiredRegex(String fromDate,String toDate) throws ValidationException;
+
+    boolean validatePrice(String price) throws ValidationException;
+
+    boolean validateCarInput(String carName,String carClass,String brand) throws ValidationException;
 }

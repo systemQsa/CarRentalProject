@@ -42,10 +42,10 @@ public class CarServiceImpl implements CarService<Car> {
         try {
             car = carDAO.addRecordToTable(
                      new Car.CarBuilder()
-                            .setName(request.getParameter("name"))
-                            .setCarClass(request.getParameter("carClass"))
-                            .setBrand(request.getParameter("brand"))
-                            .setRentalPrice(Double.parseDouble(request.getParameter("rentalPrice")))
+                            .setName(request.getParameter("name").trim())
+                            .setCarClass(request.getParameter("carClass").trim())
+                            .setBrand(request.getParameter("brand").trim())
+                            .setRentalPrice(Double.parseDouble(request.getParameter("rentalPrice").trim()))
                             .setPhoto(request.getParameter("photo"))
                             .build());
         } catch (DaoException e) {
@@ -63,14 +63,12 @@ public class CarServiceImpl implements CarService<Car> {
      */
     @Override
     public boolean deleteCar(int carId) throws ServiceException{
-        boolean response;
         try {
-            response  = carDAO.deleteById(carId);
+            return carDAO.deleteById(carId);
         } catch (DaoException e) {
             logger.warn("CANT DELETE GIVEN CAR IN CarServiceImpl class");
             throw new ServiceException("CANT DELETE CAR SERVICE",e);
         }
-        return response;
     }
 
     /**
@@ -91,22 +89,19 @@ public class CarServiceImpl implements CarService<Car> {
     }
 
     /**
-     *
-     * @param car
+     *The method updates car
+     * @param car - gets changed car
      * @return in car was successfully updated returns true
      * @throws ServiceException in case cannot update the given car
      */
     @Override
     public boolean updateCar(Car car) throws ServiceException{
-        boolean isUpdated;
-
         try {
-          isUpdated = carDAO.update(car);
+          return carDAO.update(car);
         } catch (DaoException e) {
             logger.warn("CANT UPDATE GIVEN CAR IN CarServiceImpl class");
            throw new ServiceException("CANT UPDATE CAR SERVICE",e);
         }
-        return isUpdated;
     }
 
     /**
@@ -120,7 +115,6 @@ public class CarServiceImpl implements CarService<Car> {
     @Override
     public Optional<List<Car>> getSortedCars(String sortOrderCommand,int currPage,int noOfRecords)throws ServiceException {
         String neededQuery;
-        List<Car> carList;
         switch (sortOrderCommand){
             case "sortCarsByName": neededQuery = QuerySQL.GET_ALL_CARS_SORT_BY_NAME;break;
             case "sortCarsByClass": neededQuery = QuerySQL.GET_ALL_CARS_SORT_BY_CAR_CLASS;break;
@@ -129,12 +123,11 @@ public class CarServiceImpl implements CarService<Car> {
             default:neededQuery = QuerySQL.GET_ALL_CARS;
         }
         try {
-           carList = carDAO.getSortedCars(neededQuery,currPage,noOfRecords);
+           return Optional.ofNullable(carDAO.getSortedCars(neededQuery,currPage,noOfRecords));
         } catch (DaoException e) {
             logger.warn("CANT GET ALL NEEDED CARS FOR SELECTED ORDER IN CarServiceImpl class");
            throw new ServiceException("CANT GET ALL NEEDED CARS FOR SELECTED ORDER",e);
         }
-        return Optional.ofNullable(carList);
     }
 
     /**
@@ -159,15 +152,12 @@ public class CarServiceImpl implements CarService<Car> {
      * @throws ServiceException in case cannot find car by given id
      */
     @Override
-    public Car getOneCar(int carId) throws ServiceException {
-        Car car;
+    public Optional<Car> getOneCar(int carId) throws ServiceException {
         try {
-            car = carDAO.findById(carId);
-            System.out.println("returned car  " + car.getName());
+            return Optional.ofNullable(carDAO.findById(carId));
         } catch (DaoException e) {
             logger.warn("CANT FIND CAR BY GIVEN ID IN CarServiceImpl class");
             throw new ServiceException("CANT FIND CAR BY GIVEN ID",e);
         }
-        return car;
     }
 }

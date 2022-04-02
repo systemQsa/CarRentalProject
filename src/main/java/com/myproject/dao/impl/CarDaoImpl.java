@@ -221,8 +221,10 @@ public class CarDaoImpl implements CarDao {
         ResultSet suchCarInDB;
         Car.CarBuilder carBuilder = new Car.CarBuilder();
         connection = connectManager.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.ADD_CAR, Statement.RETURN_GENERATED_KEYS);
-             PreparedStatement checkCarPresence = connection.prepareStatement(QuerySQL.CHECK_IF_CAR_ALREADY_PRESENT_IN_DB)) {
+        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.ADD_CAR,
+                Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement checkCarPresence =
+                     connection.prepareStatement(QuerySQL.CHECK_IF_CAR_ALREADY_PRESENT_IN_DB)) {
 
             connection.setAutoCommit(false);
             checkCarPresence.setString(1, car.getName());
@@ -240,7 +242,6 @@ public class CarDaoImpl implements CarDao {
 
                 }
             } else {
-                System.out.println("NO SUCH CAR WAS FOUND!");
                 statement.setString(1, car.getName());
                 statement.setString(2, car.getCarClass());
                 statement.setString(3, car.getBrand());

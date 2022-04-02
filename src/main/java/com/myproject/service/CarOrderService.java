@@ -11,8 +11,6 @@ public interface CarOrderService {
 
     boolean checkOrderPresenceInDb(Order order) throws ServiceException;
 
-    boolean bookTheCar(HttpServletRequest request, HttpServletResponse response) throws ServiceException;
-
     BigDecimal countReceipt(long diffHours, double carRentPrice, boolean isWithDriver) throws ServiceException;
 
     Order setOrder(Order order, boolean processPayment) throws ServiceException;

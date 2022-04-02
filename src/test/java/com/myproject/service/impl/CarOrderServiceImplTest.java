@@ -14,12 +14,14 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.*;
 
 public class CarOrderServiceImplTest {
     private DBManager dbManager;
-
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @BeforeClass
     public static void beforeTesting(){
         DBManager.getInstance().loadScript();
@@ -54,12 +56,12 @@ public class CarOrderServiceImplTest {
 
     }
 
-    @Test
-    public void countReceiptNegative() {
+    @Test(expected = ServiceException.class)
+    public void countReceiptNegative() throws ServiceException {
         dbManager = DBManager.getInstance();
         DriverDao driverDao = new DriverDaoImpl(dbManager);
         CarOrderService carOrderService = new CarOrderServiceImpl(driverDao);
-        assertThrows(ServiceException.class,()->carOrderService.countReceipt(0, 10.0, false));
+        carOrderService.countReceipt(0, 10.0, false);
 
     }
 
@@ -74,8 +76,8 @@ public class CarOrderServiceImplTest {
         order.setPassport("AB1234")
                 .setUserLogin("user1@gmail.com")
                 .setCar(1)
-                .setDateFrom(Timestamp.valueOf("2022-04-22 17:00:00"))
-                .setDateTo(Timestamp.valueOf("2022-04-22 18:00:00"))
+                .setDateFrom(LocalDateTime.parse("2022-04-22 17:00:00",dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse("2022-04-22 18:00:00",dateTimeFormatter))
                 .setWithDriver("N")
                 .setReceipt(10.0)
                 .setUserId(1);
@@ -101,8 +103,8 @@ public class CarOrderServiceImplTest {
                 .setUserId(1)
                 .setCar(1)
                 .setPassport("AC1234")
-                .setDateFrom(Timestamp.valueOf("2022-05-22 13:00:00"))
-                .setDateTo(Timestamp.valueOf("2022-05-22 14:00:00"))
+                .setDateFrom(LocalDateTime.parse("2022-05-22 13:00:00",dateTimeFormatter))
+                .setDateTo(LocalDateTime.parse("2022-05-22 14:00:00",dateTimeFormatter))
                 .setWithDriver("N")
                 .setReceipt(10.0);
 

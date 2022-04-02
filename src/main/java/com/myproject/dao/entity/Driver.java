@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Driver implements Serializable {
-    private static final long serialUID = 1L;
+    private static final long serialUID = 23463745783490234L;
     private int id;
     private String name;
     private String surname;
