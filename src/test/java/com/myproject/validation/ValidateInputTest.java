@@ -237,7 +237,7 @@ public class ValidateInputTest {
         LocalDateTime to = LocalDateTime.of(2022,Month.AUGUST,10,18,00,00);
         ValidateInput validateInput = new ValidateInput();
         try {
-            assertTrue(validateInput.datesAndTimeValidate(from,to));
+            assertTrue(validateInput.datesAndTimeValidateCorrectness(from,to));
             logger.info("validation dates and time in tests has passed");
         } catch (ValidationException e) {
             e.printStackTrace();

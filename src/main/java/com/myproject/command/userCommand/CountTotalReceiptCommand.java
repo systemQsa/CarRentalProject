@@ -60,18 +60,14 @@ public class CountTotalReceiptCommand implements Command {
             throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
         }
 
-
-        if (fromDate.isEmpty() || toDate.isEmpty()) {
-            setInformMessageIfErrorOccur("err.date_time", 14, request);
-            throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
-        }
+        checkIfInputDatesAreNotEmpty(request, fromDate, toDate);
 
         try {
             LocalDateTime dateTime1 = LocalDateTime.parse(fromDate, formatter);
             LocalDateTime dateTime2 = LocalDateTime.parse(toDate, formatter);
             try{
                 validateInput.ifInputDatesAndTimeAreMatchToRequiredRegex(fromDate,toDate);
-                validateInput.datesAndTimeValidate(dateTime1, dateTime2);
+                validateInput.datesAndTimeValidateCorrectness(dateTime1, dateTime2);
             }catch (ValidationException e){
                 setInformMessageIfErrorOccur("err.date_time",10,request);
                 throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
@@ -79,28 +75,11 @@ public class CountTotalReceiptCommand implements Command {
 
             orderDurationInHours = calculateHoursFromGivenDates(dateTime1, dateTime2);
 
-            if ((orderDurationInHours > 0) && Double.parseDouble(carRentPrice) > 0) {
-                totalPrice = carOrderService.countReceipt(orderDurationInHours,
-                        Double.parseDouble(carRentPrice), Boolean.parseBoolean(withDriver));
-            } else {
-                setInformMessageIfErrorOccur("err.date_time", 10, request);
-                throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
-            }
+            totalPrice = getTotalRentalPriceAccordingToHours(request, orderDurationInHours, carRentPrice, withDriver);
 
-            if (Boolean.parseBoolean(withDriver)) {
-                request.getSession().getServletContext().setAttribute("withDriver", "Y");
-            } else {
-                request.getSession().getServletContext().setAttribute("withDriver", "N");
-            }
+            setResponseToUserToViewAllOrder(request, carRentPrice, userPassport, fromDate, toDate, totalPrice,withDriver);
 
-            setResponseToUser(request, carRentPrice, userPassport, fromDate, toDate, totalPrice);
-
-            if (BigDecimal.valueOf(Double.parseDouble(userBalance)).compareTo(totalPrice) > 0) {
-                request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK,
-                        "You have enough balance for booking!");
-            } else {
-                request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK, null);
-            }
+            checkIfUserBalanceEnoughToPayTheOrder(request, totalPrice, userBalance);
 
         } catch (ServiceException e) {
             setInformMessageIfErrorOccur("err.balance_low", 11, request);
@@ -112,8 +91,50 @@ public class CountTotalReceiptCommand implements Command {
         return route;
     }
 
-    private void setResponseToUser(HttpServletRequest request, String carRentPrice, String userPassport, String fromDate, String toDate, BigDecimal totalPrice) {
+
+    private void checkIfInputDatesAreNotEmpty(HttpServletRequest request,
+                                              String fromDate, String toDate) throws CommandException {
+        if (fromDate.isEmpty() || toDate.isEmpty()) {
+            setInformMessageIfErrorOccur("err.date_time", 14, request);
+            throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
+        }
+    }
+
+
+    private void checkIfUserBalanceEnoughToPayTheOrder(HttpServletRequest request,
+                                                       BigDecimal totalPrice, String userBalance) {
+        if (BigDecimal.valueOf(Double.parseDouble(userBalance)).compareTo(totalPrice) > 0) {
+            request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK,
+                    "You have enough balance for booking!");
+        } else {
+            request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK, null);
+        }
+    }
+
+
+    private BigDecimal getTotalRentalPriceAccordingToHours(HttpServletRequest request,
+                                                           long orderDurationInHours, String carRentPrice, String withDriver) throws ServiceException, CommandException {
+        BigDecimal totalPrice;
+        if ((orderDurationInHours > 0) && Double.parseDouble(carRentPrice) > 0) {
+            totalPrice = carOrderService.countReceipt(orderDurationInHours,
+                    Double.parseDouble(carRentPrice), Boolean.parseBoolean(withDriver));
+        } else {
+            setInformMessageIfErrorOccur("err.date_time", 10, request);
+            throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
+        }
+        return totalPrice;
+    }
+
+    private void setResponseToUserToViewAllOrder(HttpServletRequest request,
+                                                 String carRentPrice, String userPassport, String fromDate,
+                                                 String toDate, BigDecimal totalPrice,String withDriver) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        if (Boolean.parseBoolean(withDriver)) {
+            request.getSession().getServletContext().setAttribute("withDriver", "Y");
+        } else {
+            request.getSession().getServletContext().setAttribute("withDriver", "N");
+        }
         request.getSession().getServletContext().setAttribute("userLogin",
                 request.getParameter("userLoginReq"));
         request.getSession().getServletContext().setAttribute("rentPriceReq", carRentPrice);

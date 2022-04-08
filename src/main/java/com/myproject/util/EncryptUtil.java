@@ -17,12 +17,13 @@ import java.util.Base64;
 /**
  * The EncryptUtil class represents methods for encryption and decryption password
  * by specific algorithm sha 256
+ * must be one of {128, 120, 112, 104, 96}
  */
 
 public class EncryptUtil {
     private static final String ENCRYPT_ALGO = "AES/GCM/NoPadding";
 
-    private static final int TAG_LENGTH_BIT = 128; // must be one of {128, 120, 112, 104, 96}
+    private static final int TAG_LENGTH_BIT = 128;
     private static final int IV_LENGTH_BYTE = 12;
     private static final int SALT_LENGTH_BYTE = 16;
 

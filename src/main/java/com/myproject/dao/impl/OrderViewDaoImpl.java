@@ -52,7 +52,6 @@ public class OrderViewDaoImpl implements OrderViewDao {
     public List<OrderViewForUserRequest> getOrdersForUser(String login,
                                                           int startPage, int noOfRecords) throws DaoException {
         connection = connectManager.getConnection();
-
         ResultSet resultSet;
         ResultSet totalTableRecords;
         int start = startPage * noOfRecords - noOfRecords;
@@ -75,7 +74,8 @@ public class OrderViewDaoImpl implements OrderViewDao {
             statement.setInt(3, noOfRecords);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                OrderViewForUserRequest.OrderViewBuilder orderViewBuilder = new OrderViewForUserRequest.OrderViewBuilder();
+                OrderViewForUserRequest.OrderViewBuilder orderViewBuilder =
+                        new OrderViewForUserRequest.OrderViewBuilder();
                 Car.CarBuilder carBuilder = new Car.CarBuilder();
                 Order.OrderBuilder order = new Order.OrderBuilder();
 

@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserDao<User> userDao;
 
     public UserServiceImpl(){
-        userDao =
-                new AbstractFactoryImpl().getFactory().getDaoFactory().getUserDao();
+        userDao = new AbstractFactoryImpl().getFactory().getDaoFactory().getUserDao();
     }
 
     public UserServiceImpl(UserDao<User> userDao){
@@ -183,6 +183,7 @@ public class UserServiceImpl implements UserService {
         try {
             String encrypt = EncryptUtil.encrypt(String.valueOf(password)
                     .getBytes(StandardCharsets.UTF_8), GeneralConstant.Util.KEY);
+            Arrays.fill(password,(char)67);
             User.UserBuilder user = new User.UserBuilder();
             user.setFirstName(name)
                     .setLastName(surname)

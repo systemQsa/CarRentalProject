@@ -8,8 +8,6 @@ import com.myproject.service.UserService;
 import com.myproject.service.impl.UserServiceImpl;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +19,6 @@ import java.util.regex.Pattern;
 public class ValidateInput implements Validate {
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String CHECK_DATE_TIME_INPUT = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
-    private static final String LOGIN_REGEX = "^[\\w+]{8,30}$";
     private static final String PASSWORD_REGEX = "^[\\w+]{3,20}$";
     private static final String EMAIL_REGEX = "^(([\\w-]+)@([\\w]+)\\.([\\p{Lower}]{2,8}))$";
     private static final String EMAIL_CYRILLIC = "^(([\\p{IsCyrillic}]+)@([\\w]+)\\.([\\p{Lower}]{2,8}))$";
@@ -67,7 +64,7 @@ public class ValidateInput implements Validate {
     }
 
     @Override
-    public boolean datesAndTimeValidate(LocalDateTime fromDate, LocalDateTime toDate)
+    public boolean datesAndTimeValidateCorrectness(LocalDateTime fromDate, LocalDateTime toDate)
             throws ValidationException {
         return validateDatesAndTime(fromDate, toDate);
     }

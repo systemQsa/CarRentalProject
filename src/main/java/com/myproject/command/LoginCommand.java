@@ -39,7 +39,7 @@ public class LoginCommand implements Command {
         Route route = new Route();
         String login = request.getParameter(GeneralConstant.LOGIN);
         char[]password = request.getParameter("password").toCharArray();
-
+        String role;
         checkUserIsBlockedByManager(request, route, login);
 
         logger.info("USER LOGIN  == " + login);
@@ -58,9 +58,6 @@ public class LoginCommand implements Command {
                 setInformMessageIfErrorOccur("err.password",3,request);
                 throw new CommandException(ConstantPage.LOG_IN_PAGE);
             }
-
-
-             String role;
 
             try {
                  role = userService.logInValidation(login,password,request);
@@ -90,9 +87,7 @@ public class LoginCommand implements Command {
                 route.setPathOfThePage(DefineRouteForUser.getPagePathDependOnUserRole(role));
                 request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS,loggedUsers);
                 try {
-                    request.getSession().setAttribute(GeneralConstant.Util.USER_BALANCE,userService.getBalance(login));
-                    request.getSession().setAttribute(GeneralConstant.Util.USER_ID_BY_LOGIN,user.getUserId());
-                    request.getSession().setAttribute(GeneralConstant.Util.USER_LOGIN,user.getLogin());
+                    setPersonalUserDataToView(request, login);
                 } catch (ServiceException e) {
                     logger.error("USER CANT LOGIN SOMETHING WENT WRONG");
                     throw new CommandException(ConstantPage.LOG_IN_PAGE);
@@ -104,6 +99,12 @@ public class LoginCommand implements Command {
             loggedUsers.add(login);
             request.getSession().getServletContext().setAttribute(GeneralConstant.Util.LOGGED_USERS, loggedUsers);
           return route;
+    }
+
+    private void setPersonalUserDataToView(HttpServletRequest request, String login) throws ServiceException {
+        request.getSession().setAttribute(GeneralConstant.Util.USER_BALANCE, userService.getBalance(login));
+        request.getSession().setAttribute(GeneralConstant.Util.USER_ID_BY_LOGIN, user.getUserId());
+        request.getSession().setAttribute(GeneralConstant.Util.USER_LOGIN, user.getLogin());
     }
 
 

@@ -1,5 +1,6 @@
 package com.myproject.command;
 
+import com.myproject.command.facade.SearchCommandFacade;
 import com.myproject.command.util.ConstantPage;
 import com.myproject.command.util.Route;
 import com.myproject.dao.entity.Car;
@@ -10,6 +11,8 @@ import com.myproject.exception.ValidationException;
 import com.myproject.factory.impl.AbstractFactoryImpl;
 import com.myproject.service.CarService;
 import com.myproject.service.UserService;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,11 +25,16 @@ import java.util.Optional;
  * Represents class to work with searching process
  */
 public class SearchCommand implements Command {
-    private final UserService userService =
-            new AbstractFactoryImpl().getFactory().getServiceFactory().getUserService();
-    private final CarService<Car> carService =
-            new AbstractFactoryImpl().getFactory().getServiceFactory().getCarService();
+    private final SearchCommandFacade searchCommandFacade;
+    private static final Logger logger = LogManager.getLogger(SearchCommand.class);
 
+    public SearchCommand(){
+        searchCommandFacade = new SearchCommandFacade();
+    }
+
+    public SearchCommand(SearchCommandFacade searchCommandFacade){
+        this.searchCommandFacade = searchCommandFacade;
+    }
     /**
      * The method retrieves desired arguments
      * depending on search result execute different commands
@@ -40,43 +48,24 @@ public class SearchCommand implements Command {
     @Override
     public Route execute(HttpServletRequest request,
                          HttpServletResponse response) throws CommandException, ValidationException {
-        Route route = new Route();
+        Route route;
         String role = (String) request.getSession().getAttribute("role");
         String search = request.getParameter("search");
 
         try {
             if (role == null) {
-
-                carService.getCar(search.trim()).ifPresent(searchedCar -> {
-                    request.setAttribute("searchCommand", "searchingCar");
-                    request.setAttribute("searchedCars", searchedCar);
-                    route.setPathOfThePage("/index.jsp");
-                });
-
+                route = searchCommandFacade.searchCarForGuest(search.trim(),request);
+                logger.info("found searched car for guest");
             } else {
 
                  if (role.equals("admin") && search.contains("@")) {
-                     userService.getUser(search.trim()).ifPresent(searchedUser -> {
-                        request.setAttribute("searchCommand", "searchingUser");
-                        request.setAttribute("searchedUser", searchedUser);
-                        route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
-                    });
-
+                     route = searchCommandFacade.searchUserForAdmin(search.trim(),request);
+                    logger.info("found searched user for admin");
                 } else {
-
-                    carService.getCar(search.trim()).ifPresent(searchedCars -> {
-                        request.setAttribute("searchCommand", "searchingCar");
-                        request.setAttribute("searchedCars", searchedCars);
-                        if (Objects.equals(request.getSession().getAttribute("role"), "admin")) {
-                            route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN);
-                        } else if (Objects.equals(request.getSession().getAttribute("role"), "user")) {
-                            route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_USER);
-                        }
-                    });
-
+                     route = searchCommandFacade.searchCarForAdminOrUser(search.trim(),request);
+                     logger.info("found required search for user/admin depend on request");
                 }
             }
-            route.setRoute(Route.RouteType.FORWARD);
         } catch (ServiceException e) {
             throw new CommandException(e.getMessage());
         }

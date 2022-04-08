@@ -191,6 +191,7 @@ public class UserDaoImpl implements UserDao<User> {
              PreparedStatement setAdminStatus =
                      connection.prepareStatement(QuerySQL.UPDATE_USER_ROLE_TO_ADMIN_ROLE)) {
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             statement.setString(1, newUser.getName());
             statement.setString(2, newUser.getSurname());
             statement.setString(3, newUser.getLogin());

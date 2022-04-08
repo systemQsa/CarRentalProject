@@ -83,7 +83,6 @@ public interface Command {
      * @throws CommandException in case problem occur during the parsing process
      */
     default Order parseIncomeOrder(String freshOrder) throws CommandException {
-        //todo check if parsing works! redone method
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
           return Stream.of(freshOrder).map(value -> value.substring(6, value.length() - 1)
                         .replaceAll("\\S+\\=", ""))

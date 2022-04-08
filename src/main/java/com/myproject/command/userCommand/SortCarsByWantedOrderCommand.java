@@ -25,39 +25,48 @@ public class SortCarsByWantedOrderCommand implements Command {
         String wantedOrder = request.getParameter("order");
         String pageId = request.getParameter("page");
         String role = (String) request.getSession().getAttribute("role");
-        String  records = request.getParameter("noOrRecordsSorted");
-        System.out.println("Amount of records all " + request.getSession().getAttribute("records"));
+        String records = request.getParameter("noOrRecordsSorted");
         Integer amountOfTotalRecords = (Integer) request.getSession().getAttribute("records");
         int currPage;
         int noOfRecords;
         Route route = new Route();
-
-        if (pageId != null && records != null){
-            currPage = Integer.parseInt(pageId);
-            noOfRecords = Integer.parseInt(records);
-        }else {
-            currPage = 1;
-            noOfRecords = 5;
-        }
+        currPage = getCurrPage(pageId);
+        noOfRecords = getNoOfRecords(records);
 
         try {
-            request.setAttribute("order",wantedOrder);
-            request.setAttribute("currentPage",currPage);
-            request.setAttribute("noOrRecordsSorted",noOfRecords);
-            carService.getSortedCars(wantedOrder,currPage,noOfRecords)
+            request.setAttribute("order", wantedOrder);
+            request.setAttribute("currentPage", currPage);
+            request.setAttribute("noOrRecordsSorted", noOfRecords);
+            carService.getSortedCars(wantedOrder, currPage, noOfRecords)
                     .ifPresent(cars -> request.setAttribute("sortedCars", cars));
 
-            int result = (amountOfTotalRecords / noOfRecords);
-            if (result % noOfRecords > 0) result++;
-            request.setAttribute("noOfPages",result);
+            request.setAttribute("noOfPages",
+                    getAmountOfPagesAccordingToAmountOfRecords(amountOfTotalRecords, noOfRecords));
             if (role == null) route.setPathOfThePage(ConstantPage.HOME_PAGE);
             route.setPathOfThePage(ConstantPage.WEB_INF_FULL_PATH_TO_USER);
 
         } catch (ServiceException e) {
             logger.warn("SOME PROBLEM OCCUR CANT SORT CAR FRO USER IN SortCarsByWantedOrderCommand class");
-            throw new CommandException("CANT GET SORTED CARS IN COMMAND",e);
+            throw new CommandException("CANT GET SORTED CARS IN COMMAND", e);
         }
         route.setRoute(Route.RouteType.FORWARD);
         return route;
     }
+
+    private int getCurrPage(String pageId) {
+        if (pageId != null) return Integer.parseInt(pageId);
+        return 1;
+    }
+
+    private int getNoOfRecords(String records) {
+        if (records != null) return Integer.parseInt(records);
+        return 5;
+    }
+
+    private int getAmountOfPagesAccordingToAmountOfRecords(Integer amountOfTotalRecords, int noOfRecords) {
+        int result = (amountOfTotalRecords / noOfRecords);
+        if (result % noOfRecords > 0) result++;
+        return result;
+    }
+
 }

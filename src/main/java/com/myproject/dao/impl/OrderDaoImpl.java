@@ -54,7 +54,8 @@ public class OrderDaoImpl implements OrderDao {
                                              String approved, long orderId) throws DaoException {
         connection = connectManager.getConnection();
         boolean response = false;
-        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_APPROVED_ORDER_BY_MANAGER)) {
+        try (PreparedStatement statement = connection
+                .prepareStatement(QuerySQL.SET_APPROVED_ORDER_BY_MANAGER)) {
             statement.setString(1, feedback);
             statement.setString(2, managerLogin);
             statement.setString(3, approved);
@@ -83,7 +84,8 @@ public class OrderDaoImpl implements OrderDao {
         connection = connectManager.getConnection();
         ResultSet suchOrderInDB;
 
-        try (PreparedStatement checkOrderPresence = connection.prepareStatement(QuerySQL.CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER)) {
+        try (PreparedStatement checkOrderPresence = connection
+                .prepareStatement(QuerySQL.CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER)) {
 
             checkOrderPresence.setString(1, order.getPassport());
             logger.info("connected and getting the response if the order already exists in DB");

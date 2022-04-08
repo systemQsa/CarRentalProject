@@ -34,53 +34,57 @@ public class LangFilter implements Filter {
         response.setHeader(GeneralConstant.CACHE_CONTROL, GeneralConstant.NO_STORE_MUST_REVALIDATE);
         response.setHeader(GeneralConstant.PRAGMA, GeneralConstant.NO_CACHE);
         response.setDateHeader(GeneralConstant.EXPIRES, 0);
-        ResourceBundle bundle;
 
-        if (request.getParameter("lang") == null && Objects.equals(request.getSession()
-                .getAttribute("lang"), "en")) {
-
-            bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
-                    new Locale(GeneralConstant.LANGUAGE_ENG, GeneralConstant.COUNTRY_US));
-            request.getSession().setAttribute(GeneralConstant.LANGUAGE, bundle);
-            request.getSession().setAttribute("lang", "en");
-
-        } else if (request.getParameter("lang") == null
-                && Objects.equals(request.getSession().getAttribute("lang"), "uk")) {
-
-            bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
-                    new Locale(GeneralConstant.LANGUAGE_UKR, GeneralConstant.COUNTRY_UA));
-            request.getSession().setAttribute(GeneralConstant.LANGUAGE, bundle);
-            request.getSession().setAttribute("lang", "uk");
-        }
-
-        if (Objects.equals(request.getParameter(GeneralConstant.LANG), "uk")
-                && Objects.equals(request.getSession().getAttribute("lang"), "en")
-                && Objects.equals(request.getParameter(GeneralConstant.LANG), GeneralConstant.LANGUAGE_UKR)) {
-
-            bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
-                    new Locale(GeneralConstant.LANGUAGE_UKR, GeneralConstant.COUNTRY_UA));
-            request.getSession().setAttribute(GeneralConstant.LANGUAGE, bundle);
-            request.getSession().setAttribute("lang", "uk");
-
-        } else if (Objects.equals(request.getParameter("lang"), "en")
-                && Objects.equals(request.getSession().getAttribute("lang"), "uk")) {
-
-            bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
-                    new Locale(GeneralConstant.LANGUAGE_ENG, GeneralConstant.COUNTRY_US));
-            request.getSession().setAttribute(GeneralConstant.LANGUAGE, bundle);
-            request.getSession().setAttribute("lang", "en");
-
-        } else if ((request.getParameter("lang") == null)
-                && (request.getSession().getAttribute("lang") == null)) {
-
-            bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
-                    new Locale(GeneralConstant.LANGUAGE_ENG, GeneralConstant.COUNTRY_US));
-            request.getSession().setAttribute(GeneralConstant.LANGUAGE, bundle);
-            request.getSession().setAttribute("lang", "en");
-        }
+        setInitLanguage(request);
+        switchLanguage(request);
 
         logger.info("LangFilter WORKING");
         filterChain.doFilter(request, response);
+    }
+
+    private void setInitLanguage(HttpServletRequest request) {
+        if (request.getParameter(GeneralConstant.LANG) == null
+                && ((request.getSession().getAttribute(GeneralConstant.LANG) == null)
+                || Objects.equals(request.getSession()
+                .getAttribute(GeneralConstant.LANG), GeneralConstant.LANGUAGE_ENG))) {
+            setEnglishLanguage(request);
+
+        } else if (request.getParameter(GeneralConstant.LANG) == null
+                && Objects.equals(request.getSession().getAttribute(GeneralConstant.LANG),
+                GeneralConstant.LANGUAGE_UKR)) {
+            setUkrainianLanguage(request);
+        }
+    }
+
+    private void switchLanguage(HttpServletRequest request) {
+        if (Objects.equals(request.getParameter(GeneralConstant.LANG), GeneralConstant.LANGUAGE_UKR)
+                && Objects.equals(request.getSession().getAttribute(GeneralConstant.LANG),
+                GeneralConstant.LANGUAGE_ENG)) {
+            setUkrainianLanguage(request);
+
+        } else if (Objects.equals(request.getParameter(GeneralConstant.LANG), GeneralConstant.LANGUAGE_ENG)
+                && Objects.equals(request.getSession().getAttribute(GeneralConstant.LANG),
+                GeneralConstant.LANGUAGE_UKR)) {
+            setEnglishLanguage(request);
+
+        }
+    }
+
+    private void setUkrainianLanguage(HttpServletRequest request) {
+        ResourceBundle bundle;
+        bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
+                new Locale(GeneralConstant.LANGUAGE_UKR, GeneralConstant.COUNTRY_UA));
+        request.getSession().setAttribute(GeneralConstant.LANGUAGE, bundle);
+        request.getSession().setAttribute(GeneralConstant.LANG, GeneralConstant.LANGUAGE_UKR);
+    }
+
+
+    private void setEnglishLanguage(HttpServletRequest request) {
+        ResourceBundle bundle;
+        bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
+                new Locale(GeneralConstant.LANGUAGE_ENG, GeneralConstant.COUNTRY_US));
+        request.getSession().setAttribute(GeneralConstant.LANGUAGE, bundle);
+        request.getSession().setAttribute(GeneralConstant.LANG, GeneralConstant.LANGUAGE_ENG);
     }
 
     @Override

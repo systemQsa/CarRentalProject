@@ -17,7 +17,7 @@ public interface Validate {
 
     boolean userIsBlockedValidate(String login) throws ValidationException;
 
-    boolean datesAndTimeValidate(LocalDateTime fromDate, LocalDateTime toDate) throws ValidationException;
+    boolean datesAndTimeValidateCorrectness(LocalDateTime fromDate, LocalDateTime toDate) throws ValidationException;
 
     boolean passportValidate(String passport) throws ValidationException;
 

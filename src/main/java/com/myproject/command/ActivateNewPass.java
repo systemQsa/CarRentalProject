@@ -26,13 +26,11 @@ public class ActivateNewPass implements Command {
     @Override
     public Route execute(HttpServletRequest request, HttpServletResponse response) throws CommandException, ValidationException {
         Route route = new Route();
-        boolean isPassUpdatedSuccessfully;
         String userLogin = request.getParameter("userLogin");
         String newPass = request.getParameter("password");
 
         try {
-            isPassUpdatedSuccessfully = userService.resetPassword(userLogin, newPass.toCharArray());
-            if (isPassUpdatedSuccessfully) {
+            if (userService.resetPassword(userLogin, newPass.toCharArray())) {
                 route.setPathOfThePage(ConstantPage.LOG_IN_PAGE);
             } else {
                 route.setPathOfThePage(ConstantPage.HOME_PAGE);

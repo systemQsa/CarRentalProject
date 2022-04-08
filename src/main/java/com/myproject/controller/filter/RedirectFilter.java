@@ -41,6 +41,20 @@ public class RedirectFilter implements Filter {
         String userName = (String) request.getSession().getAttribute("userName");
 
 
+        if (actionLogOut(request, response, userRole, loggedUsers, userName)) return;
+
+        if (actionIsFindAllCars(request, response)) return;
+
+        if (actionIsSearchOrSort(request, response)) return;
+
+        if (actionIsPagination(request, response)) return;
+
+        logger.info("Redirect filter working");
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean actionLogOut(HttpServletRequest request, HttpServletResponse response,
+                                 String userRole, HashSet<String> loggedUsers, String userName) throws IOException {
         if (userRole != null && (Objects.equals(userRole, "admin") || Objects.equals(userRole, "user")
                 || Objects.equals(userRole, "manager")) && (request.getRequestURI().contains("/login.jsp")
                 || request.getRequestURI().contains("/register.jsp") || request.getRequestURI().contains("/index.jsp"))) {
@@ -50,33 +64,44 @@ public class RedirectFilter implements Filter {
             request.getSession().setAttribute(GeneralConstant.ROLE, null);
             request.getSession().setAttribute(GeneralConstant.USER_NAME, null);
             response.sendRedirect("/car");
-            return;
+            return true;
         }
+        return false;
+    }
 
-        if (Objects.equals(request.getParameter("action"), "findAllCars")
-                || Objects.equals(request.getParameter("action"), "findAllUsers")) {
-            request.getRequestDispatcher("/helloServlet").forward(request, response);
-            return;
-        }
-
-        if (request.getParameter("search") != null || request.getParameter("sort") != null) {
-            request.getRequestDispatcher("/helloServlet").forward(request, response);
-            return;
-        }
-
+    private boolean actionIsPagination(HttpServletRequest request,
+                                       HttpServletResponse response) throws ServletException, IOException {
         if (Objects.equals(request.getParameter("action"), "pagination")) {
             try {
                 Route route = new PaginationCommand().execute(request, response);
                 request.getRequestDispatcher(route.getPathOfThePage()).forward(request, response);
-                return;
+                return true;
             } catch (CommandException | ValidationException e) {
                 throw new ServletException(e.getMessage());
             }
         }
-
-        logger.info("Redirect filter working");
-        filterChain.doFilter(request, response);
+        return false;
     }
+
+    private boolean actionIsSearchOrSort(HttpServletRequest request,
+                                         HttpServletResponse response) throws ServletException, IOException {
+        if (request.getParameter("search") != null || request.getParameter("sort") != null) {
+            request.getRequestDispatcher("/helloServlet").forward(request, response);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean actionIsFindAllCars(HttpServletRequest request,
+                                        HttpServletResponse response) throws ServletException, IOException {
+        if (Objects.equals(request.getParameter("action"), "findAllCars")
+                || Objects.equals(request.getParameter("action"), "findAllUsers")) {
+            request.getRequestDispatcher("/helloServlet").forward(request, response);
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public void destroy() {

@@ -49,22 +49,10 @@ public class ForgotPasswordCommand implements Command {
         String setCommand = request.getParameter("setCommand");
         Route route = new Route();
 
-        if (setCommand.equals("checkSecretCode")) {
-            request.getSession().setAttribute("userLogin", userLogin);
-            System.out.println(secretCode == Integer.parseInt(secretNumbers));
-            if (secretCode == Integer.parseInt(secretNumbers)) {
-                route.setPathOfThePage(ConstantPage.UPDATE_PASS_PAGE);
-                route.setRoute(Route.RouteType.REDIRECT);
-            } else {
-                setInformMessageIfErrorOccur("err.password_not_match", 26, request);
-                logger.warn("Cannot update an new password for the user. Verification code are not match in ForgotPasswordCommand class");
-                throw new CommandException(ConstantPage.FORGOT_PASS_PAGE);
-            }
-            return route;
-        }
+        Route routeBack = checkSecretCodeInput(request, secretNumbers, setCommand, route);
+        if (routeBack != null) return routeBack;
 
         if (setCommand.equals("checkUser")) {
-
             try {
                 validate.loginValidate(userEmail);
             } catch (ValidationException e) {
@@ -73,18 +61,7 @@ public class ForgotPasswordCommand implements Command {
             }
 
             try {
-                Optional<User> user = userService.getUser(userEmail);
-                if (user.isPresent()) {
-                    String login = user.get().getLogin();
-                    if (login == null){
-                        setInformMessageIfErrorOccur("err.no_such_user",27,request);
-                        throw new ServiceException(ConstantPage.FORGOT_PASS_PAGE);
-                    }
-                    userLogin = login;
-                    request.getSession().setAttribute("userLogin",userLogin);
-                    secretCode = sendEmail.sendEmailToRecipient(login);
-                    route.setPathOfThePage(ConstantPage.FORGOT_PASS_PAGE);
-                }
+                checkUserPresenceInDBAndSendEmail(request, route, userService.getUser(userEmail));
             } catch (ServiceException e) {
                 setInformMessageIfErrorOccur("err.no_such_user", 16, request);
                 logger.warn("Impossible to find such user " + userLogin + " in ForgotPasswordCommand class");
@@ -102,4 +79,39 @@ public class ForgotPasswordCommand implements Command {
         route.setRoute(Route.RouteType.REDIRECT);
         return route;
     }
+
+    private void checkUserPresenceInDBAndSendEmail(HttpServletRequest request, Route route,
+                                                   Optional<User> user) throws ServiceException {
+        if (user.isPresent()) {
+            String login = user.get().getLogin();
+            if (login == null){
+                setInformMessageIfErrorOccur("err.no_such_user",27, request);
+                throw new ServiceException(ConstantPage.FORGOT_PASS_PAGE);
+            }
+            userLogin = login;
+            request.getSession().setAttribute("userLogin",userLogin);
+            secretCode = sendEmail.sendEmailToRecipient(login);
+            route.setPathOfThePage(ConstantPage.FORGOT_PASS_PAGE);
+        }
+    }
+
+
+    private Route checkSecretCodeInput(HttpServletRequest request, String secretNumbers,
+                                       String setCommand, Route route) throws CommandException {
+        if (setCommand.equals("checkSecretCode")) {
+            request.getSession().setAttribute("userLogin", userLogin);
+            System.out.println(secretCode == Integer.parseInt(secretNumbers));
+            if (secretCode == Integer.parseInt(secretNumbers)) {
+                route.setPathOfThePage(ConstantPage.UPDATE_PASS_PAGE);
+                route.setRoute(Route.RouteType.REDIRECT);
+            } else {
+                setInformMessageIfErrorOccur("err.password_not_match", 26, request);
+                logger.warn("Cannot update an new password for the user. Verification code are not match in ForgotPasswordCommand class");
+                throw new CommandException(ConstantPage.FORGOT_PASS_PAGE);
+            }
+            return route;
+        }
+        return null;
+    }
+
 }
