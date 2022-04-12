@@ -61,7 +61,7 @@ public class LoginCommand implements Command {
 
             try {
                  role = userService.logInValidation(login,password,request);
-             } catch (ServiceException e) {
+             } catch (ValidationException | ServiceException e) {
                 setInformMessageIfErrorOccur("err.no_such_user",38,request);
                 throw new CommandException(ConstantPage.LOG_IN_PAGE);
             }

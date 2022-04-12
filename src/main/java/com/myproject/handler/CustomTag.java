@@ -12,6 +12,6 @@ public class CustomTag extends SimpleTagSupport {
     @Override
     public void doTag() throws  IOException {
         JspWriter output = getJspContext().getOut();
-        output.print("author Alexandra Bushmelova");
+        output.print("by Alexandra Bushmelova");
     }
 }

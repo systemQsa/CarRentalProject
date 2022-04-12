@@ -14,8 +14,6 @@
 <a href="${pageContext.request.contextPath}/view/admin/admin.jsp"
    role="button" class="btn btn-info btn:sm">${sessionScope.language['Go_back']}</a>
 
-<h4>${sessionScope.get("carName")}</h4>
-
 <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
     <div class="bg-light p-5 border shadow">
         <h4 class="text-center">${sessionScope.language['Update_car']}</h4>
@@ -38,8 +36,7 @@
             <div class="form-outline col-md-5 col-lg-5 offset-lg-3 offset-md-3 mt-4">
                 <label>${sessionScope.language['Rental_Price']}
                     <fmt:formatNumber type="number" pattern=".00" value="${sessionScope.rentalPrice}"/></label>
-                <input type="text"  name="rentalPrice" value="
-                    <fmt:formatNumber type="number" pattern=".00" value="${sessionScope.rentalPrice}"/>">
+                <input type="text"  name="rentalPrice" value="<fmt:formatNumber type="number" pattern=".00" value="${sessionScope.rentalPrice}"/>">
             </div>
             <button type="submit" class="btn btn-primary w-100 my-3 shadow">${sessionScope.language['Update']}</button>
         </form>

@@ -24,13 +24,12 @@ public class UserFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(UserFilter.class);
     private final UserFilterFacade userFilterFacade = new UserFilterFacade();
 
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
-
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+                         FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setHeader(GeneralConstant.CACHE_CONTROL, GeneralConstant.NO_STORE_MUST_REVALIDATE);
@@ -46,7 +45,7 @@ public class UserFilter implements Filter {
                 && request.getSession().getAttribute(GeneralConstant.ROLE).equals("admin")
                 && (request.getSession().getAttribute(GeneralConstant.ROLE) != null)) {
 
-             userFilterFacade.setDriverRentalPriceForAdminPage(request);
+            userFilterFacade.setDriverRentalPriceForAdminPage(request);
             request.getRequestDispatcher(ConstantPage.WEB_INF_FULL_PATH_TO_ADMIN).forward(request, response);
             filterChain.doFilter(request, response);
             return;
@@ -76,7 +75,6 @@ public class UserFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
-
     private void checkInCaseUserPressBackArrowToLogOut(HttpServletRequest request,
                                                        HttpServletResponse response, String userRole, String urlPath,
                                                        HashSet<String> loggedUsers) throws IOException {
@@ -96,8 +94,6 @@ public class UserFilter implements Filter {
         }
     }
 
-
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 }

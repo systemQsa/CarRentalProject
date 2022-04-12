@@ -20,8 +20,7 @@ public class CatchPageFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(CatchPageFilter.class);
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-     }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -41,11 +40,13 @@ public class CatchPageFilter implements Filter {
         }
 
         if (httpRequest.getRequestURI().contains("/view/user/bookCar.jsp")) {
-            httpRequest.getRequestDispatcher(ConstantPage.FULL_PATH_USER_CREATE_BOOKING).forward(httpRequest, httpResponse);
+            httpRequest.getRequestDispatcher(ConstantPage.FULL_PATH_USER_CREATE_BOOKING)
+                    .forward(httpRequest, httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/view/user/confirmReceipt.jsp")){
-            httpRequest.getRequestDispatcher(ConstantPage.CONFIRM_RECEIPT_FULL_PATH).forward(httpRequest,httpResponse);
+            httpRequest.getRequestDispatcher(ConstantPage.CONFIRM_RECEIPT_FULL_PATH)
+                    .forward(httpRequest,httpResponse);
             return;
         }
         if (httpRequest.getRequestURI().contains("/view/user/user.jsp")) {
@@ -53,7 +54,8 @@ public class CatchPageFilter implements Filter {
 
                 UserService userService = new UserServiceImpl();
                 httpRequest.getSession().setAttribute("userBalance",
-                        userService.getBalance((String) httpRequest.getSession().getAttribute(GeneralConstant.USER_NAME)));
+                        userService.getBalance((String) httpRequest.getSession()
+                                .getAttribute(GeneralConstant.USER_NAME)));
             } catch (ServiceException e) {
                 logger.warn("SOME PROBLEM IN CatchPageFilter filter");
             }

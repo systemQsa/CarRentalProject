@@ -39,7 +39,6 @@ public class HelloServlet extends HttpServlet {
             logger.fatal("GET METHOD FAILED IN SERVLET");
             throw new ServletException(e.getMessage());
         }
-        logger.info("GET METHOD WORK");
     }
 
     @Override
@@ -50,14 +49,10 @@ public class HelloServlet extends HttpServlet {
             logger.fatal("POST METHOD FAILED IN SERVLET");
             throw new ServletException(e.getMessage());
         }
-        logger.info("POST METHOD WORK");
     }
 
-    @Override
-    public void destroy() {
-    }
-
-    private void processTheRequest(HttpServletRequest request, HttpServletResponse response) throws ControllerException, IOException, ServletException {
+    private void processTheRequest(HttpServletRequest request,
+                                   HttpServletResponse response) throws ControllerException, IOException, ServletException {
 
         String action = request.getParameter(GeneralConstant.ACTION);
         logger.info("Role " + request.getSession().getAttribute("login"));
@@ -75,21 +70,21 @@ public class HelloServlet extends HttpServlet {
             try {
                 route = command.execute(request, response);
             } catch (CommandException | ValidationException e) {
-                logger.warn("CONTROLLER EXCEPTION " + e.getMessage() + " URI = " + request.getRequestURI() + " URL = " + request.getRequestURL() + " SERVPATH = "  + request.getServletPath());
+                logger.warn("CONTROLLER EXCEPTION " + e.getMessage() + " URI = " + request.getRequestURI() + " URL = " + request.getRequestURL() + " SERVPATH = " + request.getServletPath());
                 request.getRequestDispatcher(e.getMessage()).forward(request, response);
                 throw new ControllerException(e.getMessage());
             }
             String path = route.getPathOfThePage();
             if (route.getRoute().equals(Route.RouteType.FORWARD)) {
-                System.gc();
                 request.getRequestDispatcher(route.getPathOfThePage()).forward(request, response);
             } else if (path.contains(GeneralConstant.REDIRECT)) {
-                System.gc();
                 response.sendRedirect(path.replaceAll(GeneralConstant.REDIRECT, GeneralConstant.CAR));
             } else {
-                System.gc();
                 response.sendRedirect(str + path);
             }
         }
     }
+
+    @Override
+    public void destroy() {}
 }

@@ -54,8 +54,7 @@ public class OrderDaoImpl implements OrderDao {
                                              String approved, long orderId) throws DaoException {
         connection = connectManager.getConnection();
         boolean response = false;
-        try (PreparedStatement statement = connection
-                .prepareStatement(QuerySQL.SET_APPROVED_ORDER_BY_MANAGER)) {
+        try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SET_APPROVED_ORDER_BY_MANAGER)) {
             statement.setString(1, feedback);
             statement.setString(2, managerLogin);
             statement.setString(3, approved);
@@ -84,8 +83,7 @@ public class OrderDaoImpl implements OrderDao {
         connection = connectManager.getConnection();
         ResultSet suchOrderInDB;
 
-        try (PreparedStatement checkOrderPresence = connection
-                .prepareStatement(QuerySQL.CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER)) {
+        try (PreparedStatement checkOrderPresence = connection.prepareStatement(QuerySQL.CHECK_IF_ORDER_ALREADY_PRESENT_IN_DB_BY_USER)) {
 
             checkOrderPresence.setString(1, order.getPassport());
             logger.info("connected and getting the response if the order already exists in DB");
@@ -142,7 +140,7 @@ public class OrderDaoImpl implements OrderDao {
                      connection.prepareStatement(QuerySQL.GET_USER_BALANCE);
              PreparedStatement setOrderForUser =
                      connection.prepareStatement(QuerySQL.SET_ORDERS_FOR_USER);
-             PreparedStatement changeUserBalance =
+             PreparedStatement updateBalanceStatement =
                      connection.prepareStatement(QuerySQL.UPDATE_USER_BALANCE)) {
 
             connection.setAutoCommit(false);
@@ -156,13 +154,7 @@ public class OrderDaoImpl implements OrderDao {
             setOrderToDB.setLong(6, order.getUserId());
 
             //1
-            if (setOrderToDB.executeUpdate() > 0) {
-                resultSet2 = setOrderToDB.getGeneratedKeys();
-                if (resultSet2.next()) {
-                    orderId = resultSet2.getInt(1);
-                    order.setOrderId(orderId);
-                }
-            }
+            orderId = getOrderId(order, orderId, setOrderToDB);
 
             //2
             setOrderForUser.setInt(1, orderId);
@@ -172,23 +164,9 @@ public class OrderDaoImpl implements OrderDao {
             if (processPayment) {
 
                 //3
-                getUserBalance.setLong(1, order.getUserId());
-                resultSet = getUserBalance.executeQuery();
-                if (resultSet.next()) {
-                    balance = resultSet.getDouble("balance");
-                    userBalance.set(balance);
-                }
+                getUserBalance(order, userBalance, getUserBalance);
 
-                Double res = userBalance.get();
-                double value = res - orderAtomicReference.get().getReceipt();
-                if (value <= 0) {
-                    logger.warn("NOT ENOUGH BALANCE ON CARD");
-                    throw new SQLException("NOT ENOUGH BALANCE ON YOUR CARD");
-                }
-                 userBalance.compareAndSet(res, value);
-                changeUserBalance.setDouble(1, userBalance.get());
-                changeUserBalance.setString(2, order.getUserLogin());
-                changeUserBalance.executeUpdate();
+                paymentProcess(order, orderAtomicReference, userBalance, updateBalanceStatement);
             }
              connection.commit();
 
@@ -205,6 +183,44 @@ public class OrderDaoImpl implements OrderDao {
             connectManager.closeConnection(connection);
         }
          return order;
+    }
+
+    private void paymentProcess(Order order, AtomicReference<Order> orderAtomicReference,
+                                AtomicReference<Double> userBalance, PreparedStatement updateBalanceStatement) throws SQLException {
+        Double res = userBalance.get();
+        double value = res - orderAtomicReference.get().getReceipt();
+        if (value <= 0) {
+            logger.warn("NOT ENOUGH BALANCE ON CARD");
+            throw new SQLException("NOT ENOUGH BALANCE ON YOUR CARD");
+        }
+        userBalance.compareAndSet(res, value);
+        updateBalanceStatement.setDouble(1, userBalance.get());
+        updateBalanceStatement.setString(2, order.getUserLogin());
+        updateBalanceStatement.executeUpdate();
+    }
+
+    private void getUserBalance(Order order, AtomicReference<Double> userBalance,
+                                PreparedStatement getUserBalance) throws SQLException {
+        ResultSet resultSet;
+        double balance;
+        getUserBalance.setLong(1, order.getUserId());
+        resultSet = getUserBalance.executeQuery();
+        if (resultSet.next()) {
+            balance = resultSet.getDouble("balance");
+            userBalance.set(balance);
+        }
+    }
+
+    private int getOrderId(Order order, int orderId, PreparedStatement setOrderToDB) throws SQLException {
+        ResultSet resultSet2;
+        if (setOrderToDB.executeUpdate() > 0) {
+            resultSet2 = setOrderToDB.getGeneratedKeys();
+            if (resultSet2.next()) {
+                orderId = resultSet2.getInt(1);
+                order.setOrderId(orderId);
+            }
+        }
+        return orderId;
     }
 
 }

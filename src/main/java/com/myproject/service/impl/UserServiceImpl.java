@@ -111,9 +111,6 @@ public class UserServiceImpl implements UserService {
         try {
             user = getUserByLoginAndPass(login, password);
         } catch (ServiceException e) {
-            request.setAttribute(GeneralConstant.ErrorMSG.ERR, 2);
-            request.setAttribute(GeneralConstant.ErrorMSG.ERR_MSG,
-                    GeneralConstant.ErrorMSG.NOT_REGISTERED);
             logger.warn("Can`t get user by given credentials in UserServiceImpl class");
             throw new ValidationException(e.getMessage());
         }

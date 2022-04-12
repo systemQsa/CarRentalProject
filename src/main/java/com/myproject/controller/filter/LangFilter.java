@@ -20,11 +20,8 @@ import java.util.ResourceBundle;
 public class LangFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(LangFilter.class);
 
-
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
@@ -78,7 +75,6 @@ public class LangFilter implements Filter {
         request.getSession().setAttribute(GeneralConstant.LANG, GeneralConstant.LANGUAGE_UKR);
     }
 
-
     private void setEnglishLanguage(HttpServletRequest request) {
         ResourceBundle bundle;
         bundle = ResourceBundle.getBundle(GeneralConstant.RESOURCES,
@@ -88,7 +84,6 @@ public class LangFilter implements Filter {
     }
 
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 }
 

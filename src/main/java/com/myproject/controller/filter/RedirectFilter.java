@@ -23,10 +23,8 @@ import java.util.Objects;
 public class RedirectFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(RedirectFilter.class);
 
-
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
@@ -41,13 +39,21 @@ public class RedirectFilter implements Filter {
         String userName = (String) request.getSession().getAttribute("userName");
 
 
-        if (actionLogOut(request, response, userRole, loggedUsers, userName)) return;
+        if (actionLogOut(request, response, userRole, loggedUsers, userName)) {
+            return;
+        }
 
-        if (actionIsFindAllCars(request, response)) return;
+        if (actionFindAllCars(request, response)) {
+            return;
+        }
 
-        if (actionIsSearchOrSort(request, response)) return;
+        if (actionSearchOrSort(request, response)) {
+            return;
+        }
 
-        if (actionIsPagination(request, response)) return;
+        if (actionPagination(request, response)) {
+            return;
+        }
 
         logger.info("Redirect filter working");
         filterChain.doFilter(request, response);
@@ -69,7 +75,7 @@ public class RedirectFilter implements Filter {
         return false;
     }
 
-    private boolean actionIsPagination(HttpServletRequest request,
+    private boolean actionPagination(HttpServletRequest request,
                                        HttpServletResponse response) throws ServletException, IOException {
         if (Objects.equals(request.getParameter("action"), "pagination")) {
             try {
@@ -83,7 +89,7 @@ public class RedirectFilter implements Filter {
         return false;
     }
 
-    private boolean actionIsSearchOrSort(HttpServletRequest request,
+    private boolean actionSearchOrSort(HttpServletRequest request,
                                          HttpServletResponse response) throws ServletException, IOException {
         if (request.getParameter("search") != null || request.getParameter("sort") != null) {
             request.getRequestDispatcher("/helloServlet").forward(request, response);
@@ -92,7 +98,7 @@ public class RedirectFilter implements Filter {
         return false;
     }
 
-    private boolean actionIsFindAllCars(HttpServletRequest request,
+    private boolean actionFindAllCars(HttpServletRequest request,
                                         HttpServletResponse response) throws ServletException, IOException {
         if (Objects.equals(request.getParameter("action"), "findAllCars")
                 || Objects.equals(request.getParameter("action"), "findAllUsers")) {
@@ -102,8 +108,6 @@ public class RedirectFilter implements Filter {
         return false;
     }
 
-
     @Override
-    public void destroy() {
-    }
+    public void destroy() {}
 }

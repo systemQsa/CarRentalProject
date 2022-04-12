@@ -127,23 +127,23 @@ public class OrderViewDaoImpl implements OrderViewDao {
         ResultSet totalRecords;
         ResultSet resultSet;
         List<OrderViewForUserRequest> list = new ArrayList<>();
-        try (PreparedStatement statement =
+        try (PreparedStatement getRequiredAmountOfRecordsStatement =
                      connection.prepareStatement("SELECT " + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER + " LIMIT ?,?")) {
-            PreparedStatement statement2 =
+            PreparedStatement availableRecordsStatement =
                     connection.prepareStatement("SELECT COUNT(user_id) as records," + QuerySQL.VIEW_ALL_APPROVED_OR_NOT_APPROVED_ORDERS_BY_MANAGER);
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            statement2.setString(1, approved);
-            totalRecords = statement2.executeQuery();
+            availableRecordsStatement.setString(1, approved);
+            totalRecords = availableRecordsStatement.executeQuery();
             logger.info("Total records are were given in OrderViewDaoImpl class");
             if (totalRecords.next()) {
                 temp = totalRecords.getInt("records");
             }
 
-            statement.setString(1, approved);
-            statement.setInt(2, start);
-            statement.setInt(3, noOfRecords);
-            resultSet = statement.executeQuery();
+            getRequiredAmountOfRecordsStatement.setString(1, approved);
+            getRequiredAmountOfRecordsStatement.setInt(2, start);
+            getRequiredAmountOfRecordsStatement.setInt(3, noOfRecords);
+            resultSet = getRequiredAmountOfRecordsStatement.executeQuery();
             while (resultSet.next()) {
 
                 OrderViewForUserRequest.OrderViewBuilder viewOrderBuilder =
@@ -165,7 +165,7 @@ public class OrderViewDaoImpl implements OrderViewDao {
                 list.add(res);
             }
 
-            statement2.close();
+            availableRecordsStatement.close();
             connection.commit();
 
         } catch (SQLException e) {
