@@ -76,5 +76,6 @@
 
 <jsp:include page="/WEB-INF/view/info.jsp"/>
 <jsp:include page="/WEB-INF/view/allCars.jsp"/>
+<jsp:include page="/WEB-INF/view/include/footer.jsp"/>
  </body>
 </html>

@@ -111,6 +111,6 @@
         <p class="text-center">${sessionScope.language['There_are_no_records_yet']}!</p>
     </c:otherwise>
 </c:choose>
-
+<jsp:include page="/WEB-INF/view/include/footer.jsp"/>
 </body>
 </html>
