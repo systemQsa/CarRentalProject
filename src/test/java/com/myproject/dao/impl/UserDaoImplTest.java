@@ -76,7 +76,7 @@ public class UserDaoImplTest {
         try {
             userDao.topUpBalance(50.0, "user1@gmail.com");
             double balance = userDao.getBalance("user1@gmail.com");
-            assertEquals("100.0", String.valueOf(balance));
+            assertEquals(100.0, balance,0.00001);
 
         } catch (DaoException e) {
             e.printStackTrace();

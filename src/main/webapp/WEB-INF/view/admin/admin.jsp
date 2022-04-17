@@ -33,7 +33,7 @@
                         <form method="post" action="${pageContext.request.contextPath}/helloServlet">
                             <input type="hidden" name="action" value="updateDriverPrice">
                             <label class="">${sessionScope.language['Price_now']}</label><br>
-                            <p>${sessionScope.driverRentalPrice}</p>
+                            <p><fmt:formatNumber type="number" pattern=".00" value="${sessionScope.driverRentalPrice}"/></p>
                             <label class="">${sessionScope.language['New_price']}</label><br>
                             <input id="ex" type="text" name="newDriverPrice" style="width: 40%">
                             <button type="submit"
@@ -142,18 +142,8 @@
         </tbody>
     </table>
 </c:if>
+
 <div class="container">
-    <div class="row">
-        <div class="col">
-
-        </div>
-        <div class="col">
-
-        </div>
-    </div>
-</div>
-<div class="container">
-
     <%-- displays all cars for admin --%>
     <c:if test="${not empty requestScope.allCars}">
         <div class="row">
@@ -357,7 +347,7 @@
                         <td>${searchedCar.name}</td>
                         <td>${searchedCar.carClass}</td>
                         <td>${searchedCar.brand}</td>
-                        <td>${searchedCar.rentalPrice}</td>
+                        <td><fmt:formatNumber type="number" pattern=".00" value="${searchedCar.rentalPrice}"/></td>
                         <td>
                             <form method="post" action="${pageContext.request.contextPath}/helloServlet">
                                 <input type="hidden" name="carId" value="${searchedCar.carId}">

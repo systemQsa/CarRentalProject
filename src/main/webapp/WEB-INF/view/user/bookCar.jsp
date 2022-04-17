@@ -25,7 +25,7 @@
 
     <div class="col-md-6 col-lg-6 offset-lg-3 offset-md-3 mt-4">
              <div class="bg-light p-5 border shadow">
-                 <h3 class="text-center">${sessionScope.language['Book_Car']}</h3>
+                 <h3 class="text-center"><strong>${sessionScope.language['Book_Car']}</strong></h3>
                     <form method="post" action="${pageContext.request.contextPath}/helloServlet">
                     <input type="hidden" name="action" value="countReceipt">
                     <input type="hidden" name="userLogin" value="${sessionScope.userLogin}">
@@ -59,22 +59,25 @@
                     </div>
 
                     <div class="form-group-row d-block p-2">
-                        <span class="col-md-7"><strong>${sessionScope.language['Passport']}</strong></span>
-                       <span><input type="text" name="userPassport"></span>
-                        <c:if test="${requestScope.err == 12}">
+                        <span class="col-md-6"><strong>${sessionScope.language['Passport']}</strong></span>
+                        <div class="col-xs-2">
+                            <input type="text" name="userPassport"/>
+                        </div>
+                         <c:if test="${requestScope.err == 12}">
                             <p>${requestScope.errMSG}</p>
                         </c:if>
                      </div>
 
                         <div class="form-group-row d-block p-4">
     <%--                        radio button check--%>
-                            <h4>Driver rental price <fmt:formatNumber type="number" pattern=".00" value="${sessionScope.driverRentalPrice}"/> </h4>
+                            <h5><strong>${sessionScope.language['Driver_rental_price']}
+                                <fmt:formatNumber type="number" pattern=".00" value="${sessionScope.driverRentalPrice}"/></strong></h5>
                             <label class="radio-inline">
-                                <input  class="form-check-input" type="radio" name="flexRadioDefault"  value="false" checked>
+                                <input  class="form-check-input" type="radio" name="withOrWithoutDriver"  value="false" checked>
                                 <strong>${sessionScope.language['Without_driver']}</strong>
                             </label>
                             <label class="radio-inline">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" value="true">
+                                <input class="form-check-input" type="radio" name="withOrWithoutDriver" value="true">
                                 <strong>${sessionScope.language['With_driver']}</strong>
                             </label>
                         </div>

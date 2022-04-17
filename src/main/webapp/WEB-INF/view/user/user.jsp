@@ -34,7 +34,7 @@
                 </li>
                 <jsp:include page="/WEB-INF/view/include/sorter.jsp"/>
                  <li class="dropdown"><a class="dropdown-toggle text-white" data-toggle="dropdown" aria-expanded="false"
-                                        href="#">${sessionScope.userBalance}<span class="caret"></span></a>
+                                        href="#"><fmt:formatNumber type="number" pattern=".00" value="${sessionScope.userBalance}"/><span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li class="nav-item">
                             <form method="post" action="${pageContext.request.contextPath}/helloServlet">

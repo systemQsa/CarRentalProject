@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>${sessionScope.language['my_orders']}</title>
@@ -84,7 +84,7 @@
                                     <td>${sessionScope.language['yes']}</td>
                                 </c:when>
                             </c:choose>
-                            <td>${listOrders.order.receipt}</td>
+                            <td><fmt:formatNumber type="number" pattern=".00" value="${listOrders.order.receipt}"/></td>
                             <td>${listOrders.car.name}</td>
                             <td>${listOrders.car.carClass}</td>
                             <td>${listOrders.car.brand}</td>

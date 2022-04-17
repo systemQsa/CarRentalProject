@@ -33,7 +33,7 @@ public class DriverDaoImplTest {
         DriverDao driverDao = new DriverDaoImpl(dbManager);
         try {
             driverDao.updateDriverPrice(20.0);
-            assertEquals("20.0",String.valueOf(driverDao.getDriverPrice()));
+            assertEquals(20.0,driverDao.getDriverPrice(),0.00001);
         } catch (DaoException e) {
             e.printStackTrace();
         }

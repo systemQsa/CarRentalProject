@@ -11,16 +11,10 @@
 <body>
 
 <c:out value="${requestScope.errMSG}"/>
- <%-- <div class="container">--%>
-<%--    <div class="col-6 offset-md-3">--%>
-<%--        <img src="http://lamcdn.net/lookatme.ru/post_image-image/sIaRmaFSMfrw8QJIBAa8mA-small.png" alt="404" />--%>
-<%--    </div>--%>
-<%--</div>--%>
-
-    <div class="container">
-        <div class="col-3 offset-md-1">
-            <img src="https://c1.wallpaperflare.com/preview/251/931/705/not-found-404-error-file-not-found-404-file-not-found.jpg" alt="404" />
-        </div>
+<div class="container">
+    <div class="col-3 offset-md-1">
+        <img src="https://c1.wallpaperflare.com/preview/251/931/705/not-found-404-error-file-not-found-404-file-not-found.jpg" alt="404" />
     </div>
+</div>
  </body>
 </html>

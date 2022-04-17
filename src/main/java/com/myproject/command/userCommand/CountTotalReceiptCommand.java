@@ -50,7 +50,7 @@ public class CountTotalReceiptCommand implements Command {
         String userPassport = request.getParameter("userPassport");
         String fromDate = request.getParameter("fromDate");
         String toDate = request.getParameter("toDate");
-        String withDriver = request.getParameter("flexRadioDefault");
+        String withDriver = request.getParameter("withOrWithoutDriver");
         String userBalance = request.getParameter("userBalance");
 
         try {
