@@ -91,7 +91,6 @@ public class CountTotalReceiptCommand implements Command {
         return route;
     }
 
-
     private void checkIfInputDatesAreNotEmpty(HttpServletRequest request,
                                               String fromDate, String toDate) throws CommandException {
         if (fromDate.isEmpty() || toDate.isEmpty()) {
@@ -99,7 +98,6 @@ public class CountTotalReceiptCommand implements Command {
             throw new CommandException(ConstantPage.BOOK_CAR_PAGE);
         }
     }
-
 
     private void checkIfUserBalanceEnoughToPayTheOrder(HttpServletRequest request,
                                                        BigDecimal totalPrice, String userBalance) {
@@ -110,7 +108,6 @@ public class CountTotalReceiptCommand implements Command {
             request.getSession().setAttribute(GeneralConstant.Util.RES_IF_BALANCE_OK, null);
         }
     }
-
 
     private BigDecimal getTotalRentalPriceAccordingToHours(HttpServletRequest request,
                                                            long orderDurationInHours, String carRentPrice, String withDriver) throws ServiceException, CommandException {
@@ -145,7 +142,6 @@ public class CountTotalReceiptCommand implements Command {
         request.getSession().setAttribute("toDate", toDate);
         request.getSession().getServletContext().setAttribute("totalPrice", String.format("%.2f", totalPrice));
     }
-
 
     private long calculateHoursFromGivenDates(LocalDateTime dateFrom, LocalDateTime dateTo) {
         long diffInMinutes = Duration.between(dateFrom, dateTo).toMinutes();

@@ -78,11 +78,13 @@ public class PaginationCommand implements Command {
         } else {
             switch (userRole) {
                 case "user": route = paginationCommandFacade
-                            .getAllPersonalOrdersForUser(requiredResult,userLogin,currentPage,noOfRecords,request);
+                            .getAllPersonalOrdersForUser(requiredResult,userLogin,
+                                    currentPage,noOfRecords,request);
                             break;
 
                 case "manager": route = paginationCommandFacade
-                              .getAllOrdersForManager(request,requiredResult,currentPage,viewSuchOrders,noOfRecords);
+                              .getAllOrdersForManager(request,requiredResult,currentPage,
+                                      viewSuchOrders,noOfRecords);
                               break;
             }
         }

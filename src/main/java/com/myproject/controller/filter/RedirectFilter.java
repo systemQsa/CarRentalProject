@@ -69,7 +69,7 @@ public class RedirectFilter implements Filter {
             }
             request.getSession().setAttribute(GeneralConstant.ROLE, null);
             request.getSession().setAttribute(GeneralConstant.USER_NAME, null);
-            response.sendRedirect("/car");
+            response.sendRedirect("/car_rent");
             return true;
         }
         return false;

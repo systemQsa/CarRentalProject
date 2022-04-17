@@ -15,7 +15,6 @@ public class User implements Comparable<User>, Serializable {
     private String serialPassportNumber;
     private String login;
     private String userRole;
-   // private Timestamp registerDate;
     private BigDecimal balance;
     private String isBanned;
     private String password;
@@ -153,10 +152,10 @@ public class User implements Comparable<User>, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return getUserId() == user.getUserId() && getIsBanned() == user.getIsBanned()
+        return getUserId() == user.getUserId() && Objects.equals(getIsBanned(), user.getIsBanned())
                 && Objects.equals(getName(), user.getName()) && Objects.equals(getSurname(), user.getSurname())
                 && Objects.equals(getSerialPassportNumber(), user.getSerialPassportNumber())
-                && Objects.equals(getLogin(), user.getLogin()) && getUserRole() == user.getUserRole()
+                && Objects.equals(getLogin(), user.getLogin()) && Objects.equals(getUserRole(), user.getUserRole())
                 && Objects.equals(getRegisterDate(), user.getRegisterDate()) && Objects.equals(getBalance(),
                 user.getBalance()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getSalt(),
                 user.getSalt()) && Objects.equals(getPhone(), user.getPhone());

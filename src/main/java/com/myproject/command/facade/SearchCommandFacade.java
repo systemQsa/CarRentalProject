@@ -36,7 +36,6 @@ public class SearchCommandFacade {
         return route;
     }
 
-
     public Route searchUserForAdmin(String searchedUser, HttpServletRequest request) throws ServiceException {
         Route route = new Route();
         userService.getUser(searchedUser.trim()).ifPresent(user -> {

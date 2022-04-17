@@ -63,9 +63,9 @@
                         <div class="col-xs-2">
                             <input type="text" name="userPassport"/>
                         </div>
-                         <c:if test="${requestScope.err == 12}">
-                            <p>${requestScope.errMSG}</p>
-                        </c:if>
+<%--                         <c:if test="${requestScope.err == 12}">--%>
+<%--                            <p>${requestScope.errMSG}</p>--%>
+<%--                        </c:if>--%>
                      </div>
 
                         <div class="form-group-row d-block p-4">

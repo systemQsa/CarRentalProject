@@ -23,7 +23,7 @@ public final class GeneralConstant {
     public static final String MANAGER = "manager";
     public static final String REDIRECT = "redirect:";
     public static final String REGISTER = "register";
-    public static final String CAR = "/car";
+    public static final String CAR = "/car_rent";
     public static final String CACHE_CONTROL = "Cache-Control";
     public static final String NO_STORE_MUST_REVALIDATE = "no-store,must-revalidate";
     public static final String PRAGMA = "Pragma";

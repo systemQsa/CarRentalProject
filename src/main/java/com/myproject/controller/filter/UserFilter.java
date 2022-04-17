@@ -51,20 +51,20 @@ public class UserFilter implements Filter {
             return;
         } else if (request.getServletPath().contains("admin")
                 && request.getSession().getAttribute("userName") == null) {
-            response.sendRedirect("/car/login.jsp");
+            response.sendRedirect("/car_rent/login.jsp");
             return;
         }
 
         if (userFilterFacade.setInitialDataForUser(filterChain, request, response)) return;
 
         if ((urlPath.contains(GeneralConstant.ADMIN)) && userRole == null) {
-            response.sendRedirect("/car" + ConstantPage.LOG_IN_PAGE);
+            response.sendRedirect("/car_rent" + ConstantPage.LOG_IN_PAGE);
             filterChain.doFilter(request, response);
             return;
 
         } else if (request.getSession().getAttribute("userName") == null && request.getRequestURI()
                 .contains(GeneralConstant.ADMIN)) {
-            response.sendRedirect("/car/login.jsp");
+            response.sendRedirect("/car_rent/login.jsp");
             filterChain.doFilter(request, response);
             return;
         }
@@ -89,7 +89,7 @@ public class UserFilter implements Filter {
             request.getSession().setAttribute(GeneralConstant.ROLE, null);
             request.getSession().getServletContext().setAttribute(GeneralConstant.LOGGED_USERS, loggedUsers);
 
-            response.sendRedirect("/car/index.jsp");
+            response.sendRedirect("/car_rent/index.jsp");
             logger.info("UserFilter working");
         }
     }

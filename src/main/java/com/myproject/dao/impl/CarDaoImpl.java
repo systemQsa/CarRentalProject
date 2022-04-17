@@ -227,6 +227,7 @@ public class CarDaoImpl implements CarDao {
                      connection.prepareStatement(QuerySQL.CHECK_IF_CAR_ALREADY_PRESENT_IN_DB)) {
 
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             checkCarPresence.setString(1, car.getName());
             checkCarPresence.setString(2, car.getCarClass());
             checkCarPresence.setString(3, car.getBrand());

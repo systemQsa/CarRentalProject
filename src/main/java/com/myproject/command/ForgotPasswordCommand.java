@@ -95,7 +95,6 @@ public class ForgotPasswordCommand implements Command {
         }
     }
 
-
     private Route checkSecretCodeInput(HttpServletRequest request, String secretNumbers,
                                        String setCommand, Route route) throws CommandException {
         if (setCommand.equals("checkSecretCode")) {

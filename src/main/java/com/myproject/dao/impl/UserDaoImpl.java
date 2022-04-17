@@ -184,7 +184,6 @@ public class UserDaoImpl implements UserDao<User> {
     @Override
     public User addRecordToTable(User newUser) throws DaoException {
         ResultSet resultSet;
-        System.out.println("Add RECORD TO TABLE" + newUser.getPhone());
         connection = connectManager.getConnection();
         try (PreparedStatement statement =
                      connection.prepareStatement(QuerySQL.ADD_NEW_USER, Statement.RETURN_GENERATED_KEYS);
@@ -238,7 +237,6 @@ public class UserDaoImpl implements UserDao<User> {
         boolean response = false;
         double resultBalance = 0;
         ResultSet resultSet;
-
 
         try (PreparedStatement statement = connection.prepareStatement(QuerySQL.SEE_USER_BALANCE)) {
             PreparedStatement statement2 = connection.prepareStatement(QuerySQL.UPDATE_USER_BALANCE);

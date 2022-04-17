@@ -107,7 +107,6 @@ public class LoginCommand implements Command {
         request.getSession().setAttribute(GeneralConstant.Util.USER_LOGIN, user.getLogin());
     }
 
-
     private void checkUserIsBlockedByManager(HttpServletRequest request,
                                              Route route, String login) throws ValidationException {
         if (validateInput.userIsBlockedValidate(login)){

@@ -54,7 +54,6 @@ public class ViewOrdersCommand implements Command {
         }
     }
 
-
     private void caseViewApprovedOrders(HttpServletRequest request, Route route, String viewSuchOrders, int startPage, int noOfRecords) throws ServiceException {
         if (viewSuchOrders.equals("approved")) {
             orderViewService.getOrders(viewSuchOrders, startPage, noOfRecords)

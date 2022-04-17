@@ -62,7 +62,6 @@ public class PaginationCommandFacade {
         return route;
     }
 
-
     private void paginateCars(HttpServletRequest request, int currentPage,
                               int noOfRecords, HashMap<List<Car>, Integer> allCars) {
         request.setAttribute("currentPage", currentPage);
@@ -119,7 +118,6 @@ public class PaginationCommandFacade {
         }
     }
 
-
     private int getAmountOfAllRecords(List<OrderViewForUserRequest> listOfRequiredItems) {
         return listOfRequiredItems.stream()
                 .map(OrderViewForUserRequest::getAmountOfRecords)
@@ -127,18 +125,15 @@ public class PaginationCommandFacade {
                 .orElse(5);
     }
 
-
     private int getCurrentPage(int pages, int currentPage) {
         return (pages == 0) ? 1 : currentPage;
     }
-
 
     private int countNoOfRequiredPagesForPage(int totalRecords, int noOfRecordsPerPage) {
         int result = (totalRecords / noOfRecordsPerPage);
         return (result % noOfRecordsPerPage > 0)
                 ? (totalRecords / noOfRecordsPerPage) + 1 : (totalRecords / noOfRecordsPerPage);
     }
-
 
     private int getNoOfPages(List<OrderViewForUserRequest> list, int noOfRecords) {
         return list.stream()

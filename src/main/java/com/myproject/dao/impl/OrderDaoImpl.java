@@ -128,11 +128,8 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Order processTheBooking(Order order, boolean processPayment) throws DaoException {
         connection = connectManager.getConnection();
-        ResultSet resultSet;
-        ResultSet resultSet2;
         AtomicReference<Order> orderAtomicReference = new AtomicReference<>(order);
         AtomicReference<Double> userBalance = new AtomicReference<>();
-        double balance;
         int orderId = 0;
         try (PreparedStatement setOrderToDB =
                      connection.prepareStatement(QuerySQL.INSERT_NEW_ORDER, Statement.RETURN_GENERATED_KEYS);
